@@ -3,7 +3,6 @@
 import struct
 import uuid
 import hashlib
-import json
 
 # ########################################
 # Digests of events in the EFI event log
@@ -22,7 +21,7 @@ class EfiEventDigest:
         assert algid in EfiEventDigest.hashalgmap
         self.hashalg     = EfiEventDigest.hashalgmap[algid]()
         self.digest_size = self.hashalg.digest_size
-        self.digest      = buffer[idx+2:idx+2+self.digest_size]
+        self.digest      = buffer[idx:idx+self.digest_size]
 
     # representation (TODO)
     def __repr__ (self):
@@ -42,12 +41,12 @@ class EfiEventDigest:
     #   idx: index of first unparsed byte in buffer
     #   digests: list of parsed digests
 
-    def parselist (digestcount:int, buffer: bytes, idx: int) -> (list, int):
-        digests = []
+    def parselist (digestcount:int, buffer: bytes, idx: int) -> (dict, int):
+        digests = {}
         for i in range(0,digestcount):
             (algid,)=struct.unpack('<H',buffer[idx:idx+2])
             digest = EfiEventDigest(algid, buffer, idx+2)
-            digests.append(digest)
+            digests[algid] = digest
             idx += 2 + digest.digest_size
         return digests, idx
 
@@ -56,34 +55,26 @@ class EfiEventDigest:
 # ########################################
 
 class GenericEfiEvent:
-    def __init__ (self, evtype: int, evpcr: int, digests: list, evsize: int, buffer: bytes, idx: int):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         self.evtype = evtype
         self.evpcr  = evpcr
         self.digests = digests
         self.evsize  = evsize
+        self.evbuf   = buffer[idx:idx+evsize]
 
-#    def __repr__ (self):
-#        return str({
-#            'Event' : {
-#                'PCRIndex' : self.evpcr,
-#                'EventType': self.evtype,
-#                'digests': self.digests,
-#                'EventSize': self.evsize
-#            }
-#        })
-
-#    def toJson(self):
-#        return json.JSONEncoder().encode({
-#            "Event" : {
-#                'PCRIndex' : self.evpcr,
-#                'EventType': self.evtype,
-#                'digests': self.digests,
-#                'EventSize': self.evsize
-#            }
-#        })
-
-    def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
+    # validate: ensure digests don't lie
+    def validate (self) -> bool:
+        return True
+        
+    def __repr__ (self):
+        return str({
+            'Event' : {
+                'PCRIndex' : self.evpcr,
+                'EventType': self.evtype,
+                'Digests': self.digests,
+                'EventSize': self.evsize
+            }
+        })
 
 # ########################################
 # Event type: EFI variable measurement
@@ -91,28 +82,34 @@ class GenericEfiEvent:
 # TODO unicode decoding does not work
 
 class EfiVariable (GenericEfiEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: list, evsize: int, buffer: bytes, idx: int):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         self.guid = uuid.UUID(bytes=buffer[idx:idx+16])
         (nchars,datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
-        self.name = buffer[idx+32:idx+32+2*nchars].decode('utf-8')
+        self.name = buffer[idx+32:idx+32+2*nchars]
         self.data = buffer[idx+32+2*nchars:idx+32+2*nchars+evsize]
 
-#    def todict(self):
-#        return {
-#            'EfiVariableData': {
-#                'guid': self.guid,
-#                'name': self.name,
-#                'data': self.data
-#            }
-#    }
 
+    def validate(self) -> bool:
+        for algid in self.digests.keys():
+            digest = self.digests[algid]
+            hash = EfiEventDigest.hashalgmap[algid](self.evbuf)
+            print('event name: %s'%(self.name.decode('utf-8')))
+            print('digest calculated: %s'%(hash.digest().hex()))
+            print('actual digest:     %s'%(digest.digest.hex()))
+        return True
+
+
+class ScrtmEvent (GenericEfiEvent):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        
 # ########################################
 # Event type: firmware blob measurement
 # ########################################
 
 class FirmwareBlob (GenericEfiEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: list, evsize: int, buffer: bytes, idx: int):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         (self.base,self.length)=struct.unpack('<QQ',buffer[idx:idx+16])
 
@@ -129,7 +126,7 @@ class FirmwareBlob (GenericEfiEvent):
 # ########################################
 
 class ImageLoadEvent (GenericEfiEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: list, evsize: int, buffer: bytes, idx: int):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         (self.base,self.length,self.linkaddr,self.devpathlen)=struct.unpack('<QQQQ',buffer[idx:idx+32])
 #        self.devpath = DevicePath (buffer[32:32+devpathlen])
@@ -190,7 +187,7 @@ class EventLog:
         5:                     [ 'Action', GenericEfiEvent ],
         6:                     [ 'EventTag', GenericEfiEvent ],
         7:                     [ 'CrtmContents', GenericEfiEvent ],
-        8:                     [ 'CrtmVersion', GenericEfiEvent ],
+        8:                     [ 'CrtmVersion', ScrtmEvent ],
         9:                     [ 'CpuMicrocode', GenericEfiEvent ],
         10:                    [ 'PlatformConfigFlags', GenericEfiEvent ],
         11:                    [ 'TableOfDevices', GenericEfiEvent ],
@@ -210,6 +207,8 @@ class EventLog:
         EFI_EVENT_BASE + 0x7:  [ 'EFIAction', GenericEfiEvent ],
         EFI_EVENT_BASE + 0x8:  [ 'EFIPlatformFirmwareBlob', FirmwareBlob ],
         EFI_EVENT_BASE + 0x9:  [ 'EFIHandoffTables', GenericEfiEvent ],
+        EFI_EVENT_BASE + 0x8:  [ 'EFIPlatformFirmwareBlob2', GenericEfiEvent ],
+        EFI_EVENT_BASE + 0x9:  [ 'EFIHandoffTables2', GenericEfiEvent ],
         EFI_EVENT_BASE + 0xE0: [ 'EFIVariableAuthority', EfiVariable ],
     }
 
@@ -228,7 +227,7 @@ class EventLog:
 
     def parse_1stevent(buffer: bytes, idx: int) -> (GenericEfiEvent, int):
         (evpcr, evtype, digestbuf, evsize)=struct.unpack('<II20sI', buffer[idx:idx+32])
-        digests = [ EfiEventDigest(4, digestbuf, 0) ]
+        digests = { 4: EfiEventDigest(4, digestbuf, 0) }
         evt = EventLog.EventTypes[evtype][1](evpcr, evtype, digests, evsize, buffer, idx+32)
         return (evt, idx + 32 + evsize)
                     
@@ -239,11 +238,28 @@ class EventLog:
         evt = EventLog.EventTypes[evtype][1](evpcr, evtype, digests, evsize, buffer, idx+4)
         return (evt, idx + 4 + evsize)
 
+    # calculate the expected PCR values
+    def pcrs (self) -> dict:
+        algid=4
+        d0 = EfiEventDigest.hashalgmap[algid]()
+        pcrs = {}
+        for event in self.evtlist:
+            if event.evtype == 3: continue # do not measure NoAction events
+            pcridx  = event.evpcr
+            oldpcr  = pcrs[pcridx] if pcridx in pcrs else bytes(d0.digest_size)
+            extdata = event.digests[algid].digest
+            newpcr  = EfiEventDigest.hashalgmap[algid](oldpcr+extdata).digest()
+            pcrs[pcridx] = newpcr
+        return pcrs
+
+
     def __str__(self):
         return str(self.evtlist)
 
     def __repr__(self):
         return self.evtlist.repr()
 
-    def toJson (self):
-        return json.dumps(self.evtlist, default=lambda o: o.toJson())
+    def validate (self):
+        for evt in self.evtlist:
+            if not evt.validate(): return False
+        return True
