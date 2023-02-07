@@ -287,19 +287,14 @@ class EventLog(list):
         return True
 
 
-def algid_valid (algid: int) -> bool:
-    if algid in EfiEventDigest.hashalgmap:
-        return True
-    return False
-
-def eventtype_valid (evtype: str) -> bool:
-    if evtype in Event.__members__:
-        return True
-    return False
-
 def get_digests (evlog: EventLog, evtype: str, **kwargs) -> list:
 
+    assert evtype in Event.__members__
+
     algid=kwargs.get('hash_algid',None)
+    if algid:
+        assert algid in EfiEventDigest.hashalgmap
+
     pcr=kwargs.get('pcr_index',None)
 
     digest_list=[]
@@ -316,3 +311,19 @@ def get_digests (evlog: EventLog, evtype: str, **kwargs) -> list:
                     digest_list.append(v.toJson())
 
     return digest_list
+
+def match_digest (evlog: EventLog, evtype: str, algid: int, digest: str, **kwargs) -> bool:
+
+    assert evtype in Event.__members__
+    assert algid in EfiEventDigest.hashalgmap
+
+    pcr=kwargs.get('pcr_index',None)
+
+    for ev in evlog:
+        if pcr:
+            if ev.evpcr != pcr: continue
+        if algid:
+            dg=ev.digests[algid].toJson()
+            if dg['Digest'] == digest:
+                return True
+    return False
