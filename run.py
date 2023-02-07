@@ -11,8 +11,15 @@ idx=0
 log = eventlog.EventLog(buffer, len(buffer))
 
 
-print(str(log))
+print(json.dumps(log, default=lambda o: o.toJson(), indent=4))
 
-#log.validate()
+print('-----------------------')
 
+if log.validate():
+    print ("Log is valid")
+else:
+    print ("Log is invalid")
+
+print('-----------------------')
+    
 #print(sorted(log.pcrs().items()))
