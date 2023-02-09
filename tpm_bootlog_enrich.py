@@ -44,44 +44,6 @@ def getGUID(b):
 ##################################################################################
 #
 # https://uefi.org/sites/default/files/resources/UEFI%20Spec%202.8B%20May%202020.pdf
-# Section 32.4.1
-#
-# Relevant data structures
-#
-#  typedef struct _EFI_SIGNATURE_LIST {
-#       uint8_t SignatureType[16];
-#       uint32_t SignatureListSize;
-#       uint32_t SignatureHeaderSize;
-#       uint32_t SignatureSize;
-#       // uint8_t SignatureHeader[SignatureHeaderSize];
-#       // uint8_t Signatures[][SignatureSize];
-#  } EFI_SIGNATURE_LIST;
-#
-#  typedef struct _EFI_SIGNATURE_DATA {
-#      uint8_t SignatureOwner[16];
-#      uint8_t SignatureData[];
-#  } EFI_SIGNATURE_DATA;
-#
-##################################################################################
-
-##################################################################################
-# Parse EFI_SIGNATURE_DATA
-##################################################################################
-
-
-def getKey(b, start, size):
-    key = {}
-    signatureOwner = getGUID(b[start : start + 16])
-    key["SignatureOwner"] = signatureOwner
-
-    signatureData = b[start + 16 : start + size]
-    key["SignatureData"] = signatureData.hex()
-    return key
-
-
-##################################################################################
-#
-# https://uefi.org/sites/default/files/resources/UEFI%20Spec%202.8B%20May%202020.pdf
 # Section 3.1.3
 #
 # Relevant data structures
@@ -153,47 +115,3 @@ def getVar(event, b):
     return None
 
 
-def enrich_device_path(d: dict) -> None:
-    if isinstance(d.get("DevicePath"), str):
-        try:
-            b = bytes.fromhex(d["DevicePath"])
-            l = int(d["LengthOfDevicePath"])
-        except Exception:
-            return
-        try:
-            p = getDevicePath(b, l)
-        # Deal with garbage devicePath
-        except Exception:
-            return
-        d["DevicePath"] = p
-
-
-def enrich_boot_variable(d: dict) -> None:
-    if isinstance(d.get("VariableData"), str):
-        b = {}
-        b = bytes.fromhex(d["VariableData"])
-        k = getVar(d, b)
-        if k is not None:
-            d["VariableData"] = k
-
-
-def enrich(log: dict) -> None:
-    """Make the given BIOS boot log easier to understand and process"""
-    if "events" in log:
-        events = log["events"]
-
-        for event in events:
-            if "EventType" in event:
-                t = event["EventType"]
-                if t in (
-                    "EV_EFI_BOOT_SERVICES_APPLICATION",
-                    "EV_EFI_BOOT_SERVICES_DRIVER",
-                    "EV_EFI_RUNTIME_SERVICES_DRIVER",
-                ):
-                    if "Event" in event:
-                        d = event["Event"]
-                        enrich_device_path(d)
-                elif t == "EV_EFI_VARIABLE_BOOT":
-                    if "Event" in event:
-                        d = event["Event"]
-                        enrich_boot_variable(d)

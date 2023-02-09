@@ -4,6 +4,7 @@ import struct
 import uuid
 import hashlib
 import enum
+import re
 from collections import defaultdict
 import tpm_bootlog_enrich
 
@@ -73,7 +74,7 @@ class EfiEventDigest:
 
     # JSON converter -- returns something that can be encoded as JSON
     def toJson(self):
-        return { 'DigestType': self.algid, 'Digest': '0x' + self.digest.hex() }
+        return { 'DigestType': self.algid, 'Digest': self.digest.hex() }
 
     # ----------------------------------------
     # parse a list of digests in the event log
@@ -128,9 +129,33 @@ class GenericEvent:
         }
 
 # ########################################
+# Spec ID Event
+# ########################################
+
+class SpecIdEvent (GenericEvent):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        self.signature = uuid.UUID(bytes=buffer[idx:idx+16])
+        (self.platformClass, self.specVersionMinor, self.specVersionMajor, self.specErrata, self.uintnSize, self.numberOfAlgorithms) = struct.unpack('<IBBBBI', buffer[idx+16:idx+28])
+        self.alglist = []
+        for x in range(0, self.numberOfAlgorithms):
+            (algid, digsize) = struct.unpack('HH', buffer[idx+28+4*x:idx+32+4*x])
+            self.alglist.append({'algorithmId': algid, 'digestSize': digsize})
+
+    def toJson (self):
+        return { ** super().toJson(), 'Event': {
+            'platformClass': self.platformClass,
+            'specVersionMinor': self.specVersionMinor,
+            'specVersionMajor': self.specVersionMajor,
+            'specErrata': self.specErrata,
+            'uintnSize': self.uintnSize,
+            'numberOfAlgorithms': self.numberOfAlgorithms,
+            'digestSizes': self.alglist
+        }}
+
+# ########################################
 # Event type: EFI variable measurement
 # ########################################
-# TODO unicode decoding does not work
 
 class EfiVariable (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
@@ -138,8 +163,7 @@ class EfiVariable (GenericEvent):
         self.guid = uuid.UUID(bytes=buffer[idx:idx+16])
         (self.namelen,self.datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         self.name = buffer[idx+32:idx+32+2*self.namelen]
-        self.data = buffer[idx+32+2*self.namelen:idx+evsize]
-        self.vardata = None
+        self.data = buffer[idx+32+2*self.namelen:idx+32+2*self.namelen + self.datalen]
 
     @classmethod
     def Parse(cls, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
@@ -147,6 +171,13 @@ class EfiVariable (GenericEvent):
         name = buffer[idx+32:idx+32+2*namelen]
         if name.decode('utf-16') in [ 'PK', 'KEK', 'db', 'dbx' ]:
             return EfiSignatureEvent(evpcr, evtype, digests, evsize, buffer, idx)
+        elif name.decode('utf-16') == 'SecureBoot':
+            return EfiSecureBootEvent(evpcr, evtype, digests, evsize, buffer, idx)
+        elif name.decode('utf-16') == 'BootOrder':
+            return EfiBootOrderEvent(evpcr, evtype, digests, evsize, buffer, idx)
+        elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name.decode('utf-16')):
+            return EfiBootEvent (evpcr, evtype, digests, evsize, buffer, idx)
+#        elif Event(evtype) == Event.EFI_VARIABLE_BOOT:
         else:
             return EfiVariable(evpcr, evtype, digests, evsize, buffer, idx)
 
@@ -158,30 +189,85 @@ class EfiVariable (GenericEvent):
         return True
 
     def toJson (self) -> dict:
-        j = super().toJson()
-        j['Event'] = {
-            'GUID' : str(self.guid),
-            'UnicodeName' : self.name.decode('utf-16'),
-        }
-        return j
-
+        return { ** super().toJson(),
+                 'Event': {
+                     'GUID' : str(self.guid),
+                     'UnicodeName' : self.name.decode('utf-16'),
+                     'UnicodeNameLength': self.namelen,
+                     'VariableDataLength': self.datalen,
+                     'VariableData': self.data.hex()
+                 }}
 
 # ########################################
-# An EFI signature
+# Secure boot variable readout event
 # ########################################
-# UEFI Spec 2.88 Section 32.4.1, EFI_SIGNATURE_DATA
 
-class EfiSignatureData:
-    def __init__ (self, buffer: bytes, sigsize, idx):
-        self.owner   = uuid.UUID(bytes=buffer[idx:idx+16])
-        self.sigdata = buffer[idx+16:idx+16+sigsize]
+class EfiSecureBootEvent(EfiVariable):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        self.enabled =  struct.unpack('<B', self.data)
 
     def toJson (self) -> dict:
-        return {
-            'SignatureOwner': str(self.owner),
-            'SignatureData': self.sigdata.hex()
+        j = super().toJson()
+        j['Event']['VariableData'] = { 'Enabled' : 'Yes' if self.enabled else 'No' }
+        return j
+
+# ########################################
+# EFI variable: Boot order
+# ########################################
+
+class EfiBootOrderEvent(EfiVariable):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        assert (self.datalen % 2) == 0
+        self.bootorder = struct.unpack('<%dH'%(self.datalen/2), self.data)
+
+    def toJson (self) -> dict:
+        j = super().toJson()
+        j['Event']['VariableData'] = list(map(lambda x: 'Boot%04d'%(x), self.bootorder))
+        return j
+
+class EfiBootEvent (EfiVariable):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        # EFI_LOAD_OPTION, https://dox.ipxe.org/UefiSpec_8h_source.html, line 2069
+        (self.attributes, self.filepathlistlength) = struct.unpack('<IH', self.data[0:6])
+        # description UTF-16 string: from byte 6 to the first pair of zeroes
+        desclen = 0
+        while self.data[desclen+6:desclen+8] != bytes([0,0]) : desclen += 2
+        self.description = self.data[6:6+desclen]
+        # dev path: from the end of the description string to the end of data
+        devpathlen = (self.datalen - 8 - desclen) * 2 + 1
+        self.devicePath = tpm_bootlog_enrich.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+        print(self.devicePath)
+
+    def toJson (self) -> dict:
+        j = super().toJson()
+        j['Event']['VariableData'] = {
+            'Enabled' : 'Yes' if (self.attributes & 1) == 1 else 'No',
+            'FilePathListLength': self.filepathlistlength,
+            'Description': self.description.decode('utf-16'),
+            'DevicePath': self.devicePath
         }
+        return j
     
+# ########################################
+# EFI signature event: an EFI variable event for secure boot variables.
+# ########################################
+
+class EfiSignatureEvent(EfiVariable):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        idx2 = 0
+        self.varlist = []
+        while idx2 < self.datalen:
+            var = EfiSignatureList (self.data, idx2)
+            idx2 += var.listsize
+            self.varlist.append(var)
+
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'VariableData': self.varlist }
+
 # ########################################
 # A list of EFI signatures
 # ########################################
@@ -207,28 +293,31 @@ class EfiSignatureList:
             'Keys': self.keys
         }
         
-class EfiSignatureEvent(EfiVariable):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
-        idx2 = 0
-        self.varlist = []
-        while idx2 < self.datalen:
-            var = EfiSignatureList (self.data, idx2)
-            idx2 += var.listsize
-            self.varlist.append(var)
+# ########################################
+# An EFI signature
+# ########################################
+# UEFI Spec 2.88 Section 32.4.1, EFI_SIGNATURE_DATA
+
+class EfiSignatureData:
+    def __init__ (self, buffer: bytes, sigsize, idx):
+        self.owner   = uuid.UUID(bytes=buffer[idx:idx+16])
+        self.sigdata = buffer[idx+16:idx+16+sigsize]
 
     def toJson (self) -> dict:
-        j = super().toJson()
-        j['VariableData'] = self.varlist
-        return j
-
-
+        return {
+            'SignatureOwner': str(self.owner),
+            'SignatureData': self.sigdata.hex()
+        }
+    
 # ########################################
+# core root of trust module event
 # ########################################
 
-class ScrtmEvent (GenericEvent):
+class ScrtmVersionEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'Event': self.evbuf.hex() }
         
 # ########################################
 # Event type: firmware blob measurement
@@ -238,6 +327,12 @@ class FirmwareBlob (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         (self.base,self.length)=struct.unpack('<QQ',buffer[idx:idx+16])
+
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'Event': {
+            'BlobBase': self.base,
+            'BlobLength': self.length
+            }}
 
 
 # ########################################
@@ -284,7 +379,7 @@ class EventLog(list):
     def Parse_1stevent(buffer: bytes, idx: int) -> (GenericEvent, int):
         (evpcr, evtype, digestbuf, evsize)=struct.unpack('<II20sI', buffer[idx:idx+32])
         digests = { 4: EfiEventDigest(4, digestbuf, 0) }
-        evt = EventLog.Handler(evtype)(evpcr, evtype, digests, evsize, buffer, idx+32)
+        evt = SpecIdEvent(evpcr, evtype, digests, evsize, buffer, idx+32)
         return (evt, idx + 32 + evsize)
 
     # parser for all other events
@@ -298,6 +393,7 @@ class EventLog(list):
     # figure out which Event constructor to call depending on event type
     def Handler(evtype: int):
         EventHandlers = {
+            Event.S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
             Event.EFI_VARIABLE_DRIVER_CONFIG    : EfiVariable.Parse,
             Event.EFI_VARIABLE_BOOT             : EfiVariable.Parse,
             Event.EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,
