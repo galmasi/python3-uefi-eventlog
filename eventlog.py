@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from collections import defaultdict
-import tpm_bootlog_enrich
+import efivar
 
 # ########################################
 # enumeration of all event types
@@ -46,35 +46,37 @@ class Event(enum.Enum):
     EFI_HANDOFF_TABLES2           = EFI_EVENT_BASE + 0xb
     EFI_VARIABLE_BOOT2            = EFI_EVENT_BASE + 0xc
     EFI_VARIABLE_AUTHORITY        = EFI_EVENT_BASE + 0xe0
-    
+
+# ########################################
+# enumeration of event digest algorithms
+# ########################################
+
+class Digest (enum.Enum):
+    sha1   = 4
+    sha256 = 11
+
 # ########################################
 # Event digests
 # ########################################
-# TODO: define constants for hash algorithms
 # matching TPM definitions
 
 class EfiEventDigest:
     hashalgmap={
-        0: hashlib.md5,
-        4: hashlib.sha1,
-        11: hashlib.sha256
+        Digest.sha1: hashlib.sha1,
+        Digest.sha256: hashlib.sha256
     }
 
     # constructor for a digest
     def __init__(self, algid: int, buffer: bytes, idx: int):
-        self.algid = algid
-        assert algid in EfiEventDigest.hashalgmap
-        self.hashalg     = EfiEventDigest.hashalgmap[algid]()
+        self.algid = Digest(algid)
+        assert self.algid in EfiEventDigest.hashalgmap.keys()
+        self.hashalg     = EfiEventDigest.hashalgmap[self.algid]()
         self.digest_size = self.hashalg.digest_size
         self.digest      = buffer[idx:idx+self.digest_size]
 
-    # representation (TODO)
-    def __repr__ (self):
-        return str({ 'DigestType': self.hashalg, 'Digest': self.digest })
-
     # JSON converter -- returns something that can be encoded as JSON
     def toJson(self):
-        return { 'DigestType': self.algid, 'Digest': self.digest.hex() }
+        return { 'AlgorithmID': self.algid.name, 'Digest': self.digest.hex() }
 
     # ----------------------------------------
     # parse a list of digests in the event log
@@ -99,7 +101,13 @@ class EfiEventDigest:
 # ########################################
 # base class for all EFI events.
 # ########################################
-# General design principle 
+# General design principle: every event is a subclass of GenericEvent.
+# * each Event type has a constructor, which parses the input buffer and produces the Event.
+# * In addition, the Parse class method may be defined if the end result of a parse is
+#   a subclass of the current object (e.g. subclasses of EfiVarEvent)
+# * each Event class has a "validate" method used in testing its internal consistency
+# * each Event class has a "toJson" method to convert it into data structures
+#   accepted by the JSON pickler (i.e. dictionaries, lists, strings)
 
 class GenericEvent:
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
@@ -117,15 +125,12 @@ class GenericEvent:
     def validate (self) -> bool:
         return True
         
-    def __repr__ (self):
-        return repr(self.__dict__)
-
     def toJson (self):
         return {
             'EventType': Event(self.evtype).name,
             'PCRIndex': self.evpcr,
             'EventSize': self.evsize,
-            'Digests': self.digests
+            'Digests': list(map(lambda o: o[1], self.digests.items()))
         }
 
 # ########################################
@@ -157,7 +162,7 @@ class SpecIdEvent (GenericEvent):
 # Event type: EFI variable measurement
 # ########################################
 
-class EfiVariable (GenericEvent):
+class EfiVarEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         self.guid = uuid.UUID(bytes=buffer[idx:idx+16])
@@ -177,9 +182,8 @@ class EfiVariable (GenericEvent):
             return EfiBootOrderEvent(evpcr, evtype, digests, evsize, buffer, idx)
         elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name.decode('utf-16')):
             return EfiBootEvent (evpcr, evtype, digests, evsize, buffer, idx)
-#        elif Event(evtype) == Event.EFI_VARIABLE_BOOT:
         else:
-            return EfiVariable(evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiVarEvent(evpcr, evtype, digests, evsize, buffer, idx)
 
     def validate(self) -> bool:
         for algid in self.digests.keys():
@@ -202,7 +206,7 @@ class EfiVariable (GenericEvent):
 # Secure boot variable readout event
 # ########################################
 
-class EfiSecureBootEvent(EfiVariable):
+class EfiSecureBootEvent(EfiVarEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         self.enabled =  struct.unpack('<B', self.data)
@@ -216,7 +220,7 @@ class EfiSecureBootEvent(EfiVariable):
 # EFI variable: Boot order
 # ########################################
 
-class EfiBootOrderEvent(EfiVariable):
+class EfiBootOrderEvent(EfiVarEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         assert (self.datalen % 2) == 0
@@ -227,7 +231,11 @@ class EfiBootOrderEvent(EfiVariable):
         j['Event']['VariableData'] = list(map(lambda x: 'Boot%04d'%(x), self.bootorder))
         return j
 
-class EfiBootEvent (EfiVariable):
+# ########################################
+# EFI variable: boot entry
+# ########################################
+
+class EfiBootEvent (EfiVarEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         # EFI_LOAD_OPTION, https://dox.ipxe.org/UefiSpec_8h_source.html, line 2069
@@ -238,8 +246,7 @@ class EfiBootEvent (EfiVariable):
         self.description = self.data[6:6+desclen]
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
-        self.devicePath = tpm_bootlog_enrich.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
-        print(self.devicePath)
+        self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -255,7 +262,7 @@ class EfiBootEvent (EfiVariable):
 # EFI signature event: an EFI variable event for secure boot variables.
 # ########################################
 
-class EfiSignatureEvent(EfiVariable):
+class EfiSignatureEvent(EfiVarEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         idx2 = 0
@@ -266,7 +273,9 @@ class EfiSignatureEvent(EfiVariable):
             self.varlist.append(var)
 
     def toJson (self) -> dict:
-        return { ** super().toJson(), 'VariableData': self.varlist }
+        j = super().toJson()
+        j['Event']['VariableData'] = self.varlist
+        return j
 
 # ########################################
 # A list of EFI signatures
@@ -318,6 +327,40 @@ class ScrtmVersionEvent (GenericEvent):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
     def toJson (self) -> dict:
         return { ** super().toJson(), 'Event': self.evbuf.hex() }
+
+
+# ########################################
+# EFI action event
+# ########################################
+
+class EfiActionEvent (GenericEvent):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        self.event = buffer[idx:idx+evsize]
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'Event': self.event.decode('utf-8') }
+
+
+# ########################################
+# EFI GPT event (a GPT partition table description event)
+# ########################################
+
+class EfiGPTEvent (GenericEvent):
+    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+        (self.signature, self.revision, self.headerSize, self.headerCRC32, self.MyLBA, self.alternateLBA, self.firstUsableLBA, self.lastUsableLBA) = struct.unpack('<8sIIIQQQQ', buffer[idx:idx+52])
+    
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'Event': {
+            'Signature': self.signature.decode('utf-8'),
+            'Revision': self.revision,
+            'HeaderSize': self.headerSize,
+            'HeaderCRC32': self.headerCRC32,
+            'MyLBA': self.MyLBA,
+            'AlternativeLBA': self.alternateLBA,
+            'FirstUsableLBA': self.firstUsableLBA,
+            'LastUsableLBA': self.lastUsableLBA,
+            }}
         
 # ########################################
 # Event type: firmware blob measurement
@@ -343,7 +386,7 @@ class ImageLoadEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         (self.base,self.length,self.linkaddr,self.devpathlen)=struct.unpack('<QQQQ',buffer[idx:idx+32])
-        self.devicePath = tpm_bootlog_enrich.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -394,14 +437,16 @@ class EventLog(list):
     def Handler(evtype: int):
         EventHandlers = {
             Event.S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
-            Event.EFI_VARIABLE_DRIVER_CONFIG    : EfiVariable.Parse,
-            Event.EFI_VARIABLE_BOOT             : EfiVariable.Parse,
+            Event.EFI_ACTION                    : EfiActionEvent.Parse,
+            Event.EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
+            Event.EFI_VARIABLE_DRIVER_CONFIG    : EfiVarEvent.Parse,
+            Event.EFI_VARIABLE_BOOT             : EfiVarEvent.Parse,
             Event.EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,
             Event.EFI_BOOT_SERVICES_APPLICATION : ImageLoadEvent.Parse,
             Event.EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
             Event.EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
-            Event.EFI_VARIABLE_BOOT2            : EfiVariable.Parse,
-            Event.EFI_VARIABLE_AUTHORITY        : EfiVariable.Parse
+            Event.EFI_VARIABLE_BOOT2            : EfiVarEvent.Parse,
+            Event.EFI_VARIABLE_AUTHORITY        : EfiVarEvent.Parse
         }
         return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
     
@@ -419,7 +464,8 @@ class EventLog(list):
             pcrs[pcridx] = newpcr
         return pcrs
 
-    def validate (self):
+    def validate (self) -> (bool, str):
+        errlist = []
         for evt in self:
-            if not evt.validate(): return False
-        return True
+            if not evt.validate(): return False, ''
+        return True, ''
