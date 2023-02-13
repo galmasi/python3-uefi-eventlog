@@ -25,7 +25,8 @@ jobs:
 
       # dependencies
       - name: Install efivar dependency
-        run: sudo apt-get -y install libefivar-dev pylint pyright
+        run: sudo apt-get -y install libefivar-dev pylint python3-pip
+      - run: sudo pip3 install pyright
 
       # run pylint
       - name: Run pylint
