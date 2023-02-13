@@ -30,11 +30,11 @@ jobs:
 
       # run pylint
       - name: Run pylint
-        run: pylint --rcfile testing/pylintrc eventlog.py | true
+        run: pylint --rcfile testing/pylintrc eventlog.py 
 
       # run pyright
       - name: Run pyright
-        run: pyright | true
+        run: pyright
 
       # Run the event log parser on the sole example
       - name: Test1
