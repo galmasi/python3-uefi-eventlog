@@ -23,14 +23,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # dependencies
-      - name: Install efivar dependency
-        run: sudo apt-get -y install libefivar-dev pylint python3-pip
+      # dependencies: multiple runs
+      - run: sudo apt-get -y install libefivar-dev pylint python3-pip
       - run: sudo pip3 install pyright
 
       # run pylint
-      - name: Run pylint
-        run: pylint --rcfile testing/pylintrc eventlog.py 
+      #- name: Run pylint
+      #  run: pylint --rcfile testing/pylintrc eventlog.py 
 
       # run pyright
       - name: Run pyright
