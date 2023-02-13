@@ -25,7 +25,15 @@ jobs:
 
       # dependencies
       - name: Install efivar dependency
-        run: sudo apt-get install libefivar-dev
+        run: sudo apt-get -y install libefivar-dev pylint pyright
+
+      # run pylint
+      - name: Run pylint
+        run: pylint --rcfile testing/pylintrc eventlog.py | true
+
+      # run pyright
+      - name: Run pyright
+        run: pyright | true
 
       # Run the event log parser on the sole example
       - name: Test1

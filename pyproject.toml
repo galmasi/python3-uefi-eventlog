@@ -1,0 +1,3 @@
+[tool.pyright]
+include = ["eventlog.py", "efivar.py"]
+reportMissingImports = false

@@ -13,39 +13,39 @@ import efivar
 # ########################################
 
 class Event(enum.Enum):
-    PREBOOT_CERT                  = 0x0
-    POST_CODE                     = 0x1
-    UNUSED                        = 0x2
-    NO_ACTION                     = 0x3
-    SEPARATOR                     = 0x4
-    ACTION                        = 0x5
-    EVENT_TAG                     = 0x6
-    S_CRTM_CONTENTS               = 0x7
-    S_CRTM_VERSION                = 0x8
-    CPU_MICROCODE                 = 0x9
-    PLATFORM_CONFIG_FLAGS         = 0xa
-    TABLE_OF_DEVICES              = 0xb
-    COMPACT_HASH                  = 0xc
-    IPL                           = 0xd
-    IPL_PARTITION_DATA            = 0xe
-    NONHOST_CODE                  = 0xf
-    NONHOST_CONFIG                = 0x10
-    NONHOST_INFO                  = 0x11
-    OMIT_BOOT_DEVICE_EVENTS       = 0x12    
-    EFI_EVENT_BASE                = 0x80000000
-    EFI_VARIABLE_DRIVER_CONFIG    = EFI_EVENT_BASE + 0x1
-    EFI_VARIABLE_BOOT             = EFI_EVENT_BASE + 0x2
-    EFI_BOOT_SERVICES_APPLICATION = EFI_EVENT_BASE + 0x3
-    EFI_BOOT_SERVICES_DRIVER      = EFI_EVENT_BASE + 0x4
-    EFI_RUNTIME_SERVICES_DRIVER   = EFI_EVENT_BASE + 0x5
-    EFI_GPT_EVENT                 = EFI_EVENT_BASE + 0x6
-    EFI_ACTION                    = EFI_EVENT_BASE + 0x7
-    EFI_PLATFORM_FIRMWARE_BLOB    = EFI_EVENT_BASE + 0x8
-    EFI_HANDOFF_TABLES            = EFI_EVENT_BASE + 0x9
-    EFI_PLATFORM_FIRMWARE_BLOB2   = EFI_EVENT_BASE + 0xa
-    EFI_HANDOFF_TABLES2           = EFI_EVENT_BASE + 0xb
-    EFI_VARIABLE_BOOT2            = EFI_EVENT_BASE + 0xc
-    EFI_VARIABLE_AUTHORITY        = EFI_EVENT_BASE + 0xe0
+    EV_PREBOOT_CERT                  = 0x0
+    EV_POST_CODE                     = 0x1
+    EV_UNUSED                        = 0x2
+    EV_NO_ACTION                     = 0x3
+    EV_SEPARATOR                     = 0x4
+    EV_ACTION                        = 0x5
+    EV_EVENT_TAG                     = 0x6
+    EV_S_CRTM_CONTENTS               = 0x7
+    EV_S_CRTM_VERSION                = 0x8
+    EV_CPU_MICROCODE                 = 0x9
+    EV_PLATFORM_CONFIG_FLAGS         = 0xa
+    EV_TABLE_OF_DEVICES              = 0xb
+    EV_COMPACT_HASH                  = 0xc
+    EV_IPL                           = 0xd
+    EV_IPL_PARTITION_DATA            = 0xe
+    EV_NONHOST_CODE                  = 0xf
+    EV_NONHOST_CONFIG                = 0x10
+    EV_NONHOST_INFO                  = 0x11
+    EV_OMIT_BOOT_DEVICE_EVENTS       = 0x12    
+    EV_EFI_EVENT_BASE                = 0x80000000
+    EV_EFI_VARIABLE_DRIVER_CONFIG    = EV_EFI_EVENT_BASE + 0x1
+    EV_EFI_VARIABLE_BOOT             = EV_EFI_EVENT_BASE + 0x2
+    EV_EFI_BOOT_SERVICES_APPLICATION = EV_EFI_EVENT_BASE + 0x3
+    EV_EFI_BOOT_SERVICES_DRIVER      = EV_EFI_EVENT_BASE + 0x4
+    EV_EFI_RUNTIME_SERVICES_DRIVER   = EV_EFI_EVENT_BASE + 0x5
+    EV_EFI_GPT_EVENT                 = EV_EFI_EVENT_BASE + 0x6
+    EV_EFI_ACTION                    = EV_EFI_EVENT_BASE + 0x7
+    EV_EFI_PLATFORM_FIRMWARE_BLOB    = EV_EFI_EVENT_BASE + 0x8
+    EV_EFI_HANDOFF_TABLES            = EV_EFI_EVENT_BASE + 0x9
+    EV_EFI_PLATFORM_FIRMWARE_BLOB2   = EV_EFI_EVENT_BASE + 0xa
+    EV_EFI_HANDOFF_TABLES2           = EV_EFI_EVENT_BASE + 0xb
+    EV_EFI_VARIABLE_BOOT2            = EV_EFI_EVENT_BASE + 0xc
+    EV_EFI_VARIABLE_AUTHORITY        = EV_EFI_EVENT_BASE + 0xe0
 
 # ########################################
 # enumeration of event digest algorithms
@@ -76,7 +76,7 @@ class EfiEventDigest:
 
     # JSON converter -- returns something that can be encoded as JSON
     def toJson(self):
-        return { 'AlgorithmID': self.algid.name, 'Digest': self.digest.hex() }
+        return { 'AlgorithmId': self.algid.name, 'Digest': self.digest.hex() }
 
     # ----------------------------------------
     # parse a list of digests in the event log
@@ -130,6 +130,7 @@ class GenericEvent:
             'EventType': Event(self.evtype).name,
             'PCRIndex': self.evpcr,
             'EventSize': self.evsize,
+            'DigestCount': len(self.digests),
             'Digests': list(map(lambda o: o[1], self.digests.items()))
         }
 
@@ -140,7 +141,7 @@ class GenericEvent:
 class SpecIdEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
-        self.signature = uuid.UUID(bytes=buffer[idx:idx+16])
+        self.signature = uuid.UUID(bytes_le=buffer[idx:idx+16])
         (self.platformClass, self.specVersionMinor, self.specVersionMajor, self.specErrata, self.uintnSize, self.numberOfAlgorithms) = struct.unpack('<IBBBBI', buffer[idx+16:idx+28])
         self.alglist = []
         for x in range(0, self.numberOfAlgorithms):
@@ -165,7 +166,7 @@ class SpecIdEvent (GenericEvent):
 class EfiVarEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
-        self.guid = uuid.UUID(bytes=buffer[idx:idx+16])
+        self.guid = uuid.UUID(bytes_le=buffer[idx:idx+16])
         (self.namelen,self.datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         self.name = buffer[idx+32:idx+32+2*self.namelen]
         self.data = buffer[idx+32+2*self.namelen:idx+32+2*self.namelen + self.datalen]
@@ -195,10 +196,10 @@ class EfiVarEvent (GenericEvent):
     def toJson (self) -> dict:
         return { ** super().toJson(),
                  'Event': {
-                     'GUID' : str(self.guid),
                      'UnicodeName' : self.name.decode('utf-16'),
                      'UnicodeNameLength': self.namelen,
                      'VariableDataLength': self.datalen,
+                     'VariableName': str(self.guid),
                      'VariableData': self.data.hex()
                  }}
 
@@ -246,7 +247,9 @@ class EfiBootEvent (EfiVarEvent):
         self.description = self.data[6:6+desclen]
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
-        self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+        self.devicePath = self.data[8+desclen:8+desclen+devpathlen].hex()
+        if efivar.available:
+            self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -284,7 +287,7 @@ class EfiSignatureEvent(EfiVarEvent):
 
 class EfiSignatureList:
     def __init__ (self, buffer, idx):
-        self.sigtype = uuid.UUID(bytes=buffer[idx:idx+16])
+        self.sigtype = uuid.UUID(bytes_le=buffer[idx:idx+16])
         (self.listsize, self.hsize, self.sigsize) = struct.unpack('<III', buffer[idx+16:idx+28])
         idx2 = 28 + self.hsize
         self.keys = []
@@ -296,9 +299,9 @@ class EfiSignatureList:
     def toJson (self) -> dict:
         return {
             'SignatureType': str(self.sigtype),
-            'SignatureHeaderSize': str(self.hsize),
-            'SignatureListSize': str(self.listsize),
-            'SignatureSize': str(self.sigsize),
+            'SignatureHeaderSize': self.hsize,
+            'SignatureListSize': self.listsize,
+            'SignatureSize': self.sigsize,
             'Keys': self.keys
         }
         
@@ -309,8 +312,8 @@ class EfiSignatureList:
 
 class EfiSignatureData:
     def __init__ (self, buffer: bytes, sigsize, idx):
-        self.owner   = uuid.UUID(bytes=buffer[idx:idx+16])
-        self.sigdata = buffer[idx+16:idx+16+sigsize]
+        self.owner   = uuid.UUID(bytes_le=buffer[idx:idx+16])
+        self.sigdata = buffer[idx+16:idx+sigsize]
 
     def toJson (self) -> dict:
         return {
@@ -386,15 +389,17 @@ class ImageLoadEvent (GenericEvent):
     def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
         super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
         (self.base,self.length,self.linkaddr,self.devpathlen)=struct.unpack('<QQQQ',buffer[idx:idx+32])
-        self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        self.devicePath = buffer[idx+32:idx+32+self.devpathlen].hex()
+        if efivar.available:
+            self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
 
     def toJson (self) -> dict:
         j = super().toJson()
         j['Event'] = {
-            'ImageLocationInMemory': str(self.base),
-            'ImageLengthInMemory': str(self.length),
-            'ImageLinkTimeAddress': str(self.linkaddr),
-            'LengthOfDevicePath': str(self.devpathlen),
+            'ImageLocationInMemory': self.base,
+            'ImageLengthInMemory': self.length,
+            'ImageLinkTimeAddress': self.linkaddr,
+            'LengthOfDevicePath': self.devpathlen,
             'DevicePath': str(self.devicePath)
         }
         return j
@@ -436,17 +441,17 @@ class EventLog(list):
     # figure out which Event constructor to call depending on event type
     def Handler(evtype: int):
         EventHandlers = {
-            Event.S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
-            Event.EFI_ACTION                    : EfiActionEvent.Parse,
-            Event.EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
-            Event.EFI_VARIABLE_DRIVER_CONFIG    : EfiVarEvent.Parse,
-            Event.EFI_VARIABLE_BOOT             : EfiVarEvent.Parse,
-            Event.EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,
-            Event.EFI_BOOT_SERVICES_APPLICATION : ImageLoadEvent.Parse,
-            Event.EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
-            Event.EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
-            Event.EFI_VARIABLE_BOOT2            : EfiVarEvent.Parse,
-            Event.EFI_VARIABLE_AUTHORITY        : EfiVarEvent.Parse
+            Event.EV_S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
+            Event.EV_EFI_ACTION                    : EfiActionEvent.Parse,
+            Event.EV_EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
+            Event.EV_EFI_VARIABLE_DRIVER_CONFIG    : EfiVarEvent.Parse,
+            Event.EV_EFI_VARIABLE_BOOT             : EfiVarEvent.Parse,
+            Event.EV_EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,
+            Event.EV_EFI_BOOT_SERVICES_APPLICATION : ImageLoadEvent.Parse,
+            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
+            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
+            Event.EV_EFI_VARIABLE_BOOT2            : EfiVarEvent.Parse,
+            Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarEvent.Parse
         }
         return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
     
