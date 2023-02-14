@@ -32,19 +32,19 @@ class Event(enum.Enum):
     EV_NONHOST_INFO                  = 0x11
     EV_OMIT_BOOT_DEVICE_EVENTS       = 0x12
     EV_EFI_EVENT_BASE                = 0x80000000
-    EV_EFI_VARIABLE_DRIVER_CONFIG    = EV_EFI_EVENT_BASE + 0x1
-    EV_EFI_VARIABLE_BOOT             = EV_EFI_EVENT_BASE + 0x2
-    EV_EFI_BOOT_SERVICES_APPLICATION = EV_EFI_EVENT_BASE + 0x3
-    EV_EFI_BOOT_SERVICES_DRIVER      = EV_EFI_EVENT_BASE + 0x4
-    EV_EFI_RUNTIME_SERVICES_DRIVER   = EV_EFI_EVENT_BASE + 0x5
-    EV_EFI_GPT_EVENT                 = EV_EFI_EVENT_BASE + 0x6
-    EV_EFI_ACTION                    = EV_EFI_EVENT_BASE + 0x7
-    EV_EFI_PLATFORM_FIRMWARE_BLOB    = EV_EFI_EVENT_BASE + 0x8
-    EV_EFI_HANDOFF_TABLES            = EV_EFI_EVENT_BASE + 0x9
-    EV_EFI_PLATFORM_FIRMWARE_BLOB2   = EV_EFI_EVENT_BASE + 0xa
-    EV_EFI_HANDOFF_TABLES2           = EV_EFI_EVENT_BASE + 0xb
-    EV_EFI_VARIABLE_BOOT2            = EV_EFI_EVENT_BASE + 0xc
-    EV_EFI_VARIABLE_AUTHORITY        = EV_EFI_EVENT_BASE + 0xe0
+    EV_EFI_VARIABLE_DRIVER_CONFIG    = int(EV_EFI_EVENT_BASE) + 0x1
+    EV_EFI_VARIABLE_BOOT             = int(EV_EFI_EVENT_BASE) + 0x2
+    EV_EFI_BOOT_SERVICES_APPLICATION = int(EV_EFI_EVENT_BASE) + 0x3
+    EV_EFI_BOOT_SERVICES_DRIVER      = int(EV_EFI_EVENT_BASE) + 0x4
+    EV_EFI_RUNTIME_SERVICES_DRIVER   = int(EV_EFI_EVENT_BASE) + 0x5
+    EV_EFI_GPT_EVENT                 = int(EV_EFI_EVENT_BASE) + 0x6
+    EV_EFI_ACTION                    = int(EV_EFI_EVENT_BASE) + 0x7
+    EV_EFI_PLATFORM_FIRMWARE_BLOB    = int(EV_EFI_EVENT_BASE) + 0x8
+    EV_EFI_HANDOFF_TABLES            = int(EV_EFI_EVENT_BASE) + 0x9
+    EV_EFI_PLATFORM_FIRMWARE_BLOB2   = int(EV_EFI_EVENT_BASE) + 0xa
+    EV_EFI_HANDOFF_TABLES2           = int(EV_EFI_EVENT_BASE) + 0xb
+    EV_EFI_VARIABLE_BOOT2            = int(EV_EFI_EVENT_BASE) + 0xc
+    EV_EFI_VARIABLE_AUTHORITY        = int(EV_EFI_EVENT_BASE) + 0xe0
 
 # ########################################
 # enumeration of event digest algorithms
@@ -133,7 +133,8 @@ class GenericEvent:
             'PCRIndex':    self.evpcr,
             'EventSize':   self.evsize,
             'DigestCount': len(self.digests),
-            'Digests':     list(map(lambda o: o[1], self.digests.items()))
+            'Digests':     list(map(lambda o: o[1], self.digests.items())),
+            'Event':       self.evbuf.hex()
         }
 
 # ########################################
@@ -326,15 +327,6 @@ class EfiSignatureData:
         }
     
 # ########################################
-# core root of trust module event
-# ########################################
-
-class ScrtmVersionEvent (GenericEvent):
-    def toJson (self) -> dict:
-        return { ** super().toJson(), 'Event': self.evbuf.hex() }
-
-
-# ########################################
 # EFI action event
 # ########################################
 
@@ -406,6 +398,20 @@ class ImageLoadEvent (GenericEvent):
         }
         return j
 
+
+# ########################################
+# EFI IPL event
+# Note event strings are zero terminated, and we avoid transcribing the trailing zero
+# ########################################
+
+class EfiIPLEvent (GenericEvent):
+    def toJson (self) -> dict:
+        return {
+            ** super().toJson(),
+            'Event': { 'String': self.evbuf[:-1].decode('utf-8') }
+        }
+        
+
 # TCG PC Client Specific Implementation Specification for Conventional BIOS
 
 # ########################################
@@ -448,9 +454,9 @@ class EventLog(list):
     @classmethod
     def Handler(cls, evtype: int):
         EventHandlers = {
-            Event.EV_S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
             Event.EV_EFI_ACTION                    : EfiActionEvent.Parse,
             Event.EV_EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
+            Event.EV_IPL                           : EfiIPLEvent.Parse,
             Event.EV_EFI_VARIABLE_DRIVER_CONFIG    : EfiVarEvent.Parse,
             Event.EV_EFI_VARIABLE_BOOT             : EfiVarEvent.Parse,
             Event.EV_EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,

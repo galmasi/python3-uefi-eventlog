@@ -50,15 +50,18 @@ function compare_event() {
     local testevent=$(mktemp)
     cat ${refjson} | jq -r ".[${eventno}]" > ${refevent}
     cat ${testjson} | jq -r ".[${eventno}]" > ${testevent}
-    if [[ ${VERBOSE} != "no" ]]
+    if ! diff ${refevent} ${testevent} > /dev/null 2>&1
     then
-        diff ${refevent} ${testevent}
-    else
-        diff ${refevent} ${testevent} > /dev/null 2>&1
+        if [[ ${VERBOSE} != "no" ]]
+        then
+            echo "Event ${eventno} type=$(cat ${testevent} | jq -r .EventType)"
+            diff ${refevent} ${testevent}
+        fi
+        rm -f ${refevent} ${testevent}
+        return 1
     fi
-    local retval=$?
     rm -f ${refevent} ${testevent}
-    return ${retval}
+    return 0
 }
 
 # ###################################
@@ -74,7 +77,7 @@ function evaluate_log() {
 
     local eventcount=$(eventcounter ${testjson})
     local matchcount=0
-    for eventno in $(seq 0 $eventcount)
+    for eventno in $(seq 0 $((eventcount-1)))
     do
         if compare_event ${refjson} ${testjson} ${eventno}
         then
