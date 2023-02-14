@@ -1,5 +1,10 @@
 #!/bin/bash
 
+export PATH=${PATH}:~/code/TPM2/tpm2-tools/tools/tpm2_eventlog
+export PATH=${PATH}:`pwd`/testing
+
+export PYTHONPATH=${PYTHONPATH}:`pwd`
+export VERBOSE=${VERBOSE:-"no"}
 
 # $1 == the binary event log we want tested
 
@@ -45,7 +50,12 @@ function compare_event() {
     local testevent=$(mktemp)
     cat ${refjson} | jq -r ".[${eventno}]" > ${refevent}
     cat ${testjson} | jq -r ".[${eventno}]" > ${testevent}
-    diff ${refevent} ${testevent} > /dev/null 2>&1
+    if [[ ${VERBOSE} != "no" ]]
+    then
+        diff ${refevent} ${testevent}
+    else
+        diff ${refevent} ${testevent} > /dev/null 2>&1
+    fi
     local retval=$?
     rm -f ${refevent} ${testevent}
     return ${retval}

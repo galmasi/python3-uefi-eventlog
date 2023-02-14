@@ -31,7 +31,7 @@ class Event(enum.Enum):
     EV_NONHOST_CODE                  = 0xf
     EV_NONHOST_CONFIG                = 0x10
     EV_NONHOST_INFO                  = 0x11
-    EV_OMIT_BOOT_DEVICE_EVENTS       = 0x12    
+    EV_OMIT_BOOT_DEVICE_EVENTS       = 0x12
     EV_EFI_EVENT_BASE                = 0x80000000
     EV_EFI_VARIABLE_DRIVER_CONFIG    = EV_EFI_EVENT_BASE + 0x1
     EV_EFI_VARIABLE_BOOT             = EV_EFI_EVENT_BASE + 0x2
@@ -89,9 +89,10 @@ class EfiEventDigest:
     #   idx: index of first unparsed byte in buffer
     #   digests: list of parsed digests
 
-    def parselist (digestcount:int, buffer: bytes, idx: int) -> (dict, int):
+    @classmethod
+    def parselist (cls, digestcount:int, buffer: bytes, idx: int) -> (dict, int):
         digests = {}
-        for i in range(0,digestcount):
+        for _ in range(0,digestcount):
             (algid,)=struct.unpack('<H',buffer[idx:idx+2])
             digest = EfiEventDigest(algid, buffer, idx+2)
             digests[algid] = digest
@@ -123,9 +124,9 @@ class GenericEvent:
         return cls(eventheader, buffer, idx)
 
     # validate: ensure digests don't lie
-    def validate (self) -> bool:
+    def validate (_) -> bool:
         return True
-        
+
     def toJson (self):
         return {
             'EventType':   Event(self.evtype).name,
@@ -175,15 +176,15 @@ class EfiVarEvent (GenericEvent):
 
     @classmethod
     def Parse(cls, eventheader: list, buffer: bytes, idx: int):
-        (namelen,datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
-        name = buffer[idx+32:idx+32+2*namelen]
-        if name.decode('utf-16') in [ 'PK', 'KEK', 'db', 'dbx' ]:
+        (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
+        name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
+        if name in [ 'PK', 'KEK', 'db', 'dbx' ]:
             return EfiSignatureEvent(eventheader, buffer, idx)
-        elif name.decode('utf-16') == 'SecureBoot':
+        elif name == 'SecureBoot':
             return EfiSecureBootEvent(eventheader, buffer, idx)
-        elif name.decode('utf-16') == 'BootOrder':
+        elif name == 'BootOrder':
             return EfiBootOrderEvent(eventheader, buffer, idx)
-        elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name.decode('utf-16')):
+        elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name):
             return EfiBootEvent (eventheader, buffer, idx)
         else:
             return EfiVarEvent(eventheader, buffer, idx)
@@ -262,7 +263,7 @@ class EfiBootEvent (EfiVarEvent):
             'DevicePath': self.devicePath
         }
         return j
-    
+
 # ########################################
 # EFI signature event: an EFI variable event for secure boot variables.
 # ########################################
@@ -306,7 +307,7 @@ class EfiSignatureList:
             'SignatureSize': self.sigsize,
             'Keys': self.keys
         }
-        
+
 # ########################################
 # An EFI signature
 # ########################################
@@ -366,7 +367,7 @@ class EfiGPTEvent (GenericEvent):
             'FirstUsableLBA': self.firstUsableLBA,
             'LastUsableLBA': self.lastUsableLBA,
             }}
-        
+
 # ########################################
 # Event type: firmware blob measurement
 # ########################################
@@ -428,14 +429,16 @@ class EventLog(list):
             evidx += 1
 
     # parser for 1st event
-    def Parse_1stevent(buffer: bytes, idx: int) -> (GenericEvent, int):
+    @classmethod
+    def Parse_1stevent(cls, buffer: bytes, idx: int) -> (GenericEvent, int):
         (evpcr, evtype, digestbuf, evsize)=struct.unpack('<II20sI', buffer[idx:idx+32])
         digests = { 4: EfiEventDigest(4, digestbuf, 0) }
         evt = SpecIdEvent((evtype, evpcr, digests, evsize, 0), buffer, idx+32)
         return (evt, idx + 32 + evsize)
 
     # parser for all other events
-    def Parse_event(evidx: int, buffer: bytes, idx: int) -> (GenericEvent, int):
+    @classmethod
+    def Parse_event(cls, evidx: int, buffer: bytes, idx: int) -> (GenericEvent, int):
         (evpcr, evtype, digestcount)=struct.unpack('<III', buffer[idx:idx+12])
         digests,idx = EfiEventDigest.parselist(digestcount, buffer, idx+12)
         (evsize,)=struct.unpack('<I',buffer[idx:idx+4])
@@ -443,7 +446,8 @@ class EventLog(list):
         return (evt, idx + 4 + evsize)
 
     # figure out which Event constructor to call depending on event type
-    def Handler(evtype: int):
+    @classmethod
+    def Handler(cls, evtype: int):
         EventHandlers = {
             Event.EV_S_CRTM_VERSION                : ScrtmVersionEvent.Parse,
             Event.EV_EFI_ACTION                    : EfiActionEvent.Parse,
@@ -458,7 +462,7 @@ class EventLog(list):
             Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarEvent.Parse
         }
         return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
-    
+
     # calculate the expected PCR values
     def pcrs (self) -> dict:
         algid=4
