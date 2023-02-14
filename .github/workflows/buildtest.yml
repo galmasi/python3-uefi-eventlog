@@ -16,20 +16,14 @@ jobs:
       - run: sudo apt-get -y install libefivar-dev pylint python3-pip tpm2-tools
       - run: sudo pip3 install pyright
 
-      # run pylint
+      # run pylint. WARNING this cannot fail at the moment.
       - name: Run pylint
-        run: |
-          pylint --rcfile pylintrc eventlog.py
-          true
+        run: pylint --rcfile pylintrc eventlog/eventlog.py || true
 
-      # run pyright
+      # run pyright. WARNING not set up to fail at the moment.
       - name: Run pyright
-        run: |
-          pyright
-          true
+        run: pyright || true
 
       # run the test evaluator
       - name: Compare event log JSON with reference
-        run: |
-          export PATH=${PATH}:`pwd`/testing
-          testfun.sh testlogs/css-flex14vm4-bootlog.binary
+        run: env PATH=${PATH}:`pwd`/testing testfun.sh testlogs/css-flex14vm4-bootlog.binary
