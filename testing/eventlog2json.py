@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import eventlog
+from eventlog import eventlog
 import argparse
 import json
 

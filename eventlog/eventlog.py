@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from collections import defaultdict
-import efivar
+from eventlog import efivar
 
 # ########################################
 # enumeration of all event types
@@ -110,16 +110,17 @@ class EfiEventDigest:
 #   accepted by the JSON pickler (i.e. dictionaries, lists, strings)
 
 class GenericEvent:
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        self.evtype = evtype
-        self.evpcr  = evpcr
-        self.digests = digests
-        self.evsize  = evsize
-        self.evbuf   = buffer[idx:idx+evsize]
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        self.evtype  = eventheader[0]
+        self.evpcr   = eventheader[1]
+        self.digests = eventheader[2]
+        self.evsize  = eventheader[3]
+        self.evidx   = eventheader[4]
+        self.evbuf   = buffer[idx:idx+self.evsize]
 
     @classmethod
-    def Parse(cls, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        return cls(evpcr, evtype, digests, evsize, buffer, idx)
+    def Parse(cls, eventheader: list, buffer: bytes, idx: int):
+        return cls(eventheader, buffer, idx)
 
     # validate: ensure digests don't lie
     def validate (self) -> bool:
@@ -127,11 +128,12 @@ class GenericEvent:
         
     def toJson (self):
         return {
-            'EventType': Event(self.evtype).name,
-            'PCRIndex': self.evpcr,
-            'EventSize': self.evsize,
+            'EventType':   Event(self.evtype).name,
+            'EventNum':    self.evidx,
+            'PCRIndex':    self.evpcr,
+            'EventSize':   self.evsize,
             'DigestCount': len(self.digests),
-            'Digests': list(map(lambda o: o[1], self.digests.items()))
+            'Digests':     list(map(lambda o: o[1], self.digests.items()))
         }
 
 # ########################################
@@ -139,8 +141,8 @@ class GenericEvent:
 # ########################################
 
 class SpecIdEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         self.signature = uuid.UUID(bytes_le=buffer[idx:idx+16])
         (self.platformClass, self.specVersionMinor, self.specVersionMajor, self.specErrata, self.uintnSize, self.numberOfAlgorithms) = struct.unpack('<IBBBBI', buffer[idx+16:idx+28])
         self.alglist = []
@@ -164,27 +166,27 @@ class SpecIdEvent (GenericEvent):
 # ########################################
 
 class EfiVarEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         self.guid = uuid.UUID(bytes_le=buffer[idx:idx+16])
         (self.namelen,self.datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         self.name = buffer[idx+32:idx+32+2*self.namelen]
         self.data = buffer[idx+32+2*self.namelen:idx+32+2*self.namelen + self.datalen]
 
     @classmethod
-    def Parse(cls, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
+    def Parse(cls, eventheader: list, buffer: bytes, idx: int):
         (namelen,datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         name = buffer[idx+32:idx+32+2*namelen]
         if name.decode('utf-16') in [ 'PK', 'KEK', 'db', 'dbx' ]:
-            return EfiSignatureEvent(evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiSignatureEvent(eventheader, buffer, idx)
         elif name.decode('utf-16') == 'SecureBoot':
-            return EfiSecureBootEvent(evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiSecureBootEvent(eventheader, buffer, idx)
         elif name.decode('utf-16') == 'BootOrder':
-            return EfiBootOrderEvent(evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiBootOrderEvent(eventheader, buffer, idx)
         elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name.decode('utf-16')):
-            return EfiBootEvent (evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiBootEvent (eventheader, buffer, idx)
         else:
-            return EfiVarEvent(evpcr, evtype, digests, evsize, buffer, idx)
+            return EfiVarEvent(eventheader, buffer, idx)
 
     def validate(self) -> bool:
         for algid in self.digests.keys():
@@ -208,8 +210,8 @@ class EfiVarEvent (GenericEvent):
 # ########################################
 
 class EfiSecureBootEvent(EfiVarEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         self.enabled =  struct.unpack('<B', self.data)
 
     def toJson (self) -> dict:
@@ -222,8 +224,8 @@ class EfiSecureBootEvent(EfiVarEvent):
 # ########################################
 
 class EfiBootOrderEvent(EfiVarEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         assert (self.datalen % 2) == 0
         self.bootorder = struct.unpack('<%dH'%(self.datalen/2), self.data)
 
@@ -237,8 +239,8 @@ class EfiBootOrderEvent(EfiVarEvent):
 # ########################################
 
 class EfiBootEvent (EfiVarEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         # EFI_LOAD_OPTION, https://dox.ipxe.org/UefiSpec_8h_source.html, line 2069
         (self.attributes, self.filepathlistlength) = struct.unpack('<IH', self.data[0:6])
         # description UTF-16 string: from byte 6 to the first pair of zeroes
@@ -266,8 +268,8 @@ class EfiBootEvent (EfiVarEvent):
 # ########################################
 
 class EfiSignatureEvent(EfiVarEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         idx2 = 0
         self.varlist = []
         while idx2 < self.datalen:
@@ -326,8 +328,8 @@ class EfiSignatureData:
 # ########################################
 
 class ScrtmVersionEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
     def toJson (self) -> dict:
         return { ** super().toJson(), 'Event': self.evbuf.hex() }
 
@@ -337,9 +339,9 @@ class ScrtmVersionEvent (GenericEvent):
 # ########################################
 
 class EfiActionEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
-        self.event = buffer[idx:idx+evsize]
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
+        self.event = buffer[idx:idx+self.evsize]
     def toJson (self) -> dict:
         return { ** super().toJson(), 'Event': self.event.decode('utf-8') }
 
@@ -349,8 +351,8 @@ class EfiActionEvent (GenericEvent):
 # ########################################
 
 class EfiGPTEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         (self.signature, self.revision, self.headerSize, self.headerCRC32, self.MyLBA, self.alternateLBA, self.firstUsableLBA, self.lastUsableLBA) = struct.unpack('<8sIIIQQQQ', buffer[idx:idx+52])
     
     def toJson (self) -> dict:
@@ -370,8 +372,8 @@ class EfiGPTEvent (GenericEvent):
 # ########################################
 
 class FirmwareBlob (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         (self.base,self.length)=struct.unpack('<QQ',buffer[idx:idx+16])
 
     def toJson (self) -> dict:
@@ -386,8 +388,8 @@ class FirmwareBlob (GenericEvent):
 # ########################################
 
 class ImageLoadEvent (GenericEvent):
-    def __init__ (self, evpcr: int, evtype: int, digests: dict, evsize: int, buffer: bytes, idx: int):
-        super().__init__(evpcr, evtype, digests, evsize, buffer, idx)
+    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
         (self.base,self.length,self.linkaddr,self.devpathlen)=struct.unpack('<QQQQ',buffer[idx:idx+32])
         self.devicePath = buffer[idx+32:idx+32+self.devpathlen].hex()
         if efivar.available:
@@ -419,23 +421,25 @@ class EventLog(list):
         self.buflen = buflen
         evt, idx = EventLog.Parse_1stevent(buffer, 0)
         self.append(evt)
+        evidx = 1
         while idx < buflen:
-            evt, idx = EventLog.Parse_event(buffer, idx)
+            evt, idx = EventLog.Parse_event(evidx, buffer, idx)
             self.append(evt)
+            evidx += 1
 
     # parser for 1st event
     def Parse_1stevent(buffer: bytes, idx: int) -> (GenericEvent, int):
         (evpcr, evtype, digestbuf, evsize)=struct.unpack('<II20sI', buffer[idx:idx+32])
         digests = { 4: EfiEventDigest(4, digestbuf, 0) }
-        evt = SpecIdEvent(evpcr, evtype, digests, evsize, buffer, idx+32)
+        evt = SpecIdEvent((evtype, evpcr, digests, evsize, 0), buffer, idx+32)
         return (evt, idx + 32 + evsize)
 
     # parser for all other events
-    def Parse_event(buffer: bytes, idx: int) -> (GenericEvent, int):
+    def Parse_event(evidx: int, buffer: bytes, idx: int) -> (GenericEvent, int):
         (evpcr, evtype, digestcount)=struct.unpack('<III', buffer[idx:idx+12])
         digests,idx = EfiEventDigest.parselist(digestcount, buffer, idx+12)
         (evsize,)=struct.unpack('<I',buffer[idx:idx+4])
-        evt = EventLog.Handler(evtype)(evpcr, evtype, digests, evsize, buffer, idx+4)
+        evt = EventLog.Handler(evtype)((evtype, evpcr, digests, evsize, evidx), buffer, idx+4)
         return (evt, idx + 4 + evsize)
 
     # figure out which Event constructor to call depending on event type

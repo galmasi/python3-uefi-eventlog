@@ -1,42 +1,35 @@
-# This is a basic workflow to help you get started with Actions
+name: eventlogtester
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   buildruntest:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # dependencies: multiple runs
-      - run: sudo apt-get -y install libefivar-dev pylint python3-pip
+      - run: sudo apt-get -y install libefivar-dev pylint python3-pip tpm2-tools
       - run: sudo pip3 install pyright
 
       # run pylint
-      #- name: Run pylint
-      #  run: pylint --rcfile testing/pylintrc eventlog.py 
+      - name: Run pylint
+        run: |
+          pylint --rcfile pylintrc eventlog.py
+          true
 
       # run pyright
       - name: Run pyright
-        run: pyright
+        run: |
+          pyright
+          true
 
-      # Run the event log parser on the sole example
-      - name: Test1
-        run: ./eventlog2json.py -f testlogs/css-flex14vm4-bootlog.binary
-        
-
+      # run the test evaluator
+      - name: Compare event log JSON with reference
+        run: |
+          export PATH=${PATH}:`pwd`/testing
+          testfun.sh testlogs/css-flex14vm4-bootlog.binary
