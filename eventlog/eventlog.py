@@ -5,7 +5,6 @@ import uuid
 import hashlib
 import enum
 import re
-from collections import defaultdict
 from eventlog import efivar
 
 # ########################################
@@ -124,7 +123,7 @@ class GenericEvent:
         return cls(eventheader, buffer, idx)
 
     # validate: ensure digests don't lie
-    def validate (_) -> bool:
+    def validate (self) -> bool:
         return True
 
     def toJson (self):
@@ -192,8 +191,9 @@ class EfiVarEvent (GenericEvent):
     def validate(self) -> bool:
         for algid in self.digests.keys():
             digest = self.digests[algid]
-            hash = EfiEventDigest.hashalgmap[algid](self.evbuf)
-            if digest.digest != hash.digest(): return False
+            myhash = EfiEventDigest.hashalgmap[algid](self.evbuf)
+            if digest.digest != myhash.digest():
+                return False
         return True
 
     def toJson (self) -> dict:
@@ -228,11 +228,11 @@ class EfiBootOrderEvent(EfiVarEvent):
     def __init__ (self, eventheader: list, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         assert (self.datalen % 2) == 0
-        self.bootorder = struct.unpack('<%dH'%(self.datalen/2), self.data)
+        self.bootorder = struct.unpack('<{}H'.format(self.datalen//2), self.data)
 
     def toJson (self) -> dict:
         j = super().toJson()
-        j['Event']['VariableData'] = list(map(lambda x: 'Boot%04d'%(x), self.bootorder))
+        j['Event']['VariableData'] = list(map(lambda x: 'Boot{:04}'.format(x), self.bootorder))
         return j
 
 # ########################################
@@ -246,7 +246,8 @@ class EfiBootEvent (EfiVarEvent):
         (self.attributes, self.filepathlistlength) = struct.unpack('<IH', self.data[0:6])
         # description UTF-16 string: from byte 6 to the first pair of zeroes
         desclen = 0
-        while self.data[desclen+6:desclen+8] != bytes([0,0]) : desclen += 2
+        while self.data[desclen+6:desclen+8] != bytes([0,0]):
+            desclen += 2
         self.description = self.data[6:6+desclen]
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
@@ -329,8 +330,6 @@ class EfiSignatureData:
 # ########################################
 
 class ScrtmVersionEvent (GenericEvent):
-    def __init__ (self, eventheader: list, buffer: bytes, idx: int):
-        super().__init__(eventheader, buffer, idx)
     def toJson (self) -> dict:
         return { ** super().toJson(), 'Event': self.evbuf.hex() }
 
@@ -469,7 +468,8 @@ class EventLog(list):
         d0 = EfiEventDigest.hashalgmap[algid]()
         pcrs = {}
         for event in self:
-            if event.evtype == 3: continue # do not measure NoAction events
+            if event.evtype == 3:
+                continue # do not measure NoAction events
             pcridx  = event.evpcr
             oldpcr  = pcrs[pcridx] if pcridx in pcrs else bytes(d0.digest_size)
             extdata = event.digests[algid].digest
@@ -478,7 +478,8 @@ class EventLog(list):
         return pcrs
 
     def validate (self) -> (bool, str):
-        errlist = []
+#        errlist = []
         for evt in self:
-            if not evt.validate(): return False, ''
+            if not evt.validate():
+                return False, ''
         return True, ''

@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: sudo apt-get update
       - run: sudo apt-get -y install libefivar-dev pylint python3-pip tpm2-tools
-      - run: sudo pip3 install pyright
+      - run: sudo pip3 install pyright yq
 
       # run pylint. WARNING this cannot fail at the moment.
       - name: Run pylint
