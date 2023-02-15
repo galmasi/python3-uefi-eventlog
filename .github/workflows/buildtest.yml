@@ -27,11 +27,4 @@ jobs:
 
       # run the test evaluator
       - name: Compare event log JSON with reference
-        run: env VERBOSE=1 PATH=${PATH}:`pwd`/testing test_compare.sh testlogs
-
-#      - name: Upload artifact
-#        uses: actions/upload-pages-artifact@v1
-
-#      - name: Deploy to Github Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v1
+        run: env PATH=${PATH}:${PWD}/testing test_compare.sh ${PWD}/testlogs

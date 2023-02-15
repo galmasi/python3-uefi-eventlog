@@ -4,17 +4,12 @@
 # This script runs a comparison of event handling between tpm2_eventlog and this repo.
 # ###################################
 
-
-
-export PATH=${PATH}:~/code/TPM2/tpm2-tools/tools/tpm2_eventlog
-export PATH=${PATH}:`pwd`/testing
-
 export PYTHONPATH=${PYTHONPATH}:`pwd`
 export VERBOSE=${VERBOSE:-"no"}
 
 # $1 == the binary event log we want tested
 
-export testcmd='eventlog2json.py'
+export testcmd='testing/eventlog2json.py'
 
 # ###################################
 # reference log list of events: invoke tpm2-tools
