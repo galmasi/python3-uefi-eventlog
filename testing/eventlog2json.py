@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
     assert args.file, "file argument is required"
 
-    with open ('testlogs/css-flex14vm4-bootlog.binary', 'rb') as fp:
+    with open (args.file, 'rb') as fp:
         buffer = fp.read()
         evlog = eventlog.EventLog(buffer, len(buffer))
         print(json.dumps(evlog, default=lambda o: o.toJson(), indent=4))

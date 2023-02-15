@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# ###################################
+# This script runs a comparison of event handling between tpm2_eventlog and this repo.
+# ###################################
+
+
+
 export PATH=${PATH}:~/code/TPM2/tpm2-tools/tools/tpm2_eventlog
 export PATH=${PATH}:`pwd`/testing
 
@@ -9,15 +15,14 @@ export VERBOSE=${VERBOSE:-"no"}
 # $1 == the binary event log we want tested
 
 export testcmd='eventlog2json.py'
-export refcmd='tpm2_eventlog'
 
 # ###################################
 # reference log list of events: invoke tpm2-tools
 # ###################################
 
 function reflog() {
-    local binarylog=${1}
-    eval "${refcmd}  --eventlog-version=2 ${binarylog} | yq --sort-keys '.events'"
+    local yamllog=${1}
+    cat ${yamllog} | yq --sort-keys '.events'
 }
 
 # ###################################
@@ -26,7 +31,7 @@ function reflog() {
 
 function testlog() {
     local binarylog=${1}
-    eval "${testcmd} -f ${binarylog} | jq --sort-keys ."
+    ${testcmd} -f ${binarylog} | jq --sort-keys .
 }
 
 # ###################################
@@ -69,13 +74,21 @@ function compare_event() {
 # ###################################
 
 function evaluate_log() {
-    local binarylog=${1}
+    local rawlog=${1}
+    local yamllog=${2}
     local refjson=$(mktemp)
     local testjson=$(mktemp)
-    reflog ${binarylog} > ${refjson}
-    testlog ${binarylog} > ${testjson}
 
-    local eventcount=$(eventcounter ${testjson})
+    reflog ${yamllog} > ${refjson}
+    local eventcount=$(eventcounter ${refjson})
+    if ! testlog ${rawlog} > ${testjson} 2>/dev/null
+    then
+        rm -f ${refjson}
+        rm -f ${testjson}
+        echo "${eventcount}"
+        return 0
+    fi
+    
     local matchcount=0
     for eventno in $(seq 0 $((eventcount-1)))
     do
@@ -90,5 +103,35 @@ function evaluate_log() {
     return 0
 }
 
+# ###################################
+# ###################################
 
-evaluate_log ${1} 
+function evaluate_logs() {
+    local logdir=${1}
+    set matchcount=0
+    set eventcount=0
+    set filecount=0
+    echo   "+====================+==========+==========+==========+"
+    echo   "| Files              |   Events |  Matches |  Rate    |"
+    echo   "+====================+==========+==========+==========+"
+    for rawlog in ${logdir}/raw/*.bin
+    do
+        local logname=$(basename ${rawlog} | sed "s/.bin\$//")
+        local yamllog=${logdir}/yaml/${logname}.yaml
+        local x=$(evaluate_log ${rawlog} ${yamllog})
+        local x1=$(echo $x | tail -1 | awk '{ print $1 }')
+        local x2=$(echo $x | tail -1 | awk '{ print $2 }')
+        filecount=$((filecount+1))
+        matchcount=$((matchcount + x1))
+        eventcount=$((eventcount + x2))
+        printf "|%20.20s|%10d|%10d|%10.2f|\n" ${logname} ${x2} ${x1} $((100*x1/x2))
+    done
+    echo   "+--------------------+----------+----------+----------+"
+    printf "|  Total             |%10d|%10d|%10.2f|\n" \
+           ${eventcount} ${matchcount} $((100*matchcount/eventcount))
+    echo   "+--------------------+----------+----------+----------+"
+}
+
+evaluate_logs $1
+
+#reflog testlogs/bootlog-5.0.0-rhel-20210423T133156Z_8b0347a.bin

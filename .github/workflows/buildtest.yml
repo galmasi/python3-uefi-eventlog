@@ -21,10 +21,17 @@ jobs:
       - name: Run pylint
         run: pylint --rcfile pylintrc eventlog/eventlog.py || true
 
-      # run pyright. WARNING not set up to fail at the moment.
+      # run pyright.
       - name: Run pyright
-        run: pyright || true
+        run: pyright
 
       # run the test evaluator
       - name: Compare event log JSON with reference
-        run: env PATH=${PATH}:`pwd`/testing testfun.sh testlogs/css-flex14vm4-bootlog.binary
+        run: env VERBOSE=1 PATH=${PATH}:`pwd`/testing testfun.sh testlogs/css-flex14vm4-bootlog.binary
+
+#      - name: Upload artifact
+#        uses: actions/upload-pages-artifact@v1
+
+#      - name: Deploy to Github Pages
+#        id: deployment
+#        uses: actions/deploy-pages@v1
