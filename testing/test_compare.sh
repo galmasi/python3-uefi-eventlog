@@ -81,11 +81,11 @@ function evaluate_log() {
 
     reflog ${yamllog} > ${refjson}
     local eventcount=$(eventcounter ${refjson})
-    if ! testlog ${rawlog} > ${testjson} 2>/dev/null
+    if ! testlog ${rawlog} > ${testjson}
     then
         rm -f ${refjson}
         rm -f ${testjson}
-        echo "${eventcount}"
+        echo "0 ${eventcount}"
         return 0
     fi
     

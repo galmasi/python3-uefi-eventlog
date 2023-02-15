@@ -179,7 +179,7 @@ class EfiVarEvent (GenericEvent):
     def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
         (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
-        if name in [ 'PK', 'KEK', 'db', 'dbx' ]:
+        if eventheader[0] == Event.EV_EFI_VARIABLE_DRIVER_CONFIG and name in [ 'PK', 'KEK', 'db', 'dbx' ]:
             return EfiSignatureEvent(eventheader, buffer, idx)
         elif name == 'SecureBoot':
             return EfiSecureBootEvent(eventheader, buffer, idx)
