@@ -44,8 +44,8 @@ def main():
         refevent = reflog1[idx]
         if testevent != refevent:
             print('---------------')
-            print(json.dumps(refevent))
-            print(json.dumps(testevent))
+            print(json.dumps(refevent, indent=4))
+            print(json.dumps(testevent, indent=4))
         
         
 main()

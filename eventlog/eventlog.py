@@ -179,10 +179,11 @@ class EfiVarEvent (GenericEvent):
     def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
         (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
-        if eventheader[0] == Event.EV_EFI_VARIABLE_DRIVER_CONFIG and name in [ 'PK', 'KEK', 'db', 'dbx' ]:
-            return EfiSignatureEvent(eventheader, buffer, idx)
+        if name in [ 'PK', 'KEK', 'db', 'dbx' ]:
+            if eventheader[0] == Event.EV_EFI_VARIABLE_DRIVER_CONFIG:
+                return EfiSignatureListEvent(eventheader, buffer, idx)
         elif name == 'SecureBoot':
-            return EfiSecureBootEvent(eventheader, buffer, idx)
+            return EfiBooleanEvent(eventheader, buffer, idx)
         elif name == 'BootOrder':
             return EfiBootOrderEvent(eventheader, buffer, idx)
         elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name):
@@ -209,10 +210,33 @@ class EfiVarEvent (GenericEvent):
                  }}
 
 # ########################################
-# Secure boot variable readout event
+# EFI variable authority event. contains a single signature.
 # ########################################
 
-class EfiSecureBootEvent(EfiVarEvent):
+class EfiVarAuthEvent(EfiVarEvent):
+    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
+        self.sigdata = EfiSignatureData(self.data, self.datalen, 0)
+
+    @classmethod
+    def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
+        (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
+        name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
+        if name == 'MokList':
+            return EfiVarBooleanEvent(eventheader, buffer, idx)
+        else:
+            return EfiVarAuthEvent(eventheader, buffer, idx)
+
+    def toJson (self) -> dict:
+        j = super().toJson()
+        j['Event']['VariableData'] = [ self.sigdata ]
+        return j
+
+# ########################################
+# Boolean variable readout event
+# ########################################
+
+class EfiBooleanEvent(EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         self.enabled =  struct.unpack('<B', self.data)
@@ -271,7 +295,7 @@ class EfiBootEvent (EfiVarEvent):
 # EFI signature event: an EFI variable event for secure boot variables.
 # ########################################
 
-class EfiSignatureEvent(EfiVarEvent):
+class EfiSignatureListEvent(EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         idx2 = 0
@@ -310,6 +334,7 @@ class EfiSignatureList:
             'SignatureSize': self.sigsize,
             'Keys': self.keys
         }
+
 
 # ########################################
 # An EFI signature
@@ -465,7 +490,7 @@ class EventLog(list):
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
             Event.EV_EFI_VARIABLE_BOOT2            : EfiVarEvent.Parse,
-            Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarEvent.Parse
+            Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse
         }
         return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
 
