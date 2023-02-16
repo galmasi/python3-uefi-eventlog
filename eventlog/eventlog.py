@@ -183,7 +183,7 @@ class EfiVarEvent (GenericEvent):
             if eventheader[0] == Event.EV_EFI_VARIABLE_DRIVER_CONFIG:
                 return EfiSignatureListEvent(eventheader, buffer, idx)
         elif name == 'SecureBoot':
-            return EfiBooleanEvent(eventheader, buffer, idx)
+            return EfiVarBooleanEvent(eventheader, buffer, idx)
         elif name == 'BootOrder':
             return EfiBootOrderEvent(eventheader, buffer, idx)
         elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name):
@@ -236,7 +236,7 @@ class EfiVarAuthEvent(EfiVarEvent):
 # Boolean variable readout event
 # ########################################
 
-class EfiBooleanEvent(EfiVarEvent):
+class EfiVarBooleanEvent(EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         self.enabled =  struct.unpack('<B', self.data)
