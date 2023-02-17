@@ -5,8 +5,8 @@ import uuid
 import hashlib
 import enum
 import re
-from eventlog import efivar
 from typing import Tuple
+from eventlog import efivar
 
 # ########################################
 # enumeration of all event types
@@ -174,7 +174,6 @@ class EfiIPLEvent (GenericEvent):
             ** super().toJson(),
             'Event': { 'String': self.evbuf[:-1].decode('utf-8').rstrip('\x00') }
         }
-        
 
 # ########################################
 # Spec ID Event
@@ -261,8 +260,7 @@ class EfiVarAuthEvent(EfiVarEvent):
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
         if name == 'MokList':
             return EfiVarBooleanEvent(eventheader, buffer, idx)
-        else:
-            return EfiVarAuthEvent(eventheader, buffer, idx)
+        return EfiVarAuthEvent(eventheader, buffer, idx)
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -335,7 +333,7 @@ class EfiVarBootOrderEvent(EfiVarEvent):
 
     def toJson (self) -> dict:
         j = super().toJson()
-        j['Event']['VariableData'] = list(map(lambda x: 'Boot{:04x}'.format(x), self.bootorder))
+        j['Event']['VariableData'] = list(map('Boot{:04x}'.format, self.bootorder))
         return j
 
 # ########################################
@@ -398,7 +396,7 @@ class EfiSignatureData:
             'SignatureOwner': str(self.owner),
             'SignatureData': self.sigdata.hex()
         }
-    
+
 # ########################################
 # EFI action event
 # ########################################
@@ -419,7 +417,7 @@ class EfiGPTEvent (GenericEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         (self.signature, self.revision, self.headerSize, self.headerCRC32, self.MyLBA, self.alternateLBA, self.firstUsableLBA, self.lastUsableLBA) = struct.unpack('<8sIIIQQQQ', buffer[idx:idx+52])
-    
+
     def toJson (self) -> dict:
         return { ** super().toJson(), 'Event': {
             'Signature': self.signature.decode('utf-8'),
