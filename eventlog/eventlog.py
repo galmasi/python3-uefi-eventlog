@@ -329,11 +329,11 @@ class EfiVarBootOrderEvent(EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         assert (self.datalen % 2) == 0
-        self.bootorder = struct.unpack('<{}H'.format(self.datalen//2), self.data)
+        self.bootorder = struct.unpack(f'<{self.datalen//2}H', self.data)
 
     def toJson (self) -> dict:
         j = super().toJson()
-        j['Event']['VariableData'] = list(map('Boot{:04x}'.format, self.bootorder))
+        j['Event']['VariableData'] = list(map(lambda a: f'Boot{a:04x}', self.bootorder))
         return j
 
 # ########################################
