@@ -49,27 +49,37 @@ class Event(enum.IntEnum):
 
 # ########################################
 # enumeration of event digest algorithms
+# TPM2_ALG_<digesttype> from TCG algorithm registry
+#
+# NOTE The overlap with python's hashlib is low, but
+# it apparently covers most use cases ...
 # ########################################
 
 class Digest (enum.IntEnum):
-    sha1   = 4
-    sha256 = 11
+    sha1     = 4
+    sha256   = 11
+    sha384   = 12
+    sha512   = 13
+    sha3_224 = 0x27
+    sha3_256 = 0x28
+    sha3_512 = 0x29
 
 # ########################################
 # Event digests
 # ########################################
-# matching TPM definitions
 
 class EfiEventDigest:
     hashalgmap={
         Digest.sha1: hashlib.sha1,
-        Digest.sha256: hashlib.sha256
+        Digest.sha256: hashlib.sha256,
+        Digest.sha384: hashlib.sha384,
+        Digest.sha512: hashlib.sha512
     }
 
     # constructor for a digest
     def __init__(self, algid: int, buffer: bytes, idx: int):
         self.algid = Digest(algid)
-        assert self.algid in EfiEventDigest.hashalgmap.keys()
+        assert self.algid in EfiEventDigest.hashalgmap
         self.hashalg     = EfiEventDigest.hashalgmap[self.algid]()
         self.digest_size = self.hashalg.digest_size
         self.digest      = buffer[idx:idx+self.digest_size]
@@ -138,6 +148,7 @@ class GenericEvent:
     def Parse(cls, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
         return cls(eventheader, buffer, idx)
 
+    # pylint: disable no-self-use
     def validate (self) -> bool:
         return True
 
