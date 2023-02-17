@@ -138,7 +138,6 @@ class GenericEvent:
     def Parse(cls, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
         return cls(eventheader, buffer, idx)
 
-    # validate: ensure digests don't lie
     def validate (self) -> bool:
         return True
 
@@ -152,6 +151,34 @@ class GenericEvent:
             'Digests':     list(map(lambda o: o[1], self.digests.items())),
             'Event':       self.evbuf[:1024].hex()
         }
+
+# ########################################
+# POST CODE event -- interpreted as a string
+# !!! TODO combined event processing !!!
+# ########################################
+
+class PostCodeEvent (GenericEvent):
+    def toJson (self) -> dict:
+        return {
+            ** super().toJson(),
+            'Event': self.evbuf.decode('utf-8')
+        }
+
+# ########################################
+# Event type: firmware blob measurement
+# ########################################
+
+class FirmwareBlobEvent (GenericEvent):
+    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
+        (self.base,self.length)=struct.unpack('<QQ',buffer[idx:idx+16])
+
+    def toJson (self) -> dict:
+        return { ** super().toJson(), 'Event': {
+            'BlobBase': self.base,
+            'BlobLength': self.length
+            }}
+
 
 # ########################################
 # EFI IPL event. Used during initial program load.
@@ -431,22 +458,6 @@ class EfiGPTEvent (GenericEvent):
             }}
 
 # ########################################
-# Event type: firmware blob measurement
-# ########################################
-
-class FirmwareBlob (GenericEvent):
-    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
-        super().__init__(eventheader, buffer, idx)
-        (self.base,self.length)=struct.unpack('<QQ',buffer[idx:idx+16])
-
-    def toJson (self) -> dict:
-        return { ** super().toJson(), 'Event': {
-            'BlobBase': self.base,
-            'BlobLength': self.length
-            }}
-
-
-# ########################################
 # Event type: uefi image load
 # ########################################
 
@@ -514,6 +525,7 @@ class EventLog(list):
     @classmethod
     def Handler(cls, evtype: int):
         EventHandlers = {
+            Event.EV_POST_CODE                     : PostCodeEvent.Parse,
             Event.EV_EFI_ACTION                    : EfiActionEvent.Parse,
             Event.EV_EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
             Event.EV_IPL                           : EfiIPLEvent.Parse,
@@ -522,8 +534,8 @@ class EventLog(list):
             Event.EV_EFI_BOOT_SERVICES_DRIVER      : UefiImageLoadEvent.Parse,
             Event.EV_EFI_BOOT_SERVICES_APPLICATION : UefiImageLoadEvent.Parse,
             Event.EV_EFI_RUNTIME_SERVICES_DRIVER   : UefiImageLoadEvent.Parse,
-            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
-            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
+            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlobEvent.Parse,
+            Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlobEvent.Parse,
             Event.EV_EFI_VARIABLE_BOOT2            : EfiVarBootEvent.Parse,
             Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse
         }
