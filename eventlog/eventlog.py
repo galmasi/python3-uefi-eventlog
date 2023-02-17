@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from typing import Tuple
-from eventlog import efivar
+#import efivar
 
 # ########################################
 # enumeration of all event types
@@ -117,11 +117,15 @@ class EfiEventDigest:
 # being a GenericEvent type if there is no specialized
 # parser to further interpret it.
 # ########################################
-# * Each Event type has a constructor, which minimally
-#   parses the input buffer
-# * In addition, the Parse class method may be defined if the end
-#   result of a parse is a subclass of the current object
-#   (e.g. subclasses of EfiVarEvent)
+# * Each Event type has a constructor, which parses the input
+#   buffer. The constructor is used when there is no doubt about
+#   what should be parsed and how it should be interpreted.
+# * However, the main parser entry point is the Parse class method.
+#   This method peeks into the input buffer and makes decisions
+#   about what object the buffer should be parsed into, then invokes
+#   the appropriate constructor for that type.
+#   Examples of decision points include checking EFI variable names,
+#   e.g. "BootOrder" is handled differently from "Boot0001".
 # * Each Event class has a "validate" method used in
 #   testing its internal consistency (not really available for all
 #   event types, so in those cases testing returns "true")
@@ -148,7 +152,7 @@ class GenericEvent:
     def Parse(cls, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
         return cls(eventheader, buffer, idx)
 
-    # pylint: disable no-self-use
+    # pylint: disable=no-self-use
     def validate (self) -> bool:
         return True
 

@@ -19,7 +19,7 @@ jobs:
 
       # run pylint. WARNING this cannot fail at the moment.
       - name: Run pylint
-        run: pylint --rcfile pylintrc eventlog/eventlog.py || true
+        run: pylint --rcfile pylintrc eventlog/eventlog.py
 
       # run pyright.
       - name: Run pyright
