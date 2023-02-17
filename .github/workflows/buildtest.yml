@@ -27,4 +27,4 @@ jobs:
 
       # run the test evaluator
       - name: Compare event log JSON with reference
-        run: env PATH=${PATH}:${PWD}/testing test_compare.py -d ${PWD}/testlogs
+        run: env PATH=${PATH}:${PWD}/testing PYTHONPATH=${PWD} test_compare.py -d ${PWD}/testlogs
