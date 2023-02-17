@@ -102,13 +102,28 @@ class EfiEventDigest:
 # ########################################
 # base class for all EFI events.
 # ########################################
-# General design principle: every event is a subclass of GenericEvent.
-# * each Event type has a constructor, which parses the input buffer and produces the Event.
-# * In addition, the Parse class method may be defined if the end result of a parse is
-#   a subclass of the current object (e.g. subclasses of EfiVarEvent)
-# * each Event class has a "validate" method used in testing its internal consistency
-# * each Event class has a "toJson" method to convert it into data structures
-#   accepted by the JSON pickler (i.e. dictionaries, lists, strings)
+# GenericEvent is the superclass of all Events
+# parsed by this code. A parsed Event ends up
+# being a GenericEvent type if there is no specialized
+# parser to further interpret it.
+# ########################################
+# * Each Event type has a constructor, which minimally
+#   parses the input buffer
+# * In addition, the Parse class method may be defined if the end
+#   result of a parse is a subclass of the current object
+#   (e.g. subclasses of EfiVarEvent)
+# * Each Event class has a "validate" method used in
+#   testing its internal consistency (not really available for all
+#   event types, so in those cases testing returns "true")
+# * Each Event class has a "toJson" method to convert it into
+#   data structures accepted by the JSON pickler
+#   (i.e. dictionaries, lists, strings)
+
+# NOTE on JSON output of raw events. tpm2_eventlog limits raw event
+# output to 1024 characters when there is no intelligent processing
+# done on it.  We follow suit for reasons of compatibility -- and
+# because no one in their right mind will process a 6kB raw string in
+# JSON/hex.
 
 class GenericEvent:
     def __init__ (self, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
@@ -135,11 +150,39 @@ class GenericEvent:
             'EventSize':   self.evsize,
             'DigestCount': len(self.digests),
             'Digests':     list(map(lambda o: o[1], self.digests.items())),
-            'Event':       self.evbuf.hex()
+            'Event':       self.evbuf[:1024].hex()
         }
 
 # ########################################
+# EFI IPL event. Used during initial program load.
+# ########################################
+# Differs from generic events in that the body of the
+# event is a zero terminated UTF-8 string describing
+# what is being loaded.
+#
+# NOTE there is a confusion about zero termination,
+# and this puts correct processing into doubt.
+# tpm2_eventlog is known to mess up and generate
+# non-UTF-8 YAML in certain cases, which yq then chokes on.
+#
+# !!!! TODO fix this in a consistent (yet compatible) way.
+# ########################################
+
+class EfiIPLEvent (GenericEvent):
+    def toJson (self) -> dict:
+        return {
+            ** super().toJson(),
+            'Event': { 'String': self.evbuf[:-1].decode('utf-8').rstrip('\x00') }
+        }
+        
+
+# ########################################
 # Spec ID Event
+# ########################################
+# This is the first event in the log, and gets a lot of
+# special processing.
+#
+# !!!TODO!!! fix
 # ########################################
 
 class SpecIdEvent (GenericEvent):
@@ -180,16 +223,10 @@ class EfiVarEvent (GenericEvent):
         (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
         if name in [ 'PK', 'KEK', 'db', 'dbx' ]:
-            if eventheader[0] == Event.EV_EFI_VARIABLE_DRIVER_CONFIG:
-                return EfiSignatureListEvent(eventheader, buffer, idx)
-        elif name == 'SecureBoot':
+            return EfiSignatureListEvent(eventheader, buffer, idx)
+        if name == 'SecureBoot':
             return EfiVarBooleanEvent(eventheader, buffer, idx)
-        elif name == 'BootOrder':
-            return EfiBootOrderEvent(eventheader, buffer, idx)
-        elif re.compile('^Boot[0-9a-fA-F]{4}$').search(name):
-            return EfiBootEvent (eventheader, buffer, idx)
-        else:
-            return EfiVarEvent(eventheader, buffer, idx)
+        return EfiVarEvent(eventheader, buffer, idx)
 
     def validate(self) -> bool:
         for algid in self.digests.keys():
@@ -247,25 +284,10 @@ class EfiVarBooleanEvent(EfiVarEvent):
         return j
 
 # ########################################
-# EFI variable: Boot order
-# ########################################
-
-class EfiBootOrderEvent(EfiVarEvent):
-    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
-        super().__init__(eventheader, buffer, idx)
-        assert (self.datalen % 2) == 0
-        self.bootorder = struct.unpack('<{}H'.format(self.datalen//2), self.data)
-
-    def toJson (self) -> dict:
-        j = super().toJson()
-        j['Event']['VariableData'] = list(map(lambda x: 'Boot{:04}'.format(x), self.bootorder))
-        return j
-
-# ########################################
 # EFI variable: boot entry
 # ########################################
 
-class EfiBootEvent (EfiVarEvent):
+class EfiVarBootEvent (EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         # EFI_LOAD_OPTION, https://dox.ipxe.org/UefiSpec_8h_source.html, line 2069
@@ -278,8 +300,18 @@ class EfiBootEvent (EfiVarEvent):
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
         self.devicePath = self.data[8+desclen:8+desclen+devpathlen].hex()
-        if efivar.available:
-            self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+#       if efivar.available:
+#           self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+
+    @classmethod
+    def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
+        (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
+        name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
+        if name == 'BootOrder':
+            return EfiVarBootOrderEvent(eventheader, buffer, idx)
+        if re.compile('^Boot[0-9a-fA-F]{4}$').search(name):
+            return EfiVarBootEvent (eventheader, buffer, idx)
+        return EfiVarEvent(eventheader, buffer, idx)
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -289,6 +321,21 @@ class EfiBootEvent (EfiVarEvent):
             'Description': self.description.decode('utf-16'),
             'DevicePath': self.devicePath
         }
+        return j
+
+# ########################################
+# EFI variable: Boot order
+# ########################################
+
+class EfiVarBootOrderEvent(EfiVarEvent):
+    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
+        assert (self.datalen % 2) == 0
+        self.bootorder = struct.unpack('<{}H'.format(self.datalen//2), self.data)
+
+    def toJson (self) -> dict:
+        j = super().toJson()
+        j['Event']['VariableData'] = list(map(lambda x: 'Boot{:04x}'.format(x), self.bootorder))
         return j
 
 # ########################################
@@ -402,41 +449,30 @@ class FirmwareBlob (GenericEvent):
 
 
 # ########################################
-# Event type: image load
+# Event type: uefi image load
 # ########################################
 
-class ImageLoadEvent (GenericEvent):
+class UefiImageLoadEvent (GenericEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        (self.base,self.length,self.linkaddr,self.devpathlen)=struct.unpack('<QQQQ',buffer[idx:idx+32])
-        self.devicePath = buffer[idx+32:idx+32+self.devpathlen].hex()
-        if efivar.available:
-            self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        (self.addrinmem,self.lengthinmem,self.linktimeaddr,self.lengthofdevpath)=struct.unpack('<QQQQ',buffer[idx:idx+32])
+
+        self.devpathlen = (self.evsize - 32)
+        self.devpath = buffer[idx+32:idx+32+self.devpathlen].hex()
+#       if efivar.available:
+#           self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
 
     def toJson (self) -> dict:
         j = super().toJson()
         j['Event'] = {
-            'ImageLocationInMemory': self.base,
-            'ImageLengthInMemory': self.length,
-            'ImageLinkTimeAddress': self.linkaddr,
-            'LengthOfDevicePath': self.devpathlen,
-            'DevicePath': str(self.devicePath)
+            'ImageLocationInMemory': self.addrinmem,
+            'ImageLengthInMemory': self.lengthinmem,
+            'ImageLinkTimeAddress': self.linktimeaddr,
+            'LengthOfDevicePath': self.lengthofdevpath,
+            'DevicePath': str(self.devpath)
         }
         return j
 
-
-# ########################################
-# EFI IPL event
-# Note event strings are zero terminated, and we avoid transcribing the trailing zero
-# ########################################
-
-class EfiIPLEvent (GenericEvent):
-    def toJson (self) -> dict:
-        return {
-            ** super().toJson(),
-            'Event': { 'String': self.evbuf[:-1].decode('utf-8') }
-        }
-        
 
 # TCG PC Client Specific Implementation Specification for Conventional BIOS
 
@@ -484,12 +520,13 @@ class EventLog(list):
             Event.EV_EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
             Event.EV_IPL                           : EfiIPLEvent.Parse,
             Event.EV_EFI_VARIABLE_DRIVER_CONFIG    : EfiVarEvent.Parse,
-            Event.EV_EFI_VARIABLE_BOOT             : EfiVarEvent.Parse,
-            Event.EV_EFI_BOOT_SERVICES_DRIVER      : ImageLoadEvent.Parse,
-            Event.EV_EFI_BOOT_SERVICES_APPLICATION : ImageLoadEvent.Parse,
+            Event.EV_EFI_VARIABLE_BOOT             : EfiVarBootEvent.Parse,
+            Event.EV_EFI_BOOT_SERVICES_DRIVER      : UefiImageLoadEvent.Parse,
+            Event.EV_EFI_BOOT_SERVICES_APPLICATION : UefiImageLoadEvent.Parse,
+            Event.EV_EFI_RUNTIME_SERVICES_DRIVER   : UefiImageLoadEvent.Parse,
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlob.Parse,
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlob.Parse,
-            Event.EV_EFI_VARIABLE_BOOT2            : EfiVarEvent.Parse,
+            Event.EV_EFI_VARIABLE_BOOT2            : EfiVarBootEvent.Parse,
             Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse
         }
         return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
