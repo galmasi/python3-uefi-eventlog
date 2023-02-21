@@ -16,28 +16,9 @@ def main():
         '-d',
         '--dir',
         help='directory where raw and yaml logs are kept')
-#    parser.add_argument(
-#        "-r",
-#        "--raw",
-#        help="binary event log file"
-#    )
-#    parser.add_argument(
-#        "-y",
-#        "--yaml",
-#        help="yaml reference file"
-#    )
-
 
     args = parser.parse_args()
     compare_dir(args.dir)
-#    assert args.raw, "binary file argument is required"
-#    assert args.yaml, "yaml file argument is required"
-
-#    jsonreflog = yaml2json(args.yaml)
-#    jsontestlog = binary2json(args.raw)
-#    print(compare_log (jsonreflog, jsontestlog))
-
-
 
 def binary2json(binarylogfile: str):
     with open (binarylogfile, 'rb') as fp:
@@ -78,7 +59,7 @@ def compare_dir (dirname):
     for binarylog in binarylogs:
         logname = os.path.basename(binarylog)
         try:
-            yamllog = dirname + '/yaml/' + logname.replace('.bin', '.yaml')
+            yamllog = dirname + '/yaml/fixed/' + logname.replace('.bin', '.yaml')
             jsontestlog = binary2json(binarylog)
             jsonreflog  = yaml2json(yamllog)
             [t, e, failedeventtypes] = compare_log(jsonreflog, jsontestlog, failedeventtypes)

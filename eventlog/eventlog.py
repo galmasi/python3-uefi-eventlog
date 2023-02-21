@@ -456,21 +456,70 @@ class EfiActionEvent (GenericEvent):
 # ########################################
 
 class EfiGPTEvent (GenericEvent):
+    # GPT Partition header, UEFI Spec version 2.88 Errata B Section 5.3.2 Table 21
+    class GPTHeader:
+        def __init__ (self, buffer, idx):
+            (self.signature, self.revision, self.headerSize,
+             self.headerCRC32, _, self.MyLBA, self.alternateLBA,
+             self.firstUsableLBA, self.lastUsableLBA, guidbytes,
+             self.partitionEntryLBA, self.numPartitionEntries, self.sizeOfPartitionEntry,
+             self.partitionEntryArrayCRC) = struct.unpack('<8sIIIIQQQQ16sQIII', buffer[idx:idx+92])
+            self.diskGuid = uuid.UUID(bytes_le=guidbytes)
+
+        def toJson (self) -> dict:
+            return {
+                'Signature'               : self.signature.decode('utf-8'),
+                'Revision'                : self.revision,
+                'HeaderSize'              : self.headerSize,
+                'HeaderCRC32'             : self.headerCRC32,
+                'MyLBA'                   : self.MyLBA,
+                'AlternateLBA'            : self.alternateLBA,
+                'FirstUsableLBA'          : self.firstUsableLBA,
+                'LastUsableLBA'           : self.lastUsableLBA,
+                'DiskGUID'                : str(self.diskGuid),
+                'PartitionEntryLBA'       : self.partitionEntryLBA,
+                'NumberOfPartitionEntry'  : self.numPartitionEntries,
+                'SizeOfPartitionEntry'    : self.sizeOfPartitionEntry,
+                'PartitionEntryArrayCRC32': self.partitionEntryArrayCRC
+            }
+            
+    # Partition entry, UEFI Spec version 2.88 Errata B Section 5.3.3 Table 22
+    class GPTPartitionEntry:
+        def __init__(self, buffer, idx, entrysize):
+            self.partitionTypeGUID =  uuid.UUID(bytes_le=buffer[idx:idx+16])
+            self.uniquePartitionGUID =  uuid.UUID(bytes_le=buffer[idx+16:idx+32])
+            (self.startingLBA, self.endingLBA,
+             self.attributes, self.partitionName) = struct.unpack('<QQQ72s', buffer[idx+32:idx+128])
+
+        def toJson(self) -> dict:
+            return {
+                'PartitionTypeGUID'       : str(self.partitionTypeGUID),
+                'UniquePartitionGUID'     : str(self.uniquePartitionGUID),
+                'Attributes'              : self.attributes,
+                'StartingLBA'             : self.startingLBA,
+                'EndingLBA'               : self.endingLBA,
+                'PartitionName'           : self.partitionName.decode('utf-16').split('\u0000')[0]
+            }
+        
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        (self.signature, self.revision, self.headerSize, self.headerCRC32, self.MyLBA, self.alternateLBA, self.firstUsableLBA, self.lastUsableLBA) = struct.unpack('<8sIIIQQQQ', buffer[idx:idx+52])
+        self.gptheader = self.GPTHeader(buffer, idx)
+        idx += self.gptheader.headerSize
+        (self.numparts,) = struct.unpack('<Q', buffer[idx:idx+8])
+        idx += 8
+        self.partitions = []
+        for partnum in range(0, self.numparts):
+            self.partitions.append(self.GPTPartitionEntry(buffer, idx, self.gptheader.sizeOfPartitionEntry))
+            idx += self.gptheader.sizeOfPartitionEntry
 
     def toJson (self) -> dict:
-        return { ** super().toJson(), 'Event': {
-            'Signature': self.signature.decode('utf-8'),
-            'Revision': self.revision,
-            'HeaderSize': self.headerSize,
-            'HeaderCRC32': self.headerCRC32,
-            'MyLBA': self.MyLBA,
-            'AlternativeLBA': self.alternateLBA,
-            'FirstUsableLBA': self.firstUsableLBA,
-            'LastUsableLBA': self.lastUsableLBA,
-            }}
+        return { ** super().toJson(),
+                 'Event': {
+                     'Header': self.gptheader.toJson(),
+                     'NumberOfPartitions': self.numparts,
+                     'Partitions': self.partitions
+                 }}
+
 
 # ########################################
 # Event type: uefi image load
