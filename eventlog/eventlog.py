@@ -482,10 +482,10 @@ class EfiGPTEvent (GenericEvent):
                 'SizeOfPartitionEntry'    : self.sizeOfPartitionEntry,
                 'PartitionEntryArrayCRC32': self.partitionEntryArrayCRC
             }
-            
+
     # Partition entry, UEFI Spec version 2.88 Errata B Section 5.3.3 Table 22
     class GPTPartitionEntry:
-        def __init__(self, buffer, idx, entrysize):
+        def __init__(self, buffer, idx):
             self.partitionTypeGUID =  uuid.UUID(bytes_le=buffer[idx:idx+16])
             self.uniquePartitionGUID =  uuid.UUID(bytes_le=buffer[idx+16:idx+32])
             (self.startingLBA, self.endingLBA,
@@ -500,7 +500,7 @@ class EfiGPTEvent (GenericEvent):
                 'EndingLBA'               : self.endingLBA,
                 'PartitionName'           : self.partitionName.decode('utf-16').split('\u0000')[0]
             }
-        
+
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         self.gptheader = self.GPTHeader(buffer, idx)
@@ -508,8 +508,8 @@ class EfiGPTEvent (GenericEvent):
         (self.numparts,) = struct.unpack('<Q', buffer[idx:idx+8])
         idx += 8
         self.partitions = []
-        for partnum in range(0, self.numparts):
-            self.partitions.append(self.GPTPartitionEntry(buffer, idx, self.gptheader.sizeOfPartitionEntry))
+        for _ in range(0, self.numparts):
+            self.partitions.append(self.GPTPartitionEntry(buffer, idx))
             idx += self.gptheader.sizeOfPartitionEntry
 
     def toJson (self) -> dict:
