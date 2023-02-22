@@ -167,6 +167,12 @@ class GenericEvent:
             'Event':       self.evbuf[:1024].hex()
         }
 
+    # expect a null-terminated string. Remove the null from the end
+    def nullterm8 (buffer: bytes) -> str:
+        return buffer.decode('utf-8').split('\x00')[0]
+    def nullterm16 (buffer: bytes) -> str:
+        return buffer.decode('utf-16').split('\u0000')[0]
+
 # ########################################
 # POST CODE event -- interpreted as a string
 # !!! TODO combined event processing !!!
@@ -214,7 +220,7 @@ class EfiIPLEvent (GenericEvent):
     def toJson (self) -> dict:
         return {
             ** super().toJson(),
-            'Event': { 'String': self.evbuf[:-1].decode('utf-8').rstrip('\x00') }
+            'Event': { 'String': GenericEvent.nullterm8(self.evbuf[:-1]) }
         }
 
 # ########################################
@@ -229,23 +235,42 @@ class EfiIPLEvent (GenericEvent):
 class SpecIdEvent (GenericEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        self.signature = uuid.UUID(bytes_le=buffer[idx:idx+16])
-        (self.platformClass, self.specVersionMinor, self.specVersionMajor, self.specErrata, self.uintnSize, self.numberOfAlgorithms) = struct.unpack('<IBBBBI', buffer[idx+16:idx+28])
+#        self.signature = uuid.UUID(bytes_le=buffer[idx:idx+16])
+        (self.signature, self.platformClass, self.specVersionMinor, self.specVersionMajor,
+         self.specErrata, self.uintnSize, self.numberOfAlgorithms) = struct.unpack('<16sIBBBBI', buffer[idx+0:idx+28])
+        idx += 28
         self.alglist = []
         for x in range(0, self.numberOfAlgorithms):
-            (algid, digsize) = struct.unpack('HH', buffer[idx+28+4*x:idx+32+4*x])
-            self.alglist.append({'algorithmId': algid, 'digestSize': digsize})
+            (algid, digsize) = struct.unpack('<HH', buffer[idx:idx+4])
+            idx += 4
+            self.alglist.append({
+                f'Algorithm[{x}]': None,
+                'algorithmId': Digest(algid).name,
+                'digestSize': digsize
+            })
+        (self.vendorInfoSize,)=struct.unpack('<I', buffer[idx:idx+4])
+        self.vendorInfo = buffer[idx+4:idx+4+self.vendorInfoSize]
 
     def toJson (self):
-        return { ** super().toJson(), 'Event': {
+        j = super().toJson()
+        j.pop('DigestCount')
+        j.pop('Digests')
+        j.pop('Event')
+        j['Digest'] = self.digests[Digest.sha1].digest.hex()
+        j['SpecID'] = [{
+            'Signature': GenericEvent.nullterm8(self.signature),
             'platformClass': self.platformClass,
             'specVersionMinor': self.specVersionMinor,
             'specVersionMajor': self.specVersionMajor,
             'specErrata': self.specErrata,
             'uintnSize': self.uintnSize,
+            'vendorInfoSize': self.vendorInfoSize,
             'numberOfAlgorithms': self.numberOfAlgorithms,
-            'digestSizes': self.alglist
-        }}
+            'Algorithms': self.alglist
+        }]
+        if self.vendorInfoSize > 0:
+            self['SpecID']['vendorInfo'] = self.vendorInfo.decode('utf-8')
+        return j
 
 # ########################################
 # Event type: EFI variable measurement
@@ -498,7 +523,7 @@ class EfiGPTEvent (GenericEvent):
                 'Attributes'              : self.attributes,
                 'StartingLBA'             : self.startingLBA,
                 'EndingLBA'               : self.endingLBA,
-                'PartitionName'           : self.partitionName.decode('utf-16').split('\u0000')[0]
+                'PartitionName'           : GenericEvent.nullterm16(self.partitionName)
             }
 
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):

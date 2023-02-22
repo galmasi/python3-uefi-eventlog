@@ -35,9 +35,8 @@ def yaml2json(yamlfile: str):
 
 def compare_log (jsonreflog, jsontestlog, failedeventtypes={}):
     reflog = json.loads(jsonreflog)
-    testlog = json.loads(jsontestlog)
     reflen = len(reflog)
-    testlen = len(testlog)
+    testlog = json.loads(jsontestlog)
     errors = 0
     for idx in range(0, reflen):
         if reflog[idx] != testlog[idx]:
@@ -60,22 +59,44 @@ def compare_dir (dirname):
         logname = os.path.basename(binarylog)
         try:
             yamllog = dirname + '/yaml/fixed/' + logname.replace('.bin', '.yaml')
-            jsontestlog = binary2json(binarylog)
             jsonreflog  = yaml2json(yamllog)
-            [t, e, failedeventtypes] = compare_log(jsonreflog, jsontestlog, failedeventtypes)
-            etotal+= e
-            evttotal += t
-            print("|%-30.30s|%7d|%7d|%5.2f%%|"%(logname, t, e, 100.0*e/t))
         except:
-            pass
+            # skip this because there is no reference log
+            continue
+
+        try:
+            jsontestlog = binary2json(binarylog)
+        except:
+            # declare this parse failed
+            reflog = json.load(jsonreflog)
+            reflen = len(reflog)
+            e = len(reflog)
+
+        try:
+            [reflen, e, failedeventtypes] = compare_log(jsonreflog, jsontestlog, failedeventtypes)
+        except:
+            reflog = json.load(jsonreflog)
+            reflen = len(reflog)
+            e = len(reflog)
+
+        etotal+= e
+        evttotal += reflen
+        print("|%-30.30s|%7d|%7d|%5.2f%%|"%(logname, reflen, e, 100.0*e/reflen))
+
     print("+------------------------------+-------+-------+------+")
     print("|     Totals:                  |%7d|%7d|%5.2f%%|"%(evttotal, etotal, 100.0*etotal/evttotal))
     print("+------------------------------+-------+-------+------+")
 
-    print()
-    print("Failed event types")
-    print("------------------")
-    for key in failedeventtypes.keys():
-        print("%-20s"%(key))
-    
+    if etotal > 0:
+        print()
+        print("Failed event types")
+        print("------------------")
+        for key in failedeventtypes.keys():
+            print("%-20s"%(key))
+    else:
+        print()
+        print("SUCCESS")
+
+    exit(etotal)
+        
 main()
