@@ -273,7 +273,7 @@ class SpecIdEvent (GenericEvent):
             'Algorithms': self.alglist
         }]
         if self.vendorInfoSize > 0:
-            j['SpecID']['vendorInfo'] = self.vendorInfo.decode('utf-8')
+            j['SpecID'][0]['vendorInfo'] = self.vendorInfo.decode('utf-8')
         return j
 
 # ########################################
