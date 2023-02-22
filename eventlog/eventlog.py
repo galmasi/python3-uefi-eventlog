@@ -9,6 +9,16 @@ from typing import Tuple
 #import efivar
 
 # ########################################
+# convert byte buffers with null terminated C strings to python strings
+# ########################################
+
+def nullterm8 (buffer: bytes) -> str:
+    return buffer.decode('utf-8').split('\x00')[0]
+
+def nullterm16 (buffer: bytes) -> str:
+    return buffer.decode('utf-16').split('\u0000')[0]
+
+# ########################################
 # enumeration of all event types
 # ########################################
 
@@ -167,12 +177,6 @@ class GenericEvent:
             'Event':       self.evbuf[:1024].hex()
         }
 
-    # expect a null-terminated string. Remove the null from the end
-    def nullterm8 (buffer: bytes) -> str:
-        return buffer.decode('utf-8').split('\x00')[0]
-    def nullterm16 (buffer: bytes) -> str:
-        return buffer.decode('utf-16').split('\u0000')[0]
-
 # ########################################
 # POST CODE event -- interpreted as a string
 # !!! TODO combined event processing !!!
@@ -220,7 +224,7 @@ class EfiIPLEvent (GenericEvent):
     def toJson (self) -> dict:
         return {
             ** super().toJson(),
-            'Event': { 'String': GenericEvent.nullterm8(self.evbuf[:-1]) }
+            'Event': { 'String': nullterm8(self.evbuf[:-1]) }
         }
 
 # ########################################
@@ -258,7 +262,7 @@ class SpecIdEvent (GenericEvent):
         j.pop('Event')
         j['Digest'] = self.digests[Digest.sha1].digest.hex()
         j['SpecID'] = [{
-            'Signature': GenericEvent.nullterm8(self.signature),
+            'Signature': nullterm8(self.signature),
             'platformClass': self.platformClass,
             'specVersionMinor': self.specVersionMinor,
             'specVersionMajor': self.specVersionMajor,
@@ -523,7 +527,7 @@ class EfiGPTEvent (GenericEvent):
                 'Attributes'              : self.attributes,
                 'StartingLBA'             : self.startingLBA,
                 'EndingLBA'               : self.endingLBA,
-                'PartitionName'           : GenericEvent.nullterm16(self.partitionName)
+                'PartitionName'           : nullterm16(self.partitionName)
             }
 
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
