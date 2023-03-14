@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from typing import Tuple
-from eventlog import efivar
+from .efivar import efiDevicePath, efiInitialize
 
 # ########################################
 # convert byte buffers with null terminated C strings to python strings
@@ -56,6 +56,8 @@ class Event(enum.IntEnum):
     EV_EFI_HANDOFF_TABLES2           = EV_EFI_EVENT_BASE + 0xb
     EV_EFI_VARIABLE_BOOT2            = EV_EFI_EVENT_BASE + 0xc
     EV_EFI_VARIABLE_AUTHORITY        = EV_EFI_EVENT_BASE + 0xe0
+
+    EV_UNKNOWN                       = 0xFFFFFFFF
 
 # ########################################
 # enumeration of event digest algorithms
@@ -151,12 +153,16 @@ class EfiEventDigest:
 
 class GenericEvent:
     def __init__ (self, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
-        self.evtype  = eventheader[0]
         self.evpcr   = eventheader[1]
         self.digests = eventheader[2]
         self.evsize  = eventheader[3]
         self.evidx   = eventheader[4]
         self.evbuf   = buffer[idx:idx+self.evsize]
+
+        try:
+            self.evtype = Event(eventheader[0])
+        except Exception as _:
+            self.evtype = Event.EV_UNKNOWN
 
     @classmethod
     def Parse(cls, eventheader: Tuple[int, int, dict, int, int], buffer: bytes, idx: int):
@@ -168,7 +174,7 @@ class GenericEvent:
 
     def toJson (self):
         return {
-            'EventType':   Event(self.evtype).name,
+            'EventType':   self.evtype.name,
             'EventNum':    self.evidx,
             'PCRIndex':    self.evpcr,
             'EventSize':   self.evsize,
@@ -190,7 +196,7 @@ class PostCodeEvent (GenericEvent):
         else:
             self.blobBase = None
             self.blobLength = None
-            
+
     def toJson (self) -> dict:
         if self.blobBase is not None:
             evt = { 'BlobBase': self.blobBase, 'BlobLength': self.blobLength }
@@ -384,8 +390,8 @@ class EfiVarBootEvent (EfiVarEvent):
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
         try:
-            self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
-        except:
+            self.devicePath = efiDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+        except Exception as _:
             self.devicePath = self.data[8+desclen:8+desclen+devpathlen].hex()
 
     @classmethod
@@ -577,8 +583,8 @@ class UefiImageLoadEvent (GenericEvent):
 
         self.devpathlen = (self.evsize - 32)
         try:
-            self.devpath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
-        except:
+            self.devpath = efiDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        except Exception as _:
             self.devpath = buffer[idx+32:idx+32+self.devpathlen].hex()
 
     def toJson (self) -> dict:
@@ -604,7 +610,7 @@ class UefiImageLoadEvent (GenericEvent):
 
 class EventLog(list):
     def __init__ (self, buffer: bytes, buflen: int):
-        efivar.initialize()
+        efiInitialize()
         list.__init__(self)
         self.buflen = buflen
         evt, idx = EventLog.Parse_1stevent(buffer, 0)
@@ -650,7 +656,10 @@ class EventLog(list):
             Event.EV_EFI_VARIABLE_BOOT2            : EfiVarBootEvent.Parse,
             Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse
         }
-        return EventHandlers[Event(evtype)] if Event(evtype) in EventHandlers else GenericEvent.Parse
+        try:
+            return EventHandlers[Event(evtype)]
+        except Exception as _:
+            return GenericEvent.Parse
 
     # calculate the expected PCR values
     def pcrs (self) -> dict:
