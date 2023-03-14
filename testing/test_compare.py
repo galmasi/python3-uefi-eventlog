@@ -61,7 +61,7 @@ def compare_dir (dirname):
 
         # step 1: read the reference log and interpret it as JSON
         try:
-            yamllog = logdir + '/parsed/fixed/' + logname.replace('.bin', '.yml')
+            yamllog = logdir + '/parsed-tpm2-tools-5.1.1/fixed/' + logname.replace('.bin', '.yml')
             jsonreflog  = yaml2json(yamllog)
             reflog = json.loads(jsonreflog)
             reflen = len(reflog)

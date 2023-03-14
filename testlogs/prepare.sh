@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export parsedir=parsed-tpm2-tools-5.1.1
+
 # Initial preparation of parsed event logs using the Intel TPM2 tool kit.
 # All Intel error messages are ignored. Only the parsed output is recorded.
 
@@ -11,11 +13,11 @@ do
     yamlname=${fname/.bin/.yml}
     dir=$(dirname ${file})
     echo $fname
-    mkdir -p ${dir}/parsed/1stcut
-    tpm2_eventlog --eventlog-version=2 ${file} > ${dir}/parsed/1stcut/${yamlname}
+    mkdir -p ${dir}/${parsedir}/1stcut
+    tpm2_eventlog --eventlog-version=2 ${file} > ${dir}/${parsedir}/1stcut/${yamlname}
     exitcode=$?
     echo "${yamlname} ${exitcode}"
-    mkdir -p ${dir}/parsed/fixed
-    (cd ${dir}/parsed/fixed && ln -sf ../1stcut/${yamlname} .)
+    mkdir -p ${dir}/${parsedir}/fixed
+    (cd ${dir}/${parsedir}/fixed && ln -sf ../1stcut/${yamlname} .)
 done
 

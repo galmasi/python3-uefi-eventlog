@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from typing import Tuple
-#import efivar
+from eventlog import efivar
 
 # ########################################
 # convert byte buffers with null terminated C strings to python strings
@@ -296,7 +296,8 @@ class SpecIdEvent (GenericEvent):
 class EfiVarEvent (GenericEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        self.guid = uuid.UUID(bytes_le=buffer[idx:idx+16])
+        self.guid = uuid.UUID(bytes=buffer[idx:idx+16])
+        self.gg = buffer[idx:idx+16]
         (self.namelen,self.datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         self.name = buffer[idx+32:idx+32+2*self.namelen]
         self.data = buffer[idx+32+2*self.namelen:idx+32+2*self.namelen + self.datalen]
@@ -326,6 +327,7 @@ class EfiVarEvent (GenericEvent):
                      'UnicodeNameLength': self.namelen,
                      'VariableDataLength': self.datalen,
                      'VariableName': str(self.guid),
+#                     'VariableNameBytes': self.gg.hex(),
                      'VariableData': self.data.hex()
                  }}
 
@@ -358,7 +360,7 @@ class EfiVarAuthEvent(EfiVarEvent):
 class EfiVarBooleanEvent(EfiVarEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        self.enabled =  struct.unpack('<B', self.data)
+        (self.enabled,) =  struct.unpack('<?', self.data[:1])
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -381,9 +383,10 @@ class EfiVarBootEvent (EfiVarEvent):
         self.description = self.data[6:6+desclen]
         # dev path: from the end of the description string to the end of data
         devpathlen = (self.datalen - 8 - desclen) * 2 + 1
-        self.devicePath = self.data[8+desclen:8+desclen+devpathlen].hex()
-#       if efivar.available:
-#           self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+        try:
+            self.devicePath = efivar.getDevicePath(self.data[8+desclen:8+desclen+devpathlen], devpathlen)
+        except:
+            self.devicePath = self.data[8+desclen:8+desclen+devpathlen].hex()
 
     @classmethod
     def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
@@ -446,7 +449,7 @@ class EfiSignatureListEvent(EfiVarEvent):
 
 class EfiSignatureList:
     def __init__ (self, buffer, idx):
-        self.sigtype = uuid.UUID(bytes_le=buffer[idx:idx+16])
+        self.sigtype = uuid.UUID(bytes=buffer[idx:idx+16])
         (self.listsize, self.hsize, self.sigsize) = struct.unpack('<III', buffer[idx+16:idx+28])
         idx2 = 28 + self.hsize
         self.keys = []
@@ -472,7 +475,7 @@ class EfiSignatureList:
 
 class EfiSignatureData:
     def __init__ (self, buffer: bytes, sigsize, idx):
-        self.owner   = uuid.UUID(bytes_le=buffer[idx:idx+16])
+        self.owner   = uuid.UUID(bytes=buffer[idx:idx+16])
         self.sigdata = buffer[idx+16:idx+sigsize]
 
     def toJson (self) -> dict:
@@ -506,7 +509,7 @@ class EfiGPTEvent (GenericEvent):
              self.firstUsableLBA, self.lastUsableLBA, guidbytes,
              self.partitionEntryLBA, self.numPartitionEntries, self.sizeOfPartitionEntry,
              self.partitionEntryArrayCRC) = struct.unpack('<8sIIIIQQQQ16sQIII', buffer[idx:idx+92])
-            self.diskGuid = uuid.UUID(bytes_le=guidbytes)
+            self.diskGuid = uuid.UUID(bytes=guidbytes)
 
         def toJson (self) -> dict:
             return {
@@ -528,8 +531,8 @@ class EfiGPTEvent (GenericEvent):
     # Partition entry, UEFI Spec version 2.88 Errata B Section 5.3.3 Table 22
     class GPTPartitionEntry:
         def __init__(self, buffer, idx):
-            self.partitionTypeGUID =  uuid.UUID(bytes_le=buffer[idx:idx+16])
-            self.uniquePartitionGUID =  uuid.UUID(bytes_le=buffer[idx+16:idx+32])
+            self.partitionTypeGUID =  uuid.UUID(bytes=buffer[idx:idx+16])
+            self.uniquePartitionGUID =  uuid.UUID(bytes=buffer[idx+16:idx+32])
             (self.startingLBA, self.endingLBA,
              self.attributes, self.partitionName) = struct.unpack('<QQQ72s', buffer[idx+32:idx+128])
 
@@ -573,9 +576,10 @@ class UefiImageLoadEvent (GenericEvent):
         (self.addrinmem,self.lengthinmem,self.linktimeaddr,self.lengthofdevpath)=struct.unpack('<QQQQ',buffer[idx:idx+32])
 
         self.devpathlen = (self.evsize - 32)
-        self.devpath = buffer[idx+32:idx+32+self.devpathlen].hex()
-#       if efivar.available:
-#           self.devicePath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        try:
+            self.devpath = efivar.getDevicePath(buffer[idx+32:idx+32+self.devpathlen], self.devpathlen)
+        except:
+            self.devpath = buffer[idx+32:idx+32+self.devpathlen].hex()
 
     def toJson (self) -> dict:
         j = super().toJson()
@@ -600,6 +604,7 @@ class UefiImageLoadEvent (GenericEvent):
 
 class EventLog(list):
     def __init__ (self, buffer: bytes, buflen: int):
+        efivar.initialize()
         list.__init__(self)
         self.buflen = buflen
         evt, idx = EventLog.Parse_1stevent(buffer, 0)
