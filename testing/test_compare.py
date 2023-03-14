@@ -10,7 +10,7 @@ import os
 
 def main():
     parser = argparse.ArgumentParser(
-        description ="Dump an eventlog to JSON"
+        description ="compare event logs and test logs"
     )
     parser.add_argument(
         '-d',
@@ -46,46 +46,54 @@ def compare_log (jsonreflog, jsontestlog, failedeventtypes={}):
     return (reflen, errors, failedeventtypes)
 
 def compare_dir (dirname):
-    binarylogs = glob.glob(dirname + '/raw/*.bin')
+    binarylogs = glob.glob(dirname + '/*/*.bin')
     failedeventtypes = {}
     etotal=0
     evttotal=0
     print("Eventlog parsing failure summary")
     print()
-    print("+------------------------------+-------+-------+------+")
-    print("|    log file                  | #Evts | #Fail | Pct. |")
-    print("+------------------------------+-------+-------+------+")
+    print("+------------------------------+-------+-------+-------+----")
+    print("|    log file                  | #Evts | #Fail |  Pct. | msg.")
+    print("+------------------------------+-------+-------+-------+----")
     for binarylog in binarylogs:
+        logdir  = os.path.dirname(binarylog)
         logname = os.path.basename(binarylog)
+
+        # step 1: read the reference log and interpret it as JSON
         try:
-            yamllog = dirname + '/yaml/fixed/' + logname.replace('.bin', '.yaml')
+            yamllog = logdir + '/parsed/fixed/' + logname.replace('.bin', '.yml')
             jsonreflog  = yaml2json(yamllog)
-        except:
-            # skip this because there is no reference log
+            reflog = json.loads(jsonreflog)
+            reflen = len(reflog)
+        except Exception as e:
+            etotal+= 1
+            evttotal += 1
+            print("|%-30.30s|%7d|%7d|%6.2f%%|reflog fail: %s"%(logname, 1, 1, 100.0, str(e)))
             continue
 
+        # step 2: try the python log parser and translate to JSON
         try:
             jsontestlog = binary2json(binarylog)
-        except:
-            # declare this parse failed
-            reflog = json.load(jsonreflog)
-            reflen = len(reflog)
+        except Exception as e:
             e = len(reflog)
+            etotal+= e
+            evttotal += reflen
+            print("|%-30.30s|%7d|%7d|%6.2f%%|testlog fail: %s"%(logname, reflen, e, 100.0*e/reflen, str(e)))
+            continue
 
+        # step 3: compare both JSON logs
         try:
             [reflen, e, failedeventtypes] = compare_log(jsonreflog, jsontestlog, failedeventtypes)
         except:
-            reflog = json.load(jsonreflog)
-            reflen = len(reflog)
             e = len(reflog)
 
         etotal+= e
         evttotal += reflen
-        print("|%-30.30s|%7d|%7d|%5.2f%%|"%(logname, reflen, e, 100.0*e/reflen))
+        print("|%-30.30s|%7d|%7d|%6.2f%%|"%(logname, reflen, e, 100.0*e/reflen))
 
-    print("+------------------------------+-------+-------+------+")
-    print("|     Totals:                  |%7d|%7d|%5.2f%%|"%(evttotal, etotal, 100.0*etotal/evttotal))
-    print("+------------------------------+-------+-------+------+")
+    print("+------------------------------+-------+--------+------+")
+    print("|     Totals:                  |%7d|%7d|%6.2f%%|"%(evttotal, etotal, 100.0*etotal/evttotal))
+    print("+------------------------------+-------+--------+------+")
 
     if etotal > 0:
         print()

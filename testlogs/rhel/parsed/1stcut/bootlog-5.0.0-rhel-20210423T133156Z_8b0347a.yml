@@ -488,8 +488,7 @@ events:
   EventSize: 9
   Event:
     String: |-
-      MokList
-      ¯
+      "MokList\0¯"
 - EventNum: 19
   PCRIndex: 4
   EventType: EV_EFI_BOOT_SERVICES_APPLICATION
@@ -536,7 +535,7 @@ events:
   EventSize: 23
   Event:
     String: |-
-      grub_cmd set timeout=5
+      "grub_cmd set timeout=5\0"
 - EventNum: 22
   PCRIndex: 8
   EventType: EV_IPL
@@ -549,7 +548,7 @@ events:
   EventSize: 40
   Event:
     String: |-
-      grub_cmd set default=xCAT OS Deployment
+      "grub_cmd set default=xCAT OS Deployment\0"
 - EventNum: 23
   PCRIndex: 8
   EventType: EV_IPL
@@ -562,12 +561,12 @@ events:
   EventSize: 756
   Event:
     String: |-
-      grub_cmd menuentry xCAT OS Deployment {
-          echo Loading kernel ...
-          linux /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80  console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high  BOOTIF=01-$net_default_mac
-          echo Loading ramdisk ...
-          initrd /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/initrd-stateless.gz
-      }
+      "grub_cmd menuentry xCAT OS Deployment {"
+      "    echo Loading kernel ..."
+      "    linux /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80  console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high  BOOTIF=01-$net_default_mac"
+      "    echo Loading ramdisk ..."
+      "    initrd /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/initrd-stateless.gz"
+      "}\0"
 - EventNum: 24
   PCRIndex: 8
   EventType: EV_IPL
@@ -580,7 +579,7 @@ events:
   EventSize: 38
   Event:
     String: |-
-      grub_cmd setparams xCAT OS Deployment
+      "grub_cmd setparams xCAT OS Deployment\0"
 - EventNum: 25
   PCRIndex: 8
   EventType: EV_IPL
@@ -593,7 +592,7 @@ events:
   EventSize: 33
   Event:
     String: |-
-      grub_cmd echo Loading kernel ...
+      "grub_cmd echo Loading kernel ...\0"
 - EventNum: 26
   PCRIndex: 8
   EventType: EV_IPL
@@ -606,7 +605,7 @@ events:
   EventSize: 541
   Event:
     String: |-
-      grub_cmd linux /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80 console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high BOOTIF=01-0c:c4:7a:3a:78:5e
+      "grub_cmd linux /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80 console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high BOOTIF=01-0c:c4:7a:3a:78:5e\0"
 - EventNum: 27
   PCRIndex: 9
   EventType: EV_IPL
@@ -619,7 +618,7 @@ events:
   EventSize: 21
   Event:
     String: |-
-      grub_linuxefi Kernel
+      "grub_linuxefi Kernel\0"
 - EventNum: 28
   PCRIndex: 4
   EventType: EV_EFI_BOOT_SERVICES_APPLICATION
@@ -666,7 +665,7 @@ events:
   EventSize: 546
   Event:
     String: |-
-      grub_kernel_cmdline /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80 console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high BOOTIF=01-0c:c4:7a:3a:78:5e
+      "grub_kernel_cmdline /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/kernel imgurl=http://192.168.18.161:80//install/netboot/rhels8/x86_64/hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/rootimg.tar.gz XCAT=192.168.18.161:3001 NODE=css1-qz1-sr1-rk018-s19 FC=0 XCATHTTPPORT=80 console=tty0 console=ttyS1,115200 default_hugepagesz=1G hugepagesz=1G hugepages=1 transparent_hugepage=never intel_iommu=on iommu=pt ds=nocloud pci=realloc crashkernel=768M,low crashkernel=4G,high BOOTIF=01-0c:c4:7a:3a:78:5e\0"
 - EventNum: 31
   PCRIndex: 8
   EventType: EV_IPL
@@ -679,7 +678,7 @@ events:
   EventSize: 34
   Event:
     String: |-
-      grub_cmd echo Loading ramdisk ...
+      "grub_cmd echo Loading ramdisk ...\0"
 - EventNum: 32
   PCRIndex: 8
   EventType: EV_IPL
@@ -692,7 +691,7 @@ events:
   EventSize: 125
   Event:
     String: |-
-      grub_cmd initrd /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/initrd-stateless.gz
+      "grub_cmd initrd /xcat/osimage/rhels8-x86_64-netboot-hostos-boot_RHEL-8.4.0-4.18.0.304-20210409.0-9028f65/initrd-stateless.gz\0"
 - EventNum: 33
   PCRIndex: 9
   EventType: EV_IPL
@@ -705,7 +704,7 @@ events:
   EventSize: 21
   Event:
     String: |-
-      grub_linuxefi Initrd
+      "grub_linuxefi Initrd\0"
 pcrs:
   sha1:
     0  : 0x3dcaea25dc86554d94b94aa5bc8f735a49212af8

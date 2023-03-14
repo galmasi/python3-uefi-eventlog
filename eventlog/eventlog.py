@@ -179,14 +179,27 @@ class GenericEvent:
 
 # ########################################
 # POST CODE event -- interpreted as a string
-# !!! TODO combined event processing !!!
+# or else interpreted as a blob base/lenth pair
 # ########################################
 
 class PostCodeEvent (GenericEvent):
+    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
+        super().__init__(eventheader, buffer, idx)
+        if self.evsize == 16:
+            (self.blobBase, self.blobLength) = struct.unpack('<QQ',buffer[idx:idx+16])
+        else:
+            self.blobBase = None
+            self.blobLength = None
+            
     def toJson (self) -> dict:
+        if self.blobBase is not None:
+            evt = { 'BlobBase': self.blobBase, 'BlobLength': self.blobLength }
+        else:
+            evt = self.evbuf.decode('utf-8')
         return {
             ** super().toJson(),
-            'Event': self.evbuf.decode('utf-8')
+            'Event': evt
+#            'Event': self.evbuf.decode('utf-8')
         }
 
 # ########################################

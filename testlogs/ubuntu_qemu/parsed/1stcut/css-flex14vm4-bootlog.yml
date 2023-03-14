@@ -521,7 +521,7 @@ events:
   EventSize: 8
   Event:
     String: |-
-      MokList
+      "MokList\0"
 - EventNum: 30
   PCRIndex: 14
   EventType: EV_IPL
@@ -534,7 +534,7 @@ events:
   EventSize: 9
   Event:
     String: |-
-      MokListX
+      "MokListX\0"
 - EventNum: 31
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_AUTHORITY
@@ -551,8 +551,8 @@ events:
     VariableDataLength: 18
     UnicodeName: SbatLevel
     VariableData:
-    - SignatureOwner: 74616273-312c-322c-3032-313033303231
-      SignatureData: 380a
+      String: |-
+        "sbat,1,2021030218"
 - EventNum: 32
   PCRIndex: 4
   EventType: EV_EFI_BOOT_SERVICES_APPLICATION
@@ -599,7 +599,7 @@ events:
   EventSize: 32
   Event:
     String: |-
-      (hd0,gpt15)/EFI/ubuntu/grub.cfg
+      "(hd0,gpt15)/EFI/ubuntu/grub.cfg\0"
 - EventNum: 35
   PCRIndex: 8
   EventType: EV_IPL
@@ -612,7 +612,7 @@ events:
   EventSize: 67
   Event:
     String: |-
-      grub_cmd: search.fs_uuid 68a3fb48-331d-433e-9ab6-f89f3b877c81 root
+      "grub_cmd: search.fs_uuid 68a3fb48-331d-433e-9ab6-f89f3b877c81 root\0"
 - EventNum: 36
   PCRIndex: 8
   EventType: EV_IPL
@@ -625,7 +625,7 @@ events:
   EventSize: 42
   Event:
     String: |-
-      grub_cmd: set prefix=(hd0,gpt1)/boot/grub
+      "grub_cmd: set prefix=(hd0,gpt1)/boot/grub\0"
 - EventNum: 37
   PCRIndex: 9
   EventType: EV_IPL
@@ -638,7 +638,7 @@ events:
   EventSize: 44
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/x86_64-efi/command.lst
+      "(hd0,gpt1)/boot/grub/x86_64-efi/command.lst\0"
 - EventNum: 38
   PCRIndex: 9
   EventType: EV_IPL
@@ -651,7 +651,7 @@ events:
   EventSize: 39
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/x86_64-efi/fs.lst
+      "(hd0,gpt1)/boot/grub/x86_64-efi/fs.lst\0"
 - EventNum: 39
   PCRIndex: 9
   EventType: EV_IPL
@@ -664,7 +664,7 @@ events:
   EventSize: 43
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/x86_64-efi/crypto.lst
+      "(hd0,gpt1)/boot/grub/x86_64-efi/crypto.lst\0"
 - EventNum: 40
   PCRIndex: 9
   EventType: EV_IPL
@@ -677,7 +677,7 @@ events:
   EventSize: 45
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/x86_64-efi/terminal.lst
+      "(hd0,gpt1)/boot/grub/x86_64-efi/terminal.lst\0"
 - EventNum: 41
   PCRIndex: 8
   EventType: EV_IPL
@@ -690,7 +690,7 @@ events:
   EventSize: 51
   Event:
     String: |-
-      grub_cmd: configfile (hd0,gpt1)/boot/grub/grub.cfg
+      "grub_cmd: configfile (hd0,gpt1)/boot/grub/grub.cfg\0"
 - EventNum: 42
   PCRIndex: 9
   EventType: EV_IPL
@@ -703,7 +703,7 @@ events:
   EventSize: 30
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/grub.cfg
+      "(hd0,gpt1)/boot/grub/grub.cfg\0"
 - EventNum: 43
   PCRIndex: 8
   EventType: EV_IPL
@@ -716,7 +716,7 @@ events:
   EventSize: 46
   Event:
     String: |-
-      grub_cmd: [ -s (hd0,gpt1)/boot/grub/grubenv ]
+      "grub_cmd: [ -s (hd0,gpt1)/boot/grub/grubenv ]\0"
 - EventNum: 44
   PCRIndex: 9
   EventType: EV_IPL
@@ -729,7 +729,7 @@ events:
   EventSize: 29
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/grubenv
+      "(hd0,gpt1)/boot/grub/grubenv\0"
 - EventNum: 45
   PCRIndex: 8
   EventType: EV_IPL
@@ -742,7 +742,7 @@ events:
   EventSize: 32
   Event:
     String: |-
-      grub_cmd: set have_grubenv=true
+      "grub_cmd: set have_grubenv=true\0"
 - EventNum: 46
   PCRIndex: 8
   EventType: EV_IPL
@@ -755,7 +755,7 @@ events:
   EventSize: 19
   Event:
     String: |-
-      grub_cmd: load_env
+      "grub_cmd: load_env\0"
 - EventNum: 47
   PCRIndex: 9
   EventType: EV_IPL
@@ -768,7 +768,7 @@ events:
   EventSize: 29
   Event:
     String: |-
-      (hd0,gpt1)/boot/grub/grubenv
+      "(hd0,gpt1)/boot/grub/grubenv\0"
 - EventNum: 48
   PCRIndex: 8
   EventType: EV_IPL
@@ -781,7 +781,7 @@ events:
   EventSize: 19
   Event:
     String: |-
-      grub_cmd: [  = 2 ]
+      "grub_cmd: [  = 2 ]\0"
 - EventNum: 49
   PCRIndex: 8
   EventType: EV_IPL
@@ -794,7 +794,7 @@ events:
   EventSize: 19
   Event:
     String: |-
-      grub_cmd: [  = 1 ]
+      "grub_cmd: [  = 1 ]\0"
 - EventNum: 50
   PCRIndex: 8
   EventType: EV_IPL
@@ -807,7 +807,7 @@ events:
   EventSize: 15
   Event:
     String: |-
-      grub_cmd: [  ]
+      "grub_cmd: [  ]\0"
 - EventNum: 51
   PCRIndex: 8
   EventType: EV_IPL
@@ -820,7 +820,7 @@ events:
   EventSize: 24
   Event:
     String: |-
-      grub_cmd: set default=0
+      "grub_cmd: set default=0\0"
 - EventNum: 52
   PCRIndex: 8
   EventType: EV_IPL
@@ -833,7 +833,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ xy = xy ]
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 53
   PCRIndex: 8
   EventType: EV_IPL
@@ -846,7 +846,7 @@ events:
   EventSize: 35
   Event:
     String: |-
-      grub_cmd: menuentry_id_option=--id
+      "grub_cmd: menuentry_id_option=--id\0"
 - EventNum: 54
   PCRIndex: 8
   EventType: EV_IPL
@@ -859,7 +859,7 @@ events:
   EventSize: 37
   Event:
     String: |-
-      grub_cmd: export menuentry_id_option
+      "grub_cmd: export menuentry_id_option\0"
 - EventNum: 55
   PCRIndex: 8
   EventType: EV_IPL
@@ -872,7 +872,7 @@ events:
   EventSize: 15
   Event:
     String: |-
-      grub_cmd: [  ]
+      "grub_cmd: [  ]\0"
 - EventNum: 56
   PCRIndex: 8
   EventType: EV_IPL
@@ -885,7 +885,7 @@ events:
   EventSize: 33
   Event:
     String: |-
-      grub_cmd: terminal_input console
+      "grub_cmd: terminal_input console\0"
 - EventNum: 57
   PCRIndex: 8
   EventType: EV_IPL
@@ -898,7 +898,7 @@ events:
   EventSize: 34
   Event:
     String: |-
-      grub_cmd: terminal_output console
+      "grub_cmd: terminal_output console\0"
 - EventNum: 58
   PCRIndex: 8
   EventType: EV_IPL
@@ -911,7 +911,7 @@ events:
   EventSize: 19
   Event:
     String: |-
-      grub_cmd: [  = 1 ]
+      "grub_cmd: [  = 1 ]\0"
 - EventNum: 59
   PCRIndex: 8
   EventType: EV_IPL
@@ -924,7 +924,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ xy = xy ]
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 60
   PCRIndex: 8
   EventType: EV_IPL
@@ -937,7 +937,7 @@ events:
   EventSize: 35
   Event:
     String: |-
-      grub_cmd: set timeout_style=hidden
+      "grub_cmd: set timeout_style=hidden\0"
 - EventNum: 61
   PCRIndex: 8
   EventType: EV_IPL
@@ -950,7 +950,7 @@ events:
   EventSize: 24
   Event:
     String: |-
-      grub_cmd: set timeout=0
+      "grub_cmd: set timeout=0\0"
 - EventNum: 62
   PCRIndex: 8
   EventType: EV_IPL
@@ -963,7 +963,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ -n true ]
+      "grub_cmd: [ -n true ]\0"
 - EventNum: 63
   PCRIndex: 8
   EventType: EV_IPL
@@ -976,7 +976,7 @@ events:
   EventSize: 18
   Event:
     String: |-
-      grub_cmd: [ -n  ]
+      "grub_cmd: [ -n  ]\0"
 - EventNum: 64
   PCRIndex: 8
   EventType: EV_IPL
@@ -989,7 +989,7 @@ events:
   EventSize: 51
   Event:
     String: |-
-      grub_cmd: set initrdless_boot_fallback_triggered=0
+      "grub_cmd: set initrdless_boot_fallback_triggered=0\0"
 - EventNum: 65
   PCRIndex: 8
   EventType: EV_IPL
@@ -1002,7 +1002,7 @@ events:
   EventSize: 54
   Event:
     String: |-
-      grub_cmd: save_env initrdless_boot_fallback_triggered
+      "grub_cmd: save_env initrdless_boot_fallback_triggered\0"
 - EventNum: 66
   PCRIndex: 8
   EventType: EV_IPL
@@ -1015,7 +1015,7 @@ events:
   EventSize: 44
   Event:
     String: |-
-      grub_cmd: set menu_color_normal=white/black
+      "grub_cmd: set menu_color_normal=white/black\0"
 - EventNum: 67
   PCRIndex: 8
   EventType: EV_IPL
@@ -1028,7 +1028,7 @@ events:
   EventSize: 52
   Event:
     String: |-
-      grub_cmd: set menu_color_highlight=black/light-gray
+      "grub_cmd: set menu_color_highlight=black/light-gray\0"
 - EventNum: 68
   PCRIndex: 8
   EventType: EV_IPL
@@ -1041,7 +1041,7 @@ events:
   EventSize: 20
   Event:
     String: |-
-      grub_cmd: [  != 1 ]
+      "grub_cmd: [  != 1 ]\0"
 - EventNum: 69
   PCRIndex: 8
   EventType: EV_IPL
@@ -1054,7 +1054,7 @@ events:
   EventSize: 55
   Event:
     String: |-
-      grub_cmd: [ -e (hd0,gpt1)/boot/grub/gfxblacklist.txt ]
+      "grub_cmd: [ -e (hd0,gpt1)/boot/grub/gfxblacklist.txt ]\0"
 - EventNum: 70
   PCRIndex: 8
   EventType: EV_IPL
@@ -1067,7 +1067,7 @@ events:
   EventSize: 58
   Event:
     String: |-
-      grub_cmd: hwmatch (hd0,gpt1)/boot/grub/gfxblacklist.txt 3
+      "grub_cmd: hwmatch (hd0,gpt1)/boot/grub/gfxblacklist.txt 3\0"
 - EventNum: 71
   PCRIndex: 8
   EventType: EV_IPL
@@ -1080,7 +1080,7 @@ events:
   EventSize: 18
   Event:
     String: |-
-      grub_cmd: [ = 0 ]
+      "grub_cmd: [ = 0 ]\0"
 - EventNum: 72
   PCRIndex: 8
   EventType: EV_IPL
@@ -1093,7 +1093,7 @@ events:
   EventSize: 34
   Event:
     String: |-
-      grub_cmd: set linux_gfx_mode=keep
+      "grub_cmd: set linux_gfx_mode=keep\0"
 - EventNum: 73
   PCRIndex: 8
   EventType: EV_IPL
@@ -1106,7 +1106,7 @@ events:
   EventSize: 32
   Event:
     String: |-
-      grub_cmd: export linux_gfx_mode
+      "grub_cmd: export linux_gfx_mode\0"
 - EventNum: 74
   PCRIndex: 8
   EventType: EV_IPL
@@ -1119,23 +1119,23 @@ events:
   EventSize: 801
   Event:
     String: |-
-      grub_cmd: menuentry Ubuntu --class ubuntu --class gnu-linux --class gnu --class os --id gnulinux-simple-68a3fb48-331d-433e-9ab6-f89f3b877c81 {
-      	recordfail
-      	load_video
-      	gfxmode $linux_gfx_mode
-      	insmod gzio
-      	if [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi
-      	insmod part_gpt
-      	insmod ext2
-      	set root='hd0,gpt1'
-      	if [ x$feature_platform_search_hint = xy ]; then
-      	  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81
-      	else
-      	  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81
-      	fi
-      	linux	/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0
-      	initrd	/boot/initrd.img-5.4.0-81-generic
-      }
+      "grub_cmd: menuentry Ubuntu --class ubuntu --class gnu-linux --class gnu --class os --id gnulinux-simple-68a3fb48-331d-433e-9ab6-f89f3b877c81 {"
+      "\trecordfail"
+      "\tload_video"
+      "\tgfxmode $linux_gfx_mode"
+      "\tinsmod gzio"
+      "\tif [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi"
+      "\tinsmod part_gpt"
+      "\tinsmod ext2"
+      "\tset root=\'hd0,gpt1\'"
+      "\tif [ x$feature_platform_search_hint = xy ]; then"
+      "\t  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\telse"
+      "\t  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\tfi"
+      "\tlinux\t/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0"
+      "\tinitrd\t/boot/initrd.img-5.4.0-81-generic"
+      "}\0"
 - EventNum: 75
   PCRIndex: 8
   EventType: EV_IPL
@@ -1148,45 +1148,45 @@ events:
   EventSize: 2020
   Event:
     String: |-
-      grub_cmd: submenu Advanced options for Ubuntu --id gnulinux-advanced-68a3fb48-331d-433e-9ab6-f89f3b877c81 {
-      	menuentry 'Ubuntu, with Linux 5.4.0-81-generic' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-5.4.0-81-generic-advanced-68a3fb48-331d-433e-9ab6-f89f3b877c81' {
-      		recordfail
-      		load_video
-      		gfxmode $linux_gfx_mode
-      		insmod gzio
-      		if [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi
-      		insmod part_gpt
-      		insmod ext2
-      		set root='hd0,gpt1'
-      		if [ x$feature_platform_search_hint = xy ]; then
-      		  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81
-      		else
-      		  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81
-      		fi
-      		echo	'Loading Linux 5.4.0-81-generic ...'
-      		linux	/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0
-      		echo	'Loading initial ramdisk ...'
-      		initrd	/boot/initrd.img-5.4.0-81-generic
-      	}
-      	menuentry 'Ubuntu, with Linux 5.4.0-81-generic (recovery mode)' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-5.4.0-81-generic-recovery-68a3fb48-331d-433e-9ab6-f89f3b877c81' {
-      		recordfail
-      		load_video
-      		insmod gzio
-      		if [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi
-      		insmod part_gpt
-      		insmod ext2
-      		set root='hd0,gpt1'
-      		if [ x$feature_platform_search_hint = xy ]; then
-      		  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81
-      		else
-      		  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81
-      		fi
-      		echo	'Loading Linux 5.4.0-81-generic ...'
-      		linux	/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro recovery nomodeset dis_ucode_ldr biosdevname=0 net.ifnames=0
-      		echo	'Loading initial ramdisk ...'
-      		initrd	/boot/initrd.img-5.4.0-81-generic
-      	}
-      }
+      "grub_cmd: submenu Advanced options for Ubuntu --id gnulinux-advanced-68a3fb48-331d-433e-9ab6-f89f3b877c81 {"
+      "\tmenuentry \'Ubuntu, with Linux 5.4.0-81-generic\' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option \'gnulinux-5.4.0-81-generic-advanced-68a3fb48-331d-433e-9ab6-f89f3b877c81\' {"
+      "\t\trecordfail"
+      "\t\tload_video"
+      "\t\tgfxmode $linux_gfx_mode"
+      "\t\tinsmod gzio"
+      "\t\tif [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi"
+      "\t\tinsmod part_gpt"
+      "\t\tinsmod ext2"
+      "\t\tset root=\'hd0,gpt1\'"
+      "\t\tif [ x$feature_platform_search_hint = xy ]; then"
+      "\t\t  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\t\telse"
+      "\t\t  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\t\tfi"
+      "\t\techo\t\'Loading Linux 5.4.0-81-generic ...\'"
+      "\t\tlinux\t/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0"
+      "\t\techo\t\'Loading initial ramdisk ...\'"
+      "\t\tinitrd\t/boot/initrd.img-5.4.0-81-generic"
+      "\t}"
+      "\tmenuentry \'Ubuntu, with Linux 5.4.0-81-generic (recovery mode)\' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option \'gnulinux-5.4.0-81-generic-recovery-68a3fb48-331d-433e-9ab6-f89f3b877c81\' {"
+      "\t\trecordfail"
+      "\t\tload_video"
+      "\t\tinsmod gzio"
+      "\t\tif [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi"
+      "\t\tinsmod part_gpt"
+      "\t\tinsmod ext2"
+      "\t\tset root=\'hd0,gpt1\'"
+      "\t\tif [ x$feature_platform_search_hint = xy ]; then"
+      "\t\t  search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1  68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\t\telse"
+      "\t\t  search --no-floppy --fs-uuid --set=root 68a3fb48-331d-433e-9ab6-f89f3b877c81"
+      "\t\tfi"
+      "\t\techo\t\'Loading Linux 5.4.0-81-generic ...\'"
+      "\t\tlinux\t/boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro recovery nomodeset dis_ucode_ldr biosdevname=0 net.ifnames=0"
+      "\t\techo\t\'Loading initial ramdisk ...\'"
+      "\t\tinitrd\t/boot/initrd.img-5.4.0-81-generic"
+      "\t}"
+      "}\0"
 - EventNum: 76
   PCRIndex: 8
   EventType: EV_IPL
@@ -1199,7 +1199,7 @@ events:
   EventSize: 49
   Event:
     String: |-
-      grub_cmd: [ -f (hd0,gpt1)/boot/grub/custom.cfg ]
+      "grub_cmd: [ -f (hd0,gpt1)/boot/grub/custom.cfg ]\0"
 - EventNum: 77
   PCRIndex: 8
   EventType: EV_IPL
@@ -1212,7 +1212,7 @@ events:
   EventSize: 76
   Event:
     String: |-
-      grub_cmd: [ -z (hd0,gpt1)/boot/grub -a -f (hd0,gpt1)/boot/grub/custom.cfg ]
+      "grub_cmd: [ -z (hd0,gpt1)/boot/grub -a -f (hd0,gpt1)/boot/grub/custom.cfg ]\0"
 - EventNum: 78
   PCRIndex: 8
   EventType: EV_IPL
@@ -1225,7 +1225,7 @@ events:
   EventSize: 27
   Event:
     String: |-
-      grub_cmd: setparams Ubuntu
+      "grub_cmd: setparams Ubuntu\0"
 - EventNum: 79
   PCRIndex: 8
   EventType: EV_IPL
@@ -1238,7 +1238,7 @@ events:
   EventSize: 21
   Event:
     String: |-
-      grub_cmd: recordfail
+      "grub_cmd: recordfail\0"
 - EventNum: 80
   PCRIndex: 8
   EventType: EV_IPL
@@ -1251,7 +1251,7 @@ events:
   EventSize: 27
   Event:
     String: |-
-      grub_cmd: set recordfail=1
+      "grub_cmd: set recordfail=1\0"
 - EventNum: 81
   PCRIndex: 8
   EventType: EV_IPL
@@ -1264,7 +1264,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ -n true ]
+      "grub_cmd: [ -n true ]\0"
 - EventNum: 82
   PCRIndex: 8
   EventType: EV_IPL
@@ -1277,7 +1277,7 @@ events:
   EventSize: 18
   Event:
     String: |-
-      grub_cmd: [ -z  ]
+      "grub_cmd: [ -z  ]\0"
 - EventNum: 83
   PCRIndex: 8
   EventType: EV_IPL
@@ -1290,7 +1290,7 @@ events:
   EventSize: 30
   Event:
     String: |-
-      grub_cmd: save_env recordfail
+      "grub_cmd: save_env recordfail\0"
 - EventNum: 84
   PCRIndex: 8
   EventType: EV_IPL
@@ -1303,7 +1303,7 @@ events:
   EventSize: 21
   Event:
     String: |-
-      grub_cmd: load_video
+      "grub_cmd: load_video\0"
 - EventNum: 85
   PCRIndex: 8
   EventType: EV_IPL
@@ -1316,7 +1316,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ xy = xy ]
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 86
   PCRIndex: 8
   EventType: EV_IPL
@@ -1329,7 +1329,7 @@ events:
   EventSize: 27
   Event:
     String: |-
-      grub_cmd: insmod all_video
+      "grub_cmd: insmod all_video\0"
 - EventNum: 87
   PCRIndex: 8
   EventType: EV_IPL
@@ -1342,7 +1342,7 @@ events:
   EventSize: 23
   Event:
     String: |-
-      grub_cmd: gfxmode keep
+      "grub_cmd: gfxmode keep\0"
 - EventNum: 88
   PCRIndex: 8
   EventType: EV_IPL
@@ -1355,7 +1355,7 @@ events:
   EventSize: 30
   Event:
     String: |-
-      grub_cmd: set gfxpayload=keep
+      "grub_cmd: set gfxpayload=keep\0"
 - EventNum: 89
   PCRIndex: 8
   EventType: EV_IPL
@@ -1368,7 +1368,7 @@ events:
   EventSize: 26
   Event:
     String: |-
-      grub_cmd: [ keep = keep ]
+      "grub_cmd: [ keep = keep ]\0"
 - EventNum: 90
   PCRIndex: 8
   EventType: EV_IPL
@@ -1381,7 +1381,7 @@ events:
   EventSize: 38
   Event:
     String: |-
-      grub_cmd: set vt_handoff=vt.handoff=7
+      "grub_cmd: set vt_handoff=vt.handoff=7\0"
 - EventNum: 91
   PCRIndex: 8
   EventType: EV_IPL
@@ -1394,7 +1394,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: insmod gzio
+      "grub_cmd: insmod gzio\0"
 - EventNum: 92
   PCRIndex: 8
   EventType: EV_IPL
@@ -1407,7 +1407,7 @@ events:
   EventSize: 26
   Event:
     String: |-
-      grub_cmd: [ xefi = xxen ]
+      "grub_cmd: [ xefi = xxen ]\0"
 - EventNum: 93
   PCRIndex: 8
   EventType: EV_IPL
@@ -1420,7 +1420,7 @@ events:
   EventSize: 26
   Event:
     String: |-
-      grub_cmd: insmod part_gpt
+      "grub_cmd: insmod part_gpt\0"
 - EventNum: 94
   PCRIndex: 8
   EventType: EV_IPL
@@ -1433,7 +1433,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: insmod ext2
+      "grub_cmd: insmod ext2\0"
 - EventNum: 95
   PCRIndex: 8
   EventType: EV_IPL
@@ -1446,7 +1446,7 @@ events:
   EventSize: 28
   Event:
     String: |-
-      grub_cmd: set root=hd0,gpt1
+      "grub_cmd: set root=hd0,gpt1\0"
 - EventNum: 96
   PCRIndex: 8
   EventType: EV_IPL
@@ -1459,7 +1459,7 @@ events:
   EventSize: 22
   Event:
     String: |-
-      grub_cmd: [ xy = xy ]
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 97
   PCRIndex: 8
   EventType: EV_IPL
@@ -1472,7 +1472,7 @@ events:
   EventSize: 156
   Event:
     String: |-
-      grub_cmd: search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1 68a3fb48-331d-433e-9ab6-f89f3b877c81
+      "grub_cmd: search --no-floppy --fs-uuid --set=root --hint-bios=hd0,gpt1 --hint-efi=hd0,gpt1 --hint-baremetal=ahci0,gpt1 68a3fb48-331d-433e-9ab6-f89f3b877c81\0"
 - EventNum: 98
   PCRIndex: 8
   EventType: EV_IPL
@@ -1485,7 +1485,7 @@ events:
   EventSize: 152
   Event:
     String: |-
-      grub_cmd: linux /boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0
+      "grub_cmd: linux /boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0\0"
 - EventNum: 99
   PCRIndex: 9
   EventType: EV_IPL
@@ -1498,7 +1498,7 @@ events:
   EventSize: 31
   Event:
     String: |-
-      /boot/vmlinuz-5.4.0-81-generic
+      "/boot/vmlinuz-5.4.0-81-generic\0"
 - EventNum: 100
   PCRIndex: 4
   EventType: EV_EFI_BOOT_SERVICES_APPLICATION
@@ -1527,7 +1527,7 @@ events:
   EventSize: 152
   Event:
     String: |-
-      kernel_cmdline: /boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0
+      "kernel_cmdline: /boot/vmlinuz-5.4.0-81-generic root=UUID=68a3fb48-331d-433e-9ab6-f89f3b877c81 ro biosdevname=0 net.ifnames=0 console=tty1 console=ttyS0\0"
 - EventNum: 102
   PCRIndex: 8
   EventType: EV_IPL
@@ -1540,7 +1540,7 @@ events:
   EventSize: 51
   Event:
     String: |-
-      grub_cmd: initrd /boot/initrd.img-5.4.0-81-generic
+      "grub_cmd: initrd /boot/initrd.img-5.4.0-81-generic\0"
 - EventNum: 103
   PCRIndex: 9
   EventType: EV_IPL
@@ -1553,7 +1553,7 @@ events:
   EventSize: 34
   Event:
     String: |-
-      /boot/initrd.img-5.4.0-81-generic
+      "/boot/initrd.img-5.4.0-81-generic\0"
 - EventNum: 104
   PCRIndex: 5
   EventType: EV_EFI_ACTION

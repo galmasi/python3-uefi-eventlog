@@ -28,20 +28,20 @@ events:
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "61fbafb18ab3882222da37947b28248ea0690210"
+    Digest: "1eb5b593e58ecfae096f963cc8d16ea4c91a70ee"
   - AlgorithmId: sha256
-    Digest: "b00473be73040fe3d85329beb0dd69f81db9f032df00c88ba90bba010ccb914a"
+    Digest: "ce550f273a8bda45c9e1137e8cfc23d50cda2f1bddd0d407b3fd61c3ad6eec78"
   EventSize: 20
-  Event: "4e00310055004500540037003800570020000000"
+  Event: "4e00320033004500540037003500570020000000"
 - EventNum: 2
   PCRIndex: 0
   EventType: EV_EFI_PLATFORM_FIRMWARE_BLOB
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "169500d13461eb96a13dbce09208fb4f8b7f33d1"
+    Digest: "469f49ea8dd8ba0275550d7c9528e23667ff8654"
   - AlgorithmId: sha256
-    Digest: "44d2e88e5fbb3c5a68e27fdcdae97b875c81e6819ccbfe902c75ef4bb5c45c0e"
+    Digest: "76db1ead8e0d3b0b33531d8df21a73905f46a81e7a448ec43ad35653506c5ef7"
   EventSize: 16
   Event:
     BlobBase: 0xfffe0000
@@ -52,65 +52,52 @@ events:
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "ef02a1440aeb97378b0e5e3b5938392fdf68966f"
+    Digest: "18145be99e3d949d563a5f8ef1c1218b301acbe4"
   - AlgorithmId: sha256
-    Digest: "54d8abec225db6a7f1bb6a34f1b5fce07009681e8a85b423eb7565c121261516"
+    Digest: "2ef93bc5e5de6fd612f4fb2e653531761c1644f8702d9e1be69e2a09fa3eac87"
   EventSize: 16
   Event:
-    BlobBase: 0xffeb0000
-    BlobLength: 0x130000
+    BlobBase: 0xffea0000
+    BlobLength: 0x140000
 - EventNum: 4
   PCRIndex: 0
   EventType: EV_EFI_PLATFORM_FIRMWARE_BLOB
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "28c4efbce3932cf0ccc0c88283029c0727be7754"
+    Digest: "ea5ccd154d8782597d294af92229cbb7ea3892c1"
   - AlgorithmId: sha256
-    Digest: "c1b0a457fe431bdf1506fe79f2d85a0a47d674dc7d76e181b429be222b2d5ca8"
+    Digest: "ef16323574c7fc2a71c03dcc5875c7a84947b93baee31903dcadee3bb2e2f84a"
   EventSize: 16
   Event:
-    BlobBase: 0xffd40000
-    BlobLength: 0xb0000
+    BlobBase: 0xffda0000
+    BlobLength: 0x40000
 - EventNum: 5
   PCRIndex: 0
   EventType: EV_EFI_PLATFORM_FIRMWARE_BLOB
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "7a223867e1e323c40a8b152b48c4802cc60d8781"
+    Digest: "9f9c65b31feb0503ae276ea053ef338be6054a59"
   - AlgorithmId: sha256
-    Digest: "a8e6644b81985b0a81c445024f568189a7549667fa6a97b49917aaf5ae6a5d53"
+    Digest: "b810d2569c2f66f8c7591862006794a277c82e9ad29c098b8e99002b7f5693a0"
   EventSize: 16
   Event:
-    BlobBase: 0xffdf0000
-    BlobLength: 0x10000
+    BlobBase: 0xff970000
+    BlobLength: 0x430000
 - EventNum: 6
-  PCRIndex: 0
-  EventType: EV_EFI_PLATFORM_FIRMWARE_BLOB
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "471a49f6c0cb00977c8b96cad2718ff39ed6a5d7"
-  - AlgorithmId: sha256
-    Digest: "d2c5286254cd30086e3fa6bdb659adac533d6e88abb86610f25230535498e46a"
-  EventSize: 16
-  Event:
-    BlobBase: 0xff940000
-    BlobLength: 0x400000
-- EventNum: 7
   PCRIndex: 0
   EventType: EV_POST_CODE
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "01379597febfd617f8f1e27bdede6d3fc75fe97c"
+    Digest: "3666adabd611f55bd0fc8251bb1671c51804d971"
   - AlgorithmId: sha256
-    Digest: "bb9867bb2073d6fef711a2f5554bd53b48b95a7c3b9888277093660b21fc84e2"
+    Digest: "14fe3bd3308ede3481cae58d0efd76cafa6922395f0692e1c49cb58d0a3f33e8"
   EventSize: 9
   Event: |-
     ACPI DATA
-- EventNum: 8
+- EventNum: 7
   PCRIndex: 0
   EventType: EV_POST_CODE
   DigestCount: 2
@@ -122,15 +109,15 @@ events:
   EventSize: 9
   Event: |-
     ACPI DATA
-- EventNum: 9
+- EventNum: 8
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "d4fdd1f14d4041494deb8fc990c45343d2277d08"
+    Digest: "57cd4dc19442475aa82743484f3b1caa88e142b8"
   - AlgorithmId: sha256
-    Digest: "ccfc4bb32888a345bc8aeadaba552b627d99348c767681ab3141f5b01e40a40e"
+    Digest: "115aa827dbccfb44d216ad9ecfda56bdea620b860a94bed5b7a27bba1c4d02d8"
   EventSize: 53
   Event:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
@@ -138,8 +125,8 @@ events:
     VariableDataLength: 1
     UnicodeName: SecureBoot
     VariableData:
-      Enabled: 'Yes'
-- EventNum: 10
+      Enabled: 'No'
+- EventNum: 9
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
@@ -162,7 +149,7 @@ events:
       Keys:
       - SignatureOwner: 3cc24e96-22c7-41d8-8863-8e39dcdcc2cf
         SignatureData: 308203a73082028fa003020102020900ebb513d46bb1dc6e300d06092a864886f70d01010b0500306a310b3009060355040613024a503111300f06035504080c084b616e61676177613111300f06035504070c08596f6b6f68616d6131143012060355040a0c0b4c656e6f766f204c74642e311f301d06035504030c164c656e6f766f204c74642e20504b2043412032303132301e170d3132303632393130333433365a170d3332303632343130333433365a306a310b3009060355040613024a503111300f06035504080c084b616e61676177613111300f06035504070c08596f6b6f68616d6131143012060355040a0c0b4c656e6f766f204c74642e311f301d06035504030c164c656e6f766f204c74642e20504b204341203230313230820122300d06092a864886f70d01010105000382010f003082010a0282010100b69c5d6263d3d1775266995fd8221286711b1eae143a184bff0c54fdfbf2be5a49d4a1a7521e7f6c4bc7600acec2bc7dab13b666e912c37c75f3dec0f33219b85ef29ccb589866d97314e89b6f2ab26434163f079bb819fa2cc9d606554e77b521e5736c02a540b1f4b23187d35324f82caa6d42aa5cb4bba5ecce0529c542935a1cd4e7abdf5e83708777a8597833d4caf1466ac09e9c043f039e13520f0a133cdb946b5d4c140973171a0b3ae6eca1451d3aa5aa9af4deb4b315f107c8d6fae0a83099b78ea3d0ff3bf2c9f9888b31b6a2fd0a4df4ff28aec5b5da3e4293269a9abdaa0e5458fe87af20a077cc3de19652f2984e32142eb2e8ed3b017ad8930203010001a350304e301d0603551d0e04160414ff77df4b174c718b74f9179dec343d8d190e9448301f0603551d23041830168014ff77df4b174c718b74f9179dec343d8d190e9448300c0603551d13040530030101ff300d06092a864886f70d01010b050003820101007065afaf9025ad55d691a5e6df91a089ef8f324bb5eec6d58ebb138e435d3d724e3a4f26a667b02856cf6a1cea30ee08612d7d428cfaded6eed53b940c2861df4f4ff0fe21dba6cd788a0f07285fd5ddb5d7937298c96e6588f2a5b7a9c3750e6512bcd532d45dcec2d1655eb96c4ea80007ba2878308a0c70b5545850b522233edf614fe091ee601b478472f7ea69a528ca4ff53ab7180e3ebf8731870a10d9c534ab007d1007e9bac2ed41a941c0bfea9e82fb549d85b981365f01f19c1ab9b85cb116c9e94c801278417907e8f96d11ed2c888e3d0dbd6c2317601cd6471bf62b51b4b682517cc95ed26025593c7965331f3a908023cac1982e6e148e9176
-- EventNum: 11
+- EventNum: 10
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
@@ -192,7 +179,7 @@ events:
       Keys:
       - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
         SignatureData: 308205e8308203d0a003020102020a610ad188000000000003300d06092a864886f70d01010b0500308191310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e313b3039060355040313324d6963726f736f667420436f72706f726174696f6e205468697264205061727479204d61726b6574706c61636520526f6f74301e170d3131303632343230343132395a170d3236303632343230353132395a308180310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e312a3028060355040313214d6963726f736f667420436f72706f726174696f6e204b454b204341203230313130820122300d06092a864886f70d01010105000382010f003082010a0282010100c4e8b58abfad5726b026c3eae7fb577a44025d070dda4ae5742ae6b00fec6debec7fb9e35a63327c11174f0ee30ba73815938ec6f5e084b19a9b2ce7f5b791d609e1e2c004a8ac301cdf48f306509a64a7517fc8854f8f2086cefe2fe19fff82c0ede9cdcef4536a623a0b43b9e225fdfe05f9d4c414ab11e223898d70b7a41d4decaee59cfa16c2d7c1cbd4e8c42fe599ee248b03ec8df28beac34afb4311120b7eb547926cdce60489ebf53304eb10012a71e5f983133cff25092f687646ffba4fbedcad712a58aafb0ed2793de49b653bcc292a9ffc7259a2ebae92eff6351380c602ece45fcc9d76cdef6392c1af79408479877fe352a8e89d7b07698f150203010001a382014f3082014b301006092b06010401823715010403020100301d0603551d0e0416041462fc43cda03ea4cb6712d25bd955ac7bccb68a5f301906092b0601040182371402040c1e0a00530075006200430041300b0603551d0f040403020186300f0603551d130101ff040530030101ff301f0603551d2304183016801445665243e17e5811bfd64e9e2355083b3a226aa8305c0603551d1f045530533051a04fa04d864b687474703a2f2f63726c2e6d6963726f736f66742e636f6d2f706b692f63726c2f70726f64756374732f4d6963436f725468695061724d6172526f6f5f323031302d31302d30352e63726c306006082b0601050507010104543052305006082b060105050730028644687474703a2f2f7777772e6d6963726f736f66742e636f6d2f706b692f63657274732f4d6963436f725468695061724d6172526f6f5f323031302d31302d30352e637274300d06092a864886f70d01010b05000382020100d48488f514941802ca2a3cfb2a921c0cd7a0d1f1e85266a8eea2b5757a9000aa2da4765aea79b7b9376a517b1064f6e164f20267bef7a81b78bdbace8858640cd657c819a35f05d6dbc6d069ce484b32b7eb5dd230f5c0f5b8ba7807a32bfe9bdb345684ec82caae4125709c6be9fe900fd7961fe5e7941fb22a0c8d4bff2829107bf7d77ca5d176b905c879ed0f90929cc2fedf6f7e6c0f7bd4c145dd345196390fe55e56d8180596f407a642b3a077fd0819f27156cc9f8623a487cba6fd587ed4696715917e81f27f13e50d8b8a3c8784ebe3cebd43e5ad2d84938e6a2b5a7c44fa52aa81c82d1cbbe052df0011f89a3dc160b0e133b5a388d165190a1ae7ac7ca4c182874e38b12f0dc514876ffd8d2ebc39b6e7e6c3e0e4cd2784ef9442ef298b9046413b811b67d8f9435965cb0dbcfd00924ff4753ba7a924fc50414079e02d4f0a6a27766e52ed96697baf0ff78705d045c2ad5314811ffb3004aa373661da4a691b34d868edd602cf6c940cd3cf6c2279adb1f0bc03a24660a9c407c22182f1fdf2e8793260bfd8aca522144bcac1d84beb7d3f5735b2e64f75b4b060032253ae91791dd69b411f15865470b2de0d350f7cb03472ba97603bf079eba2b21c5da216b887c5e91bf6b597256f389fe391fa8a7998c3690eb7a31c200597f8ca14ae00d7c4f3c01410756b34a01bb59960f35cb0c5574e36d23284bf9e
-- EventNum: 12
+- EventNum: 11
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
@@ -236,20 +223,20 @@ events:
       Keys:
       - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
         SignatureData: 308205d7308203bfa003020102020a61077656000000000008300d06092a864886f70d01010b0500308188310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e31323030060355040313294d6963726f736f667420526f6f7420436572746966696361746520417574686f726974792032303130301e170d3131313031393138343134325a170d3236313031393138353134325a308184310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e312e302c060355040313254d6963726f736f66742057696e646f77732050726f64756374696f6e20504341203230313130820122300d06092a864886f70d01010105000382010f003082010a0282010100dd0cbba2e42e09e3e7c5f79669bc0021bd693333efad04cb5480ee0683bbc52084d9f7d28bf338b0aba4ad2d7c627905ffe34a3f04352070e3c4e76be09cc03675e98a31dd8d70e5dc37b5744696285b8760232cbfdc47a567f751279e72eb07a6c9b91e3b53357ce5d3ec27b9871cfeb9c923096fa84691c16e963c41d3cba33f5d026a4dec691f25285c36fffd43150a94e019b4cfdfc212e2c25b27ee2778308b5b2a096b22895360162cc0681d53baec49f39d618c85680973445d7da2542bdd79f715cf355d6c1c2b5ccebc9c238b6f6eb526d93613c34fd627aeb9323b41922ce1c7cd77e8aa544ef75c0b048765b44318a8b2e06d1977ec5a24fa48030203010001a38201433082013f301006092b06010401823715010403020100301d0603551d0e04160414a92902398e16c49778cd90f99e4f9ae17c55af53301906092b0601040182371402040c1e0a00530075006200430041300b0603551d0f040403020186300f0603551d130101ff040530030101ff301f0603551d23041830168014d5f656cb8fe8a25c6268d13d94905bd7ce9a18c430560603551d1f044f304d304ba049a0478645687474703a2f2f63726c2e6d6963726f736f66742e636f6d2f706b692f63726c2f70726f64756374732f4d6963526f6f4365724175745f323031302d30362d32332e63726c305a06082b06010505070101044e304c304a06082b06010505073002863e687474703a2f2f7777772e6d6963726f736f66742e636f6d2f706b692f63657274732f4d6963526f6f4365724175745f323031302d30362d32332e637274300d06092a864886f70d01010b0500038202010014fc7c7151a579c26eb2ef393ebc3c520f6e2b3f101373fea868d048a6344d8a960526ee3146906179d6ff382e456bf4c0e528b8da1d8f8adb09d71ac74c0a36666a8cec1bd70490a81817a49bb9e240323676c4c15ac6bfe404c0ea16d3acc368ef62acdd546c503058a6eb7cfe94a74e8ef4ec7c867357c2522173345af3a38a56c804da0709edf88be3cef47e8eaef0f60b8a08fb3fc91d727f53b8ebbe63e0e33d3165b081e5f2accd16a49f3da8b19bc242d090845f541dff89eaba1d47906fb0734e419f409f5fe5a12ab21191738a2128f0cede73395f3eab5c60ecdf0310a8d309e9f4f69685b67f51886647198da2b0123d812a680577bb914c627bb6c107c7ba7a8734030e4b627a99e9cafcce4a37c92da4577c1cfe3ddcb80f5afad6c4b30285023aeab3d96ee4692137de81d1f675190567d393575e291b39c8ee2de1cde445735bd0d2ce7aab1619824658d05e9d81b367af6c35f2bce53f24e235a20a7506f6185699d4782cd1051bebd088019daa10f105dfba7e2c63b7069b2321c4f9786ce2581706362b911203cca4d9f22dbaf9949d40ed1845f1ce8a5c6b3eab03d370182a0a6ae05f47d1d5630a32f2afd7361f2a705ae5425908714b57ba7e8381f0213cf41cc1c5b990930e88459386e9b12099be98cbc595a45d62d6a0630820bd7510777d3df345b99f979fcb57806f33a904cf77a4621c597e
-- EventNum: 13
+- EventNum: 12
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "e6b4c4b8b1cd5609d9e1c2f9c2db9c9a3deb6269"
+    Digest: "9e04b683b1ade74270dc6083dd716acc63a33310"
   - AlgorithmId: sha256
-    Digest: "8bc595afe91665472bf77eb8874bea431442530e0b1c993d48c0a3ffd307befb"
-  EventSize: 4078
+    Digest: "a044b4ce4a4dca9af312c897dc56ee1727c385eb88f7cfb9092b8265029d5b1e"
+  EventSize: 3762
   Event:
     VariableName: d719b2cb-3d3a-4596-a3bc-dad00e67656f
     UnicodeNameLength: 3
-    VariableDataLength: 4040
+    VariableDataLength: 3724
     UnicodeName: dbx
     VariableData:
     - SignatureType: c1c41626-504c-4092-aca9-41f936934328
@@ -411,24 +398,7 @@ events:
         SignatureData: 64575bd912789a2e14ad56f6341f52af6bf80cf94400785975e9f04e2d64d745
       - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
         SignatureData: 45c7c8ae750acfbb48fc37527d6412dd644daed8913ccd8a24c94d856967df8e
-    - SignatureType: c1c41626-504c-4092-aca9-41f936934328
-      SignatureListSize: 316
-      SignatureHeaderSize: 0
-      SignatureSize: 48
-      Keys:
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: 81d8fb4c9e2e7a8225656b4b8273b7cba4b03ef2e9eb20e0a0291624eca1ba86
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: b92af298dc08049b78c77492d6551b710cd72aada3d77be54609e43278ef6e4d
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: e19dae83c02e6f281358d4ebd11d7723b4f5ea0e357907d5443decc5f93c1e9d
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: 39dbc2288ef44b5f95332cb777e31103e840dba680634aa806f5c9b100061802
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: 32f5940ca29dd812a2c145e6fc89646628ffcc7c7a42cae512337d8d29c40bbd
-      - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-        SignatureData: 10d45fcba396aef3153ee8f6ecae58afe8476a280a2026fc71f6217dcf49ba2f
-- EventNum: 14
+- EventNum: 13
   PCRIndex: 7
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -439,207 +409,104 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 15
+- EventNum: 14
   PCRIndex: 1
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "bcdbc6066244717a7dd1b9910004595817199509"
+    Digest: "286ac9f428123146aa83e5d30e585eaf307aeab7"
   - AlgorithmId: sha256
-    Digest: "86cc3df67009a5a434c4d9d0f13819276c766794bb29011f3cbc87f321bc4302"
+    Digest: "ad33cd2297f18f54ab1959a727f5028dd8c94c3a4f8500a3655d311a6ce78ab0"
   EventSize: 301
   Event:
     VariableName: 2a4dc6b7-41f5-45dd-b46f-2dd334c1cf65
     UnicodeNameLength: 12
     VariableDataLength: 245
     UnicodeName: LenovoConfig
-    VariableData: "0100010101010101000100000000000000000001000101000101010000000100010101000001000101010000000000000000010000000101000000000000000101000104010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-- EventNum: 16
+    VariableData: "0000010000010101000101000000000001000001000101000101010000000100010101000001000100000000010101010001010000000101000000000000000002000001000201000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+- EventNum: 15
   PCRIndex: 1
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "ade834fab8f7257a727be563a81353ce111f7463"
+    Digest: "578f4e08f6cf650c51178c11736eb54fb334ea78"
   - AlgorithmId: sha256
-    Digest: "21e798422bef11a44dcb46ede0f235b02352c26257da10fef63f3951510b22fd"
+    Digest: "a65e4d837bd6485faa9c23e0c280cdd3372466243b7a44ba31a138d33301ec62"
   EventSize: 211
   Event:
     VariableName: a2c1808f-0d4f-4cc9-a619-d1e641d39d49
     UnicodeNameLength: 20
     VariableDataLength: 139
     UnicodeName: LenovoSecurityConfig
-    VariableData: "01000000010100000100000000000000000101000101010101010101010101010101010101000100000101000101010101000001000001020100000101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
-- EventNum: 17
+    VariableData: "01000100010001010100000001000000000101000101010100010101010101010101010000000001000101000100010001000101010001010101000101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+- EventNum: 16
   PCRIndex: 1
   EventType: EV_EFI_HANDOFF_TABLES
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "701a577b5de1fa211b6848c120cf3df45f5d83c3"
+    Digest: "07d385b97e016983f710b846bcff145c5649e5df"
   - AlgorithmId: sha256
-    Digest: "217d39b4d1f5aa16145919fe9f8008a915792c9b82f0e1a24beee9ba539ab0af"
+    Digest: "dcd81d16812f202279517c8f755341d26325901b678ff8bd115f72ab6786495c"
   EventSize: 32
-  Event: "01000000000000004415fdf294972c4a992ee5bbcf20e39400e0076f00000000"
+  Event: "01000000000000004415fdf294972c4a992ee5bbcf20e3940070054f00000000"
+- EventNum: 17
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "92cc47247a6ef87f81f736c1fedcebb70e72480c"
+  - AlgorithmId: sha256
+    Digest: "877d7785ac749276609cf07c59caf88c43d8c05b628c36e00468db7ad84a212c"
+  EventSize: 70
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 9
+    VariableDataLength: 20
+    UnicodeName: BootOrder
+    VariableData:
+    - Boot0000
+    - Boot001b
+    - Boot001a
+    - Boot001e
+    - Boot001f
+    - Boot0018
+    - Boot0019
+    - Boot001d
+    - Boot001c
+    - Boot0001
 - EventNum: 18
   PCRIndex: 5
   EventType: EV_EFI_VARIABLE_BOOT
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "37028290d4571db14e0ba71a970e2065cd7b283b"
+    Digest: "85cbe05be5585bea9ff30513870cbe06512a0594"
   - AlgorithmId: sha256
-    Digest: "1fea31a592d8efec90daffcbe3360d6b219b06c3b18816ab9bad1dd7332d8f12"
-  EventSize: 76
+    Digest: "39cc371c9b46fcad5173fcfe49aa3eca4b20330be0d82887ca6a11343719470d"
+  EventSize: 166
   Event:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 9
-    VariableDataLength: 26
-    UnicodeName: BootOrder
+    UnicodeNameLength: 8
+    VariableDataLength: 118
+    UnicodeName: Boot0000
     VariableData:
-    - Boot0000
-    - Boot0017
-    - Boot0018
-    - Boot001d
-    - Boot001f
-    - Boot001e
-    - Boot001b
-    - Boot0020
-    - Boot001c
-    - Boot001a
-    - Boot0019
-    - Boot0021
-    - Boot0022
+      Enabled: 'Yes'
+      FilePathListLength: 98
+      Description: "Fedora"
+      DevicePath: '04012a0001000000000800000000000000c01200000000001e3a8500578b8348afe9e25eb3b871e30202040434005c004500460049005c006600650064006f00720061005c007300680069006d007800360034002e0065006600690000007fff0400'
 - EventNum: 19
   PCRIndex: 5
   EventType: EV_EFI_VARIABLE_BOOT
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "a63debad82d56002d63bb4b8d00ef66bf7b91455"
+    Digest: "c348b59c4c8029f6a7f9c0ab2dc24697a9af5ef0"
   - AlgorithmId: sha256
-    Digest: "edb9db7cba8f03d16fa77e8d972e3cc52405dad235e3735bd0ca7555055f7823"
-  EventSize: 348
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 300
-    UnicodeName: Boot0000
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 116
-      Description: "Windows Boot Manager"
-      DevicePath: '04012a000100000000080000000000000070170000000000761b77313313a84397b95c898e443aac0202040446005c004500460049005c004d006900630072006f0073006f00660074005c0042006f006f0074005c0062006f006f0074006d006700660077002e0065006600690000007fff040057494e444f5753000100000088000000780000004200430044004f0042004a004500430054003d007b00390064006500610038003600320063002d0035006300640064002d0034006500370030002d0061006300630031002d006600330032006200330034003400640034003700390035007d00000062000100000010000000040000007fff0400'
-- EventNum: 20
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "ec4b1f83fbda09ab3de1376dd7f03855b5520118"
-  - AlgorithmId: sha256
-    Digest: "ddbd73e828890ac9ed369b619ee13efb1e0fed33d30d40cdbe02e79cf89db246"
-  EventSize: 108
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 60
-    UnicodeName: Boot0017
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 40
-      Description: "USB CD"
-      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b86701296aa5a7848b66cd49dd3ba6a557fff0400'
-- EventNum: 21
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "4d54ce74c3653266f2ac1c6b1689ac219404be12"
-  - AlgorithmId: sha256
-    Digest: "7ffd8b7c1280ddfb82ae599446bf40376745955bba173bd12ca32e189b1de153"
-  EventSize: 110
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 62
-    UnicodeName: Boot0018
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 40
-      Description: "USB FDD"
-      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b6ff015a28830b543a8b8641009461e497fff0400'
-- EventNum: 22
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "b71a5af6b6dc6c3afdbb81b5f47ff7d94c945295"
-  - AlgorithmId: sha256
-    Digest: "b510b962f7ee274a9b1cae2df32e6632b9a26c3f2fe3f1f69f36fad141a98eeb"
-  EventSize: 113
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 65
-    UnicodeName: Boot001D
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 41
-      Description: "ATA HDD0"
-      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6037fff0400'
-- EventNum: 23
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "18d7016aa3800417378fce85eaa11267916e1453"
-  - AlgorithmId: sha256
-    Digest: "c1ef380c5009d8dc85fd35ff60c80137536b32d10f3f71427ebf691a1d84ad48"
-  EventSize: 110
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 62
-    UnicodeName: Boot001F
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 40
-      Description: "USB HDD"
-      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b33e821aaaf33bc4789bd419f88c508037fff0400'
-- EventNum: 24
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "c6a92f0c95f568eee731f3201785ef983e99d23c"
-  - AlgorithmId: sha256
-    Digest: "e7651ad76828bf904817ed58079ff11676e40c7c639bc63b7a2e2b0320ee3aac"
-  EventSize: 113
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 65
-    UnicodeName: Boot001E
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 41
-      Description: "ATA HDD1"
-      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6027fff0400'
-- EventNum: 25
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "9575f8daa1e80b4f5127390eb4a2ee4628daf960"
-  - AlgorithmId: sha256
-    Digest: "ad81b1d3fd2e63569124ec07dfc180be036249f98cc440cb9b14abfb9f16acde"
+    Digest: "dbd5e0d6fff11621e31f4a9f3af255effd52e9822e5272d1bac40d5c0209ccc8"
   EventSize: 113
   Event:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
@@ -647,71 +514,11 @@ events:
     VariableDataLength: 65
     UnicodeName: Boot001B
     VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 41
-      Description: "ATA HDD2"
-      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6007fff0400'
-- EventNum: 26
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "cfc8a907e547143cb390394f5b290f0a98b08a55"
-  - AlgorithmId: sha256
-    Digest: "ff13360827a3aabcc83368911f43cd0c3c7b8d033650ccf141e1cd4b80dc5234"
-  EventSize: 110
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 62
-    UnicodeName: Boot0020
-    VariableData:
-      Enabled: 'Yes'
-      FilePathListLength: 40
-      Description: "PCI LAN"
-      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b78a84aaf2b2afc4ea79cf5cc8f3d38037fff0400'
-- EventNum: 27
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "7a017db6b96f6d1c6204fc058a0be7a5de1c1924"
-  - AlgorithmId: sha256
-    Digest: "74815ea51f829178b1b7294528ac788098e38877423f609ef0202e1e946e57da"
-  EventSize: 113
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 65
-    UnicodeName: Boot001C
-    VariableData:
       Enabled: 'No'
       FilePathListLength: 41
-      Description: "ATA HDD3"
-      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6047fff0400'
-- EventNum: 28
-  PCRIndex: 5
-  EventType: EV_EFI_VARIABLE_BOOT
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "33e9cd390d4dd284d74e3222cd29ca93c9673b51"
-  - AlgorithmId: sha256
-    Digest: "e224da79eaf6ebdf0d4e9b902caaea3a2e93cb2371969fa0d5eb014a340c1a89"
-  EventSize: 107
-  Event:
-    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
-    UnicodeNameLength: 8
-    VariableDataLength: 59
-    UnicodeName: Boot001A
-    VariableData:
-      Enabled: 'No'
-      FilePathListLength: 41
-      Description: "NVMe1"
-      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b001c199932d94c4eae9aa0b6e98eb8a4017fff0400'
-- EventNum: 29
+      Description: "ATA HDD0"
+      DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6017fff0400'
+- EventNum: 20
   PCRIndex: 5
   EventType: EV_EFI_VARIABLE_BOOT
   DigestCount: 2
@@ -725,13 +532,13 @@ events:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
     UnicodeNameLength: 8
     VariableDataLength: 59
-    UnicodeName: Boot0019
+    UnicodeName: Boot001A
     VariableData:
       Enabled: 'No'
       FilePathListLength: 41
       Description: "NVMe0"
       DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b001c199932d94c4eae9aa0b6e98eb8a4007fff0400'
-- EventNum: 30
+- EventNum: 21
   PCRIndex: 5
   EventType: EV_EFI_VARIABLE_BOOT
   DigestCount: 2
@@ -745,13 +552,13 @@ events:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
     UnicodeNameLength: 8
     VariableDataLength: 65
-    UnicodeName: Boot0021
+    UnicodeName: Boot001E
     VariableData:
       Enabled: 'No'
       FilePathListLength: 41
       Description: "Other CD"
       DevicePath: '030a2500d23878bc820f604d8316c068ee79d25baea2090adfde214e8b3a5e471856a354067fff0400'
-- EventNum: 31
+- EventNum: 22
   PCRIndex: 5
   EventType: EV_EFI_VARIABLE_BOOT
   DigestCount: 2
@@ -765,13 +572,113 @@ events:
     VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
     UnicodeNameLength: 8
     VariableDataLength: 67
-    UnicodeName: Boot0022
+    UnicodeName: Boot001F
     VariableData:
       Enabled: 'No'
       FilePathListLength: 41
       Description: "Other HDD"
       DevicePath: '030a2500d23878bc820f604d8316c068ee79d25b91af625956449f41a7b91f4f892ab0f6067fff0400'
-- EventNum: 32
+- EventNum: 23
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "f5c76bc9ae88dd86265f1b80839f13f422e713cb"
+  - AlgorithmId: sha256
+    Digest: "ff34aeedc2025aa9d0eda753dcdde655e57f6f4885464389762b43e456ab6b66"
+  EventSize: 108
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 8
+    VariableDataLength: 60
+    UnicodeName: Boot0018
+    VariableData:
+      Enabled: 'No'
+      FilePathListLength: 40
+      Description: "USB CD"
+      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b86701296aa5a7848b66cd49dd3ba6a557fff0400'
+- EventNum: 24
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "53607cb35f256db3b8df4d5897ebf883f0689054"
+  - AlgorithmId: sha256
+    Digest: "3f8189e3777ad5d9bd4a039fe94c617771cb261d5a5f0c4ad754289a47b23f13"
+  EventSize: 110
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 8
+    VariableDataLength: 62
+    UnicodeName: Boot0019
+    VariableData:
+      Enabled: 'No'
+      FilePathListLength: 40
+      Description: "USB FDD"
+      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b6ff015a28830b543a8b8641009461e497fff0400'
+- EventNum: 25
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "933a14d481a80f020499869096402ef9d3cebe40"
+  - AlgorithmId: sha256
+    Digest: "d2b3d1998586808b4f42a8f969758159b5af96a7bc3f5f40cc490a785fe36570"
+  EventSize: 110
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 8
+    VariableDataLength: 62
+    UnicodeName: Boot001D
+    VariableData:
+      Enabled: 'No'
+      FilePathListLength: 40
+      Description: "PCI LAN"
+      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b78a84aaf2b2afc4ea79cf5cc8f3d38037fff0400'
+- EventNum: 26
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "18d7016aa3800417378fce85eaa11267916e1453"
+  - AlgorithmId: sha256
+    Digest: "c1ef380c5009d8dc85fd35ff60c80137536b32d10f3f71427ebf691a1d84ad48"
+  EventSize: 110
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 8
+    VariableDataLength: 62
+    UnicodeName: Boot001C
+    VariableData:
+      Enabled: 'Yes'
+      FilePathListLength: 40
+      Description: "USB HDD"
+      DevicePath: '030a2400d23878bc820f604d8316c068ee79d25b33e821aaaf33bc4789bd419f88c508037fff0400'
+- EventNum: 27
+  PCRIndex: 5
+  EventType: EV_EFI_VARIABLE_BOOT
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "03fd4189e9cf34221dd71fb72904bd7bc886c510"
+  - AlgorithmId: sha256
+    Digest: "d733a9cc7e930ad73da3d59bf5e598d2c38fbff4668ed9a36989559384ad20b6"
+  EventSize: 200
+  Event:
+    VariableName: 8be4df61-93ca-11d2-aa0d-00e098032b8c
+    UnicodeNameLength: 8
+    VariableDataLength: 152
+    UnicodeName: Boot0001
+    VariableData:
+      Enabled: 'Yes'
+      FilePathListLength: 100
+      Description: "Linux-Firmware-Updater"
+      DevicePath: '04012a0001000000000800000000000000c01200000000001e3a8500578b8348afe9e25eb3b871e30202040436005c004500460049005c006600650064006f00720061005c00660077007500700064007800360034002e0065006600690000007fff0400'
+- EventNum: 28
   PCRIndex: 5
   EventType: EV_EFI_ACTION
   DigestCount: 2
@@ -783,7 +690,7 @@ events:
   EventSize: 40
   Event: |-
     Calling EFI Application from Boot Option
-- EventNum: 33
+- EventNum: 29
   PCRIndex: 0
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -794,7 +701,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 34
+- EventNum: 30
   PCRIndex: 1
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -805,7 +712,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 35
+- EventNum: 31
   PCRIndex: 2
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -816,7 +723,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 36
+- EventNum: 32
   PCRIndex: 3
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -827,7 +734,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 37
+- EventNum: 33
   PCRIndex: 4
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -838,7 +745,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 38
+- EventNum: 34
   PCRIndex: 5
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -849,7 +756,7 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 39
+- EventNum: 35
   PCRIndex: 6
   EventType: EV_SEPARATOR
   DigestCount: 2
@@ -860,223 +767,911 @@ events:
     Digest: "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
   EventSize: 4
   Event: "00000000"
-- EventNum: 40
-  PCRIndex: 7
-  EventType: EV_EFI_VARIABLE_AUTHORITY
-  DigestCount: 2
-  Digests:
-  - AlgorithmId: sha1
-    Digest: "9fc713b7248d99a1a0db3d50c14eb9b4ff270721"
-  - AlgorithmId: sha256
-    Digest: "30bf464ee37f1bc0c7b1a5bf25eced275347c3ab1492d5623ae9f7663be07dd5"
-  EventSize: 1551
-  Event:
-    VariableName: d719b2cb-3d3a-4596-a3bc-dad00e67656f
-    UnicodeNameLength: 2
-    VariableDataLength: 1515
-    UnicodeName: db
-    VariableData:
-    - SignatureOwner: 77fa9abd-0359-4d32-bd60-28f4e78f784b
-      SignatureData: 308205d7308203bfa003020102020a61077656000000000008300d06092a864886f70d01010b0500308188310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e31323030060355040313294d6963726f736f667420526f6f7420436572746966696361746520417574686f726974792032303130301e170d3131313031393138343134325a170d3236313031393138353134325a308184310b3009060355040613025553311330110603550408130a57617368696e67746f6e3110300e060355040713075265646d6f6e64311e301c060355040a13154d6963726f736f667420436f72706f726174696f6e312e302c060355040313254d6963726f736f66742057696e646f77732050726f64756374696f6e20504341203230313130820122300d06092a864886f70d01010105000382010f003082010a0282010100dd0cbba2e42e09e3e7c5f79669bc0021bd693333efad04cb5480ee0683bbc52084d9f7d28bf338b0aba4ad2d7c627905ffe34a3f04352070e3c4e76be09cc03675e98a31dd8d70e5dc37b5744696285b8760232cbfdc47a567f751279e72eb07a6c9b91e3b53357ce5d3ec27b9871cfeb9c923096fa84691c16e963c41d3cba33f5d026a4dec691f25285c36fffd43150a94e019b4cfdfc212e2c25b27ee2778308b5b2a096b22895360162cc0681d53baec49f39d618c85680973445d7da2542bdd79f715cf355d6c1c2b5ccebc9c238b6f6eb526d93613c34fd627aeb9323b41922ce1c7cd77e8aa544ef75c0b048765b44318a8b2e06d1977ec5a24fa48030203010001a38201433082013f301006092b06010401823715010403020100301d0603551d0e04160414a92902398e16c49778cd90f99e4f9ae17c55af53301906092b0601040182371402040c1e0a00530075006200430041300b0603551d0f040403020186300f0603551d130101ff040530030101ff301f0603551d23041830168014d5f656cb8fe8a25c6268d13d94905bd7ce9a18c430560603551d1f044f304d304ba049a0478645687474703a2f2f63726c2e6d6963726f736f66742e636f6d2f706b692f63726c2f70726f64756374732f4d6963526f6f4365724175745f323031302d30362d32332e63726c305a06082b06010505070101044e304c304a06082b06010505073002863e687474703a2f2f7777772e6d6963726f736f66742e636f6d2f706b692f63657274732f4d6963526f6f4365724175745f323031302d30362d32332e637274300d06092a864886f70d01010b0500038202010014fc7c7151a579c26eb2ef393ebc3c520f6e2b3f101373fea868d048a6344d8a960526ee3146906179d6ff382e456bf4c0e528b8da1d8f8adb09d71ac74c0a36666a8cec1bd70490a81817a49bb9e240323676c4c15ac6bfe404c0ea16d3acc368ef62acdd546c503058a6eb7cfe94a74e8ef4ec7c867357c2522173345af3a38a56c804da0709edf88be3cef47e8eaef0f60b8a08fb3fc91d727f53b8ebbe63e0e33d3165b081e5f2accd16a49f3da8b19bc242d090845f541dff89eaba1d47906fb0734e419f409f5fe5a12ab21191738a2128f0cede73395f3eab5c60ecdf0310a8d309e9f4f69685b67f51886647198da2b0123d812a680577bb914c627bb6c107c7ba7a8734030e4b627a99e9cafcce4a37c92da4577c1cfe3ddcb80f5afad6c4b30285023aeab3d96ee4692137de81d1f675190567d393575e291b39c8ee2de1cde445735bd0d2ce7aab1619824658d05e9d81b367af6c35f2bce53f24e235a20a7506f6185699d4782cd1051bebd088019daa10f105dfba7e2c63b7069b2321c4f9786ce2581706362b911203cca4d9f22dbaf9949d40ed1845f1ce8a5c6b3eab03d370182a0a6ae05f47d1d5630a32f2afd7361f2a705ae5425908714b57ba7e8381f0213cf41cc1c5b990930e88459386e9b12099be98cbc595a45d62d6a0630820bd7510777d3df345b99f979fcb57806f33a904cf77a4621c597e
-- EventNum: 41
+- EventNum: 36
   PCRIndex: 5
   EventType: EV_EFI_GPT_EVENT
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "bb4de00303f926683cd72574f3b85593f8dd44a2"
+    Digest: "45d548a823055f2df6f9e497fa695b62ae770c23"
   - AlgorithmId: sha256
-    Digest: "91ad277724cd4fc0c5e41438ae4d9d6420303d17c2e2ee15afc49d21b0c42bb4"
-  EventSize: 612
+    Digest: "8fac0117dc65650b628f398673d2473fd6eb443f8b084d9dd20c1dc5259f07ed"
+  EventSize: 484
   Event:
     Header:
       Signature: "EFI PART"
       Revision: 0x10000
       HeaderSize: 92
-      HeaderCRC32: 0x90eef733
+      HeaderCRC32: 0xad85e5e1
       MyLBA: 0x1
-      AlternateLBA: 0x3b9e12af
+      AlternateLBA: 0x1dcf32af
       FirstUsableLBA: 0x22
-      LastUsableLBA: 0x3b9e128e
-      DiskGUID: fb2682aa-60b1-42bb-838e-08fdb03a0483
+      LastUsableLBA: 0x1dcf328e
+      DiskGUID: 0b7c952d-d95b-41c9-b226-acf55a9a630c
       PartitionEntryLBA: 0x2
       NumberOfPartitionEntry: 128
       SizeOfPartitionEntry: 128
-      PartitionEntryArrayCRC32: 0xc5b37c2a
-    NumberOfPartitions: 4
+      PartitionEntryArrayCRC32: 0x5757d254
+    NumberOfPartitions: 3
     Partitions:
     - PartitionTypeGUID: c12a7328-f81f-11d2-ba4b-00a0c93ec93b
-      UniquePartitionGUID: 31771b76-1333-43a8-97b9-5c898e443aac
+      UniquePartitionGUID: 00853a1e-8b57-4883-afe9-e25eb3b871e3
       StartingLBA: 0x800
-      EndingLBA: 0x1777ff
-      Attributes: 0x8000000000000000
-      PartitionName: "EFI system partition"
-    - PartitionTypeGUID: e3c9e316-0b5c-4db8-817d-f92df00215ae
-      UniquePartitionGUID: 53081882-876b-4f13-80a8-6ac372fe962c
-      StartingLBA: 0x177800
-      EndingLBA: 0x1b77ff
-      Attributes: 0x8000000000000000
-      PartitionName: "Microsoft reserved partition"
-    - PartitionTypeGUID: ebd0a0a2-b9e5-4433-87c0-68b6b72699c7
-      UniquePartitionGUID: 892eb2ac-832b-4b1c-a7f5-9447dfc37cad
-      StartingLBA: 0x1b7800
-      EndingLBA: 0x3b0597ff
+      EndingLBA: 0x12c7ff
       Attributes: 0x0
-      PartitionName: "Basic data partition"
-    - PartitionTypeGUID: de94bba4-06d1-4d40-a16a-bfd50179d6ac
-      UniquePartitionGUID: dad1d007-abfd-4a92-afee-d7b531996395
-      StartingLBA: 0x3b059800
-      EndingLBA: 0x3b9e0fff
-      Attributes: 0x8000000000000000
-      PartitionName: "Basic data partition"
-- EventNum: 42
+      PartitionName: "EFI System Partition"
+    - PartitionTypeGUID: 0fc63daf-8483-4772-8e79-3d69d8477de4
+      UniquePartitionGUID: d1cda6d4-4233-4c24-a265-e9a29212d142
+      StartingLBA: 0x12c800
+      EndingLBA: 0x32c7ff
+      Attributes: 0x0
+      PartitionName: ""
+    - PartitionTypeGUID: 0fc63daf-8483-4772-8e79-3d69d8477de4
+      UniquePartitionGUID: 4b5fa81a-7f32-46ba-b063-69462c58151a
+      StartingLBA: 0x32c800
+      EndingLBA: 0x1dcf2fff
+      Attributes: 0x0
+      PartitionName: ""
+- EventNum: 37
   PCRIndex: 4
   EventType: EV_EFI_BOOT_SERVICES_APPLICATION
   DigestCount: 2
   Digests:
   - AlgorithmId: sha1
-    Digest: "876ca8d555ffd81033341131464aa863ec60ae77"
+    Digest: "ad9a72bdb69a17abe85d948e6bbbb89141da2543"
   - AlgorithmId: sha256
-    Digest: "9a53b62e6012dea31e9da599eeb7802c60bd2775c6355b49de06c812fbecc41d"
-  EventSize: 188
+    Digest: "0ce02100f67c7ef85f4eed368f02bf7092380a3c23ca91fd7f19430d94b00c19"
+  EventSize: 170
   Event:
-    ImageLocationInMemory: 0x691bb018
-    ImageLengthInMemory: 1557824
-    ImageLinkTimeAddress: 0x10000000
-    LengthOfDevicePath: 156
-    DevicePath: '02010c00d041030a0000000001010600001d0101060000000317100001000000002538c481b0018004012a000100000000080000000000000070170000000000761b77313313a84397b95c898e443aac0202040446005c004500460049005c004d006900630072006f0073006f00660074005c0042006f006f0074005c0062006f006f0074006d006700660077002e0065006600690000007fff0400'
+    ImageLocationInMemory: 0x48b17018
+    ImageLengthInMemory: 1210776
+    ImageLinkTimeAddress: 0x0
+    LengthOfDevicePath: 138
+    DevicePath: '02010c00d041030a0000000001010600041c01010600000003171000010000005cd2e42681a1c97d04012a0001000000000800000000000000c01200000000001e3a8500578b8348afe9e25eb3b871e30202040434005c004500460049005c006600650064006f00720061005c007300680069006d007800360034002e0065006600690000007fff0400'
+- EventNum: 38
+  PCRIndex: 4
+  EventType: EV_EFI_BOOT_SERVICES_APPLICATION
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "37394985275cb488061e041c4f45ee9f4b57987e"
+  - AlgorithmId: sha256
+    Digest: "55bd411b59359ada03ce6af4049ffb3662b7b470b4aa7413689711458ce4ec92"
+  EventSize: 41
+  Event:
+    ImageLocationInMemory: 0x0
+    ImageLengthInMemory: 0
+    ImageLinkTimeAddress: 0x0
+    LengthOfDevicePath: 0
+    DevicePath: '007026000080260094'
+- EventNum: 39
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "44593aca794719d28ccf09e86007217951ef63cc"
+  - AlgorithmId: sha256
+    Digest: "25d40c366e05330a22d0ac2333e426e385f52e4a377d9259ae1050c2cbc49179"
+  EventSize: 31
+  Event:
+    String: |-
+      "(hd0,gpt1)/EFI/fedora/grub.cfg\0"
+- EventNum: 40
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "44593aca794719d28ccf09e86007217951ef63cc"
+  - AlgorithmId: sha256
+    Digest: "25d40c366e05330a22d0ac2333e426e385f52e4a377d9259ae1050c2cbc49179"
+  EventSize: 31
+  Event:
+    String: |-
+      "(hd0,gpt1)/EFI/fedora/grub.cfg\0"
+- EventNum: 41
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "471b4db36f68b8954f7492a3d3cb2ae40cf07dfb"
+  - AlgorithmId: sha256
+    Digest: "fc1ac040fc293ed95e4594b67c4378a832d67c8951a3a5e7032e919eb99c5f88"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: set pager=1\0"
+- EventNum: 42
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "73f2fb932533ba2081bec224e5313910ac772741"
+  - AlgorithmId: sha256
+    Digest: "dd8225a2faf2042b084a1ee05dfbf321180d4ca95aae416e39f79cca63e77263"
+  EventSize: 47
+  Event:
+    String: |-
+      "grub_cmd: [ -f (hd0,gpt1)/EFI/fedora/grubenv ]\0"
 - EventNum: 43
-  PCRIndex: 11
-  EventType: EV_COMPACT_HASH
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "bd0736aeb203b2afa2714263bac54ed067682abb"
   - AlgorithmId: sha256
-    Digest: "097328e8c957de2428283954f6a1ee8ff7ad7def12e100a600178407f5decf24"
-  EventSize: 4
-  Event: "10000000"
+    Digest: "844166adaab89f61fd0a527dcca85dce673531f044f46d2e4a02d3d2d97390b3"
+  EventSize: 52
+  Event:
+    String: |-
+      "grub_cmd: load_env -f (hd0,gpt1)/EFI/fedora/grubenv\0"
 - EventNum: 44
-  PCRIndex: 12
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "f8d282f9d55ece8eb5509e596e3d112381483f6a"
   - AlgorithmId: sha256
-    Digest: "ecbcd1d50dd6d8b3b2ba95d04ec7465038da8503966808e20468fe3e55e66e9d"
-  EventSize: 248
-  Event: "01000140f000000002000200080000009b00000000000000030001403800000004000700200000006c94a7b550209afdf06c87441a9795f81567e1459fa03d5ed6a36c84ef8adcd7070007000800000000a02d000000000003000140380000000400070020000000724d120b1991144d999186a0ab2a6053596d07884b7417cba997c7fd5be5a7a3070007000800000000f08900000000000900020004000000010000000a00020004000000000000000300020004000000010000000100040001000000000300050001000000002100050001000000000200050001000000010500020004000000040000000b0002000400000000000000"
+    Digest: "5a90a5f2ca9a36bca7fa815df0c0fe535a67fd0355d12b350b094d26ee173e6d"
+  EventSize: 30
+  Event:
+    String: |-
+      "(hd0,gpt1)/EFI/fedora/grubenv\0"
 - EventNum: 45
-  PCRIndex: 13
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "710cbf237c9abd071ca91c4104324800bec7b0fb"
   - AlgorithmId: sha256
-    Digest: "c67d9826e19e6fe5fd646c61eca97eb0f132595d942b08048ca9804666f68dcf"
-  EventSize: 916
-  Event: "010001408c0300000900020004000000010000000a00020004000000000000000100040001000000000300050001000000002100050001000000000200050001000000010500020004000000040000000b0002000400000000000000290005003400000001000000140000000b0020000000000000000000ece4c1841c6a72fa3f782e2b2139e338d78abd41761f8952f5691797712bacda020004002e00000080a19aad7073d301200000000b0076dea1e54ada0c2e765bdb30099a573965ace595bd9af0dd82429c3ef3780cf3030001406201000001000700560000005c004500460049005c004d006900630072006f0073006f00660074005c0042006f006f0074005c0065006e002d00550053005c0062006f006f0074006d006700660077002e006500660069002e004d005500490000000200070008000000002001000000000003000700040000000c80000004000700200000006c94a7b550209afdf06c87441a9795f81567e1459fa03d5ed6a36c84ef8adcd70a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f007700730000000600070013000000330000023241fb59996dcc4dff0000000002320900070014000000ff82bc38e1da5e596df374c53e3617f7eda36b060300014054010000010007003c0000005c00570049004e0044004f00570053005c00730079007300740065006d00330032005c00770069006e006c006f00610064002e006500660069000000020007000800000000b01f000000000003000700040000000c8000000400070020000000724d120b1991144d999186a0ab2a6053596d07884b7417cba997c7fd5be5a7a30a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f0077007300000006000700130000003300000266bd1580efa75cd6d30000000002660900070014000000a4341b9fd50fb9964283220a36a1ef6f6faa78400b0007000400000001000000"
+    Digest: "ce8124bc1b0fbc0cb5cd47338ca0c7d5f5446d79936e443a201d96b192a7bd65"
+  EventSize: 15
+  Event:
+    String: |-
+      "grub_cmd: [  ]\0"
 - EventNum: 46
-  PCRIndex: 14
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "644cb611a70f409d8b9a39b66ce0cc5db3546366"
   - AlgorithmId: sha256
-    Digest: "56b5e2611e00f475c7f1c5f1eb2df5173e01c61099423775b9650e9a666ea4a8"
-  EventSize: 302
-  Event: "020006002601000030820122300d06092a864886f70d01010105000382010f003082010a0282010100dd0cbba2e42e09e3e7c5f79669bc0021bd693333efad04cb5480ee0683bbc52084d9f7d28bf338b0aba4ad2d7c627905ffe34a3f04352070e3c4e76be09cc03675e98a31dd8d70e5dc37b5744696285b8760232cbfdc47a567f751279e72eb07a6c9b91e3b53357ce5d3ec27b9871cfeb9c923096fa84691c16e963c41d3cba33f5d026a4dec691f25285c36fffd43150a94e019b4cfdfc212e2c25b27ee2778308b5b2a096b22895360162cc0681d53baec49f39d618c85680973445d7da2542bdd79f715cf355d6c1c2b5ccebc9c238b6f6eb526d93613c34fd627aeb9323b41922ce1c7cd77e8aa544ef75c0b048765b44318a8b2e06d1977ec5a24fa48030203010001"
+    Digest: "0e48065bf7bae665eba277b2b6cb81ed1259778b01600131d05183eb93c13cba"
+  EventSize: 84
+  Event:
+    String: |-
+      "grub_cmd: set default=b929a650b5fd4b8a8b79925c08e1e51b-5.12.0-0.rc1.162.fc35.x86_64\0"
 - EventNum: 47
-  PCRIndex: 12
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
   - AlgorithmId: sha256
-    Digest: "a3c8425c69e504ba9597b8cc69016689c1b0fc6258d8adb5733ec11cc2fa75e5"
-  EventSize: 545
-  Event: "01000140190200000900020004000000010000000a0002000400000000000000030001403800000004000700200000002a24945417ae8dd109958de57db82aa32f5da3398c876338e767f76890c6ddf0070007000800000000d021000000000003000140380000000400070020000000ac85a09f1021140b3250c9ec4f5b94e690c1974be6efd005bc4d95e5ac38866f070007000800000000a07a00000000000300014038000000040007002000000032c83aecb3cea9c0e6276e9ac61d40324d2bbff5c326c49ec6740e368e57671b07000700080000000000c002000000000300014038000000040007002000000006f235cdfd2871ab64ed252f660b0d1e537d72844108227574af791b6d0cf42c07000700080000000000e902000000000d00050001000000000c000500080000000000000000000000100005000800000001000000000000001100050008000000000000000000000003000140380000000400070020000000daa5a79591b457ac47639151873a4e2637c026af695e4bece36dd4ed6a6275520700070008000000000040030000000003000140380000000400070020000000821c4c38339d5694900809e4e87483ad00fce127d24f0c76983ee9a61ec46033070007000800000000b0eb02000000000300020004000000050000000100040001000000000300050001000000002100050001000000000200050001000000010500020004000000010000000b0002000400000000000000"
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 48
-  PCRIndex: 13
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "bd5209e50c09650ffcf5c2d12a8be8277e438023"
   - AlgorithmId: sha256
-    Digest: "09ad352994fcaa7e3a3cb12189e8ffc6a7eeeb59393a0232bbb4e6e09908f058"
-  EventSize: 2337
-  Event: "01000140190900000900020004000000010000000a00020004000000000000000d00050001000000000c00050008000000000000000000000010000500080000000100000000000000110005000800000000000000000000000100040001000000000300050001000000002100050001000000000200050001000000010500020004000000010000000b0002000400000000000000290005003400000001000000140000000b0020000000000000000000ece4c1841c6a72fa3f782e2b2139e338d78abd41761f8952f5691797712bacda020004002e00000080a19aad7073d301200000000b0076dea1e54ada0c2e765bdb30099a573965ace595bd9af0dd82429c3ef3780cf3030001404a010000010007003e0000005c00570049004e0044004f00570053005c00730079007300740065006d00330032005c00680076006c006f0061006400650072002e0064006c006c000000020007000800000000b002000000000003000700040000000c800000040007002000000006f235cdfd2871ab64ed252f660b0d1e537d72844108227574af791b6d0cf42c0a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f007700730000000600070013000000330000026551ae1bbd005cbfbd0000000002650900070014000000e168609353f30ff2373157b4eb8cd519d07a2bff030001405401000001000700480000005c00570049004e0044004f00570053005c0062006f006f0074005c007200650073006f00750072006300650073005c0062006f006f0074007200650073002e0064006c006c0000000200070008000000007001000000000003000700040000000c8000000400070020000000ac85a09f1021140b3250c9ec4f5b94e690c1974be6efd005bc4d95e5ac38866f0a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f007700730000000600070013000000330000023241fb59996dcc4dff0000000002320900070014000000ff82bc38e1da5e596df374c53e3617f7eda36b06030001406401000001000700580000005c00570049004e0044004f00570053005c00730079007300740065006d00330032005c006d0063007500700064006100740065005f00470065006e"
+    Digest: "09f17d4dfb4b97f16246632c21b1ac2125c95c148899eee5069fbb1b34365513"
+  EventSize: 35
+  Event:
+    String: |-
+      "grub_cmd: menuentry_id_option=--id\0"
 - EventNum: 49
-  PCRIndex: 14
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "6248599bae0d78ccbda185ed2fce0182ed41e297"
   - AlgorithmId: sha256
-    Digest: "56b5e2611e00f475c7f1c5f1eb2df5173e01c61099423775b9650e9a666ea4a8"
-  EventSize: 302
-  Event: "020006002601000030820122300d06092a864886f70d01010105000382010f003082010a0282010100dd0cbba2e42e09e3e7c5f79669bc0021bd693333efad04cb5480ee0683bbc52084d9f7d28bf338b0aba4ad2d7c627905ffe34a3f04352070e3c4e76be09cc03675e98a31dd8d70e5dc37b5744696285b8760232cbfdc47a567f751279e72eb07a6c9b91e3b53357ce5d3ec27b9871cfeb9c923096fa84691c16e963c41d3cba33f5d026a4dec691f25285c36fffd43150a94e019b4cfdfc212e2c25b27ee2778308b5b2a096b22895360162cc0681d53baec49f39d618c85680973445d7da2542bdd79f715cf355d6c1c2b5ccebc9c238b6f6eb526d93613c34fd627aeb9323b41922ce1c7cd77e8aa544ef75c0b048765b44318a8b2e06d1977ec5a24fa48030203010001"
+    Digest: "4af0bb370c9e3b7982027d02e04c935e32d52b528007476bfc50d36d1b86815e"
+  EventSize: 37
+  Event:
+    String: |-
+      "grub_cmd: export menuentry_id_option\0"
 - EventNum: 50
-  PCRIndex: 12
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "710cbf237c9abd071ca91c4104324800bec7b0fb"
   - AlgorithmId: sha256
-    Digest: "ebd1b216fb44d515784bfe48ac14cfbc8f99de815602d48667caaae8f261bb43"
-  EventSize: 5601
-  Event: "01000140d9150000030001403800000004000700200000001ab904e10548f212e6625edd5ecf0db60febfc71a57f901e739deaeebf649b270700070008000000000040030000000003000140380000000400070020000000971fe367e613c98c6282771f75d2386cdf369f5f9cbd4f5f81baf9a969d5131c07000700080000000000ec0200000000030001403800000004000700200000003c0365e1d3c24e6a0235ab4d160081ef27ebe21a4e71b04aab6f57a0b1f5148f07000700080000000000ed0200000000030001403800000004000700200000006ce7327cb0465e2976df54c488b0a9640574e079636ba45f95952f84f0a97ef007000700080000000000ed02000000000300014038000000040007002000000052e46a70ff6892437796f4bc81243db28faf52c270fb76b79e24bd9d718cc7d907000700080000000000ed020000000003000140380000000400070020000000cc70cb5fe2f01f54c93227f02123025a1f39fb8cfa54410c01e79788b87b4b5707000700080000000000ed0200000000030001403800000004000700200000002afc7c5dd2b4cc370bb859399a48140d5d7f51307930923f6c8f8208f8b652a707000700080000000000ed020000000003000140380000000400070020000000873e81c5286568bf3b0a1494bbdaa966c3352e6d985e4ff4659b4dac62b7dbb407000700080000000000ed020000000003000140380000000400070020000000efee105994ee06fe43ebe57526c08432be4834638a38ff776b88c64e7bb544c407000700080000000000ed020000000003000140380000000400070020000000ce97c9e21a2d579f150cb1cb24a0505b5df20f9aabb661de7814585577b6120007000700080000000000ed020000000003000140380000000400070020000000db24856eb4084ce839f65eddf7254e54bde0510b1faea3890fa12ee34b7fb33007000700080000000000ee020000000003000140380000000400070020000000898412c88d76ef6e0bef9b4340ae2cacbed174922dcd029e00b001a936b2196d07000700080000000000f1020000000003000140380000000400070020000000a425409a4886699584e82933e5c89e1f3dc48163493efa10786266d3a0ddd09a07000700080000000000f802000000000300014038000000040007002000000038962e739417217077888f561d0a2e3a9bde186f1ad0f6df481ae3f06e85b59b07000700080000000000fa020000000003000140380000000400070020000000cb8d6e99b4fcd9bdcae98d4aa3b8a9070d6e8f05b53c41bdfae8eab677b6f0e807000700080000000000c004000000000300014038000000040007002000000070b0347b4d51d75dbe626193e4d6cec80f4c9d6931a355cc3a4516135bc1b2340700070008000000"
+    Digest: "ce8124bc1b0fbc0cb5cd47338ca0c7d5f5446d79936e443a201d96b192a7bd65"
+  EventSize: 15
+  Event:
+    String: |-
+      "grub_cmd: [  ]\0"
 - EventNum: 51
-  PCRIndex: 13
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "155e201c47f534b1201190d61e9d178a525540e6"
   - AlgorithmId: sha256
-    Digest: "a9e27bec64e3c0c93b3b665702dbce2f5d7101eb4d9c8d8c6cf74133774abe0d"
-  EventSize: 30313
-  Event: "010001406176000008000200040000000100000001000500010000000008000500040000000400010009000500120000005c00570049004e0044004f00570053000000040005000800000000000000000000000500050001000000000600050001000000000a0005000800000001000000000000001200050008000000010000000000000022000500010000000024000500010000000025000500010000000026000500010000000001000a00010000000108000a0001000000010e0005000400000001000000140005000400000001000000130005002e000000806642a57073d301200000000b001bab1978c5b1129914361dc69ea6093a31472053d2c62945551eb2772e387cde030001405001000001000700440000005c00570049004e0044004f00570053005c00530079007300740065006d00330032005c0064007200690076006500720073005c00740070006d002e0073007900730000000200070008000000004004000000000003000700040000000c80000004000700200000005782d66aa275afaa7af4412e33007e3da7beaf4b30b44b5cc727b066ea5d77ee0a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f0077007300000006000700130000003300000266bd1580efa75cd6d30000000002660900070014000000a4341b9fd50fb9964283220a36a1ef6f6faa7840030001404001000001000700340000005c00570049004e0044004f00570053005c00730079007300740065006d00330032005c00680061006c002e0064006c006c0000000200070008000000006000000000000003000700040000000c8000000400070020000000971fe367e613c98c6282771f75d2386cdf369f5f9cbd4f5f81baf9a969d5131c0a0007000100000001050007004c0000004d006900630072006f0073006f00660074002000570069006e0064006f00770073002000500072006f00640075006300740069006f006e00200050004300410020003200300031003100000008000700240000004d006900630072006f0073006f00660074002000570069006e0064006f007700730000000600070013000000330000026551ae1bbd005cbfbd0000000002650900070014000000e168609353f30ff2373157b4eb8cd519d07a2bff0300014058010000010007004c0000005c00570049004e0044004f00570053005c00530079007300740065006d00330032005c0064007200690076006500720073005c006e0074006f0073006500780074002e00730079"
+    Digest: "fed7c930939012174a23271f9fa177a39891cd1baf6ccd22bccce96acd0514d1"
+  EventSize: 34
+  Event:
+    String: |-
+      "grub_cmd: terminal_output console\0"
 - EventNum: 52
-  PCRIndex: 14
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
   - AlgorithmId: sha256
-    Digest: "5c61be65f5272ebf2d61ddc1e5adcb373a206f03da087a367e38203b16c2bd50"
-  EventSize: 1170
-  Event: "010001408a040000020006002602000030820222300d06092a864886f70d01010105000382020f003082020a0282020100cb5f1eab51f4d37d612dd2199abd25fd975c75cdcc23b09955f2b98003366a6f80c60cb5ba3c27450406156bad0ede7e47ae3803736b3d28130d242c2f391848a7465e08a9c45360c98c30a3c67d632146e008932fb895976f29ff79d88e9739c833a3571e307214eeb77a7fff59db35d075e9c9b2729d56c1cbb72cb7c79b1e2f6b9de0493a1bf439d3bda80ba769995b131c4e670937aea0a826655aba7fadbb49ca89066722c5e8921b198f02711f5bc1742406ace87a28a96883a442bc2f247e81f17f27648f706768c372fb69d7e5f00e2c2233e41bc71bd7254d2ffc76fb317cf2989f8e1f6a9960abbff1320fcafd33489d595c58ade23d2978283074c8354ef2ef96185adb60a8bee7fd9aacf9c03de37d4e4acf0b65df21a471e4222283f25360528e51813a35a0eae9fcc175e085c206432c930ed3b762af522735733fdb11a449f9bbe3df3f95d9f9d493e870d9ac5b080c4931735fc6532c9b097548443349997730221181d41056562e24dc8cc49bb415a3618ad8c4efe5cd44fbad74e803a26d69c093a776bf16d97951b2a8109001dc87363e51ab71d9d14e958ee6d85bf3a9357087093b8c55f0d573357114fe6b0e5615b36b34bf7405eea03b6df86e3112e247f44be7b7490deb65cba12384a47b5bf1e2fd6469ceb31f1b5b9f68f07522786fa839cbf0fee4a667b90b4671fe7a7e75133e57e156509d0203010001020006002601000030820122300d06092a864886f70d01010105000382010f003082010a0282010100dd0cbba2e42e09e3e7c5f79669bc0021bd693333efad04cb5480ee0683bbc52084d9f7d28bf338b0aba4ad2d7c627905ffe34a3f04352070e3c4e76be09cc03675e98a31dd8d70e5dc37b5744696285b8760232cbfdc47a567f751279e72eb07a6c9b91e3b53357ce5d3ec27b9871cfeb9c923096fa84691c16e963c41d3cba33f5d026a4dec691f25285c36fffd43150a94e019b4cfdfc212e2c25b27ee2778308b5b2a096b22895360162cc0681d53baec49f39d618c85680973445d7da2542bdd79f715cf355d6c1c2b5ccebc9c238b6f6eb526d93613c34fd627aeb9323b41922ce1c7cd77e8aa544ef75c0b048765b44318a8b2e06d1977ec5a24fa48030203010001020006002601000030820122300d06092a864886f70d01010105000382010f003082010a0282010100e90e64507967b5c4e3fd09004c9e94acf75668ea44d8cfc5584fa9a5767c6d45bad33992b4a41ef9f96582e417d28ffd449c08e86593ce2c5584bf7d08e32e2ba8412b18b7a24b6e494c6b1507ded1d2c2891e7194cdb57f4bb4af08d8cc88d66b17943a93ce263fece6fe349857d51d5d49f6"
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
 - EventNum: 53
-  PCRIndex: 12
-  EventType: EV_EVENT_TAG
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "c512092b0481234caa416ef7c196ab4e92b8e002"
   - AlgorithmId: sha256
-    Digest: "a6d59a3a0bfa6dba4996224d4fb6fad6403d4a75f790a1c340bb9013acd55c7a"
-  EventSize: 574
-  Event: "0100014036020000200005001301000001000000000800000300000000010000010001c4b40877dd27d7707c214c9933636feb04d36cf1d8d1396ceda2101afa3a656b676c3e380c487f19398bd45528b098b1dd851f82ff1acb84bbbc9d31a61313d6a1cfe192d5d53c9e9bdcc7e45bc4c876b7528ce18d086c4ff0294373f2d876c86950e0a81ba23e729f7d575da8e580f51ee0081e5f7c91c2b1932ee3b6cacd22e5cc5d4f03e88a08e86e75fcdb231d88a242bc7ef7e772ffe118fff928c697764f04e6d2fd1528c855b454a2b0c88e301c2895d3b69e6dc07f072170d29d5ec397be49ce257d2fee6a1ae5dae29ede72efcac9a27da37b64dc02b2ebd016e78b06679a1d4e1d049d5f6270bee14379591f006fd4bb9103cf7cf3a2b5a0c30cb5230005001301000001000000000800000300000000010000010001a3f879523fcb0d1e4ed5f692d1687fb54a20e35acb6059bd580f6d1c6c6b04a61287f3f61ebbeef55ce3efedd778e6733ef251f25b2db31a32aa5908be79f8ceba3b6d87142b27c4c8727640dda9191ed9cb0b87d45ebe891d7b9e0a10a1551480625b7ea3d0776bfaa17a5ed1f2b028c402413b456cbcf5b700243f530c14dfd4cff5448f47a3850f9438194ed7715c9927df6e353f3cd550765cb645a4ffc0f163dc9d051d4858951f27c1caa47a6da27b6be9eae7930930989f4b349b8128876631064e58493f13d05c59cc2f8948c5cd3500afb696acff167e909e00ac76e0ef7d76b83c674b375b2b2f259836d5cc610da70a9385b70ee9ff84304a6d3f"
+    Digest: "1c568398cf2e4a9df58875bbd79dffe058ec45be0b74512fa919a2fe7db4a609"
+  EventSize: 33
+  Event:
+    String: |-
+      "grub_cmd: set timeout_style=menu\0"
 - EventNum: 54
-  PCRIndex: 11
-  EventType: EV_COMPACT_HASH
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "732c713a6f4c3a388ee1b46624b7c3fe34d59d50"
   - AlgorithmId: sha256
-    Digest: "08efea1c0957a5a1fe019e6edb21fdc9fbe5de2213487eab7a05e06eca1c9784"
-  EventSize: 4
-  Event: "ffff0000"
+    Digest: "71a5b3b21ac3862f40fabb745a9649c3a1d34249b9706524c90b2480c298beb0"
+  EventSize: 24
+  Event:
+    String: |-
+      "grub_cmd: set timeout=5\0"
 - EventNum: 55
-  PCRIndex: 12
-  EventType: EV_SEPARATOR
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "d42820faaebef4ed1e12676482bf5b0305026226"
   - AlgorithmId: sha256
-    Digest: "4613c07447240b20cf1baa3fd4441a3f1b62bea1e9aaaa0678532b83ce9de254"
-  EventSize: 4
-  Event: "5742434c"
+    Digest: "513189ae3d1392a3cd85c032458b704c8eb74ef936e30cffd443b219fe861208"
+  EventSize: 48
+  Event:
+    String: |-
+      "grub_cmd: [ -f (hd0,gpt1)/EFI/fedora/user.cfg ]\0"
 - EventNum: 56
-  PCRIndex: 13
-  EventType: EV_SEPARATOR
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "908eda5f9495ce61ed99a7fd5c7a622f11ea05ac"
   - AlgorithmId: sha256
-    Digest: "4613c07447240b20cf1baa3fd4441a3f1b62bea1e9aaaa0678532b83ce9de254"
-  EventSize: 4
-  Event: "5742434c"
+    Digest: "29b7ae3acc4da64c4380feaea03c4a761c88bfbb74b3a79ac68a4e2822bbff2f"
+  EventSize: 27
+  Event:
+    String: |-
+      "grub_cmd: insmod increment\0"
 - EventNum: 57
-  PCRIndex: 14
-  EventType: EV_SEPARATOR
-  DigestCount: 1
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
   Digests:
+  - AlgorithmId: sha1
+    Digest: "ca997d04eef8bf0babac6ef928472d577c00886b"
   - AlgorithmId: sha256
-    Digest: "4613c07447240b20cf1baa3fd4441a3f1b62bea1e9aaaa0678532b83ce9de254"
-  EventSize: 4
-  Event: "5742434c"
+    Digest: "70c6160450d19f9f6dd2b51623e0de7b0d32f850a06cfa61cf7ffa148238d0e8"
+  EventSize: 27
+  Event:
+    String: |-
+      "grub_cmd: [ -n  -a 1 = 0 ]\0"
+- EventNum: 58
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "a4e1c6f50579b47c964111d1ea2170e6f923c941"
+  - AlgorithmId: sha256
+    Digest: "62cd76d31ca3d10d742e46c6ff171046ce19dd90f361a827fec6571e59c24794"
+  EventSize: 26
+  Event:
+    String: |-
+      "grub_cmd: insmod part_gpt\0"
+- EventNum: 59
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "af3f07abac9e5c56b82f09ab98328905aabbf6ef"
+  - AlgorithmId: sha256
+    Digest: "b838a4d2860c81058105fbb1907a1fb7f60b65591b099b3b000d9b31d8d2fb20"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: insmod ext2\0"
+- EventNum: 60
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
+  - AlgorithmId: sha256
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
+- EventNum: 61
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "0c89eed9397235fbcb25909d4afbb3164e8995fc"
+  - AlgorithmId: sha256
+    Digest: "0c97df13e3b9b8f9a37c09659c6ed8d3fea841965f29f930ab30ad80b3381201"
+  EventSize: 87
+  Event:
+    String: |-
+      "grub_cmd: search --no-floppy --fs-uuid --set=root bd08ba55-5a67-4cb4-aa51-c132aecb7571\0"
+- EventNum: 62
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "a4e1c6f50579b47c964111d1ea2170e6f923c941"
+  - AlgorithmId: sha256
+    Digest: "62cd76d31ca3d10d742e46c6ff171046ce19dd90f361a827fec6571e59c24794"
+  EventSize: 26
+  Event:
+    String: |-
+      "grub_cmd: insmod part_gpt\0"
+- EventNum: 63
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "14859ebaca98ffdc99ad4cd77f74e6a90bbf7947"
+  - AlgorithmId: sha256
+    Digest: "c8fabb4ae6637fa9a9037444c80a55b1a2d2da2c2b9b8842b7810379877955f6"
+  EventSize: 21
+  Event:
+    String: |-
+      "grub_cmd: insmod fat\0"
+- EventNum: 64
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
+  - AlgorithmId: sha256
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
+- EventNum: 65
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "52dc8080155a21c2538cd80c66d31294fb7dedb1"
+  - AlgorithmId: sha256
+    Digest: "3f68a605957c8fc82c2d08bde5c30dffdcb4e1c63bc8e861d01b6e40fec886b2"
+  EventSize: 60
+  Event:
+    String: |-
+      "grub_cmd: search --no-floppy --fs-uuid --set=boot 54E9-4703\0"
+- EventNum: 66
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "af03be6535f7fdaf48c5ade006df623875b7cd9b"
+  - AlgorithmId: sha256
+    Digest: "974aaf166f0ad85e33ff9fb6bcad56681b09757f6954b2f0097415dd8e88ed45"
+  EventSize: 268
+  Event:
+    String: |-
+      "grub_cmd: set default_kernelopts=root=/dev/mapper/fedora_localhost--live-root ro resume=/dev/mapper/fedora_localhost--live-swap rd.lvm.lv=fedora_localhost-live/root rd.luks.uuid=luks-fb53079c-4b5e-491a-9d54-4a9f13ce028a rd.lvm.lv=fedora_localhost-live/swap rhgb quiet\0"
+- EventNum: 67
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "b73a83f0f0a2cca7a16ce703d4a9aeef7371ee21"
+  - AlgorithmId: sha256
+    Digest: "822e637a86c14c686c7beda98067089103cfb97984033b6d607d9feb82f0d234"
+  EventSize: 24
+  Event:
+    String: |-
+      "grub_cmd: insmod blscfg\0"
+- EventNum: 68
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "c01b67c3f5bcc81f75a5f5e3898d669ad609a53f"
+  - AlgorithmId: sha256
+    Digest: "05a5577cb6b242b7b5aff400fd90224598d1e354937fadc90f954cab3dc78519"
+  EventSize: 17
+  Event:
+    String: |-
+      "grub_cmd: blscfg\0"
+- EventNum: 69
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "59439928f6bc25cf3f9e0d1e79a301c9f1c93f78"
+  - AlgorithmId: sha256
+    Digest: "12ed80783d49fbd6c84b5efeac79e24e7ced7d6cee48c636411951d690174ee1"
+  EventSize: 88
+  Event:
+    String: |-
+      "(hd0,gpt2)/loader/entries//b929a650b5fd4b8a8b79925c08e1e51b-5.11.0-156.fc34.x86_64.conf\0"
+- EventNum: 70
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "7186459208794ee0a26207884ece07b3de3a5a58"
+  - AlgorithmId: sha256
+    Digest: "0932e50e6defa4d7f837cec6abc7094994af419d1c95e43583100312668ec87a"
+  EventSize: 74
+  Event:
+    String: |-
+      "(hd0,gpt2)/loader/entries//b929a650b5fd4b8a8b79925c08e1e51b-0-rescue.conf\0"
+- EventNum: 71
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "ac0c2d606d453421ae2fed5486a3deb422048c1f"
+  - AlgorithmId: sha256
+    Digest: "ea5e70bf704ab6d596388725b1a2b242b41fc3ac72c8ab9323294d341106fd23"
+  EventSize: 103
+  Event:
+    String: |-
+      "(hd0,gpt2)/loader/entries//b929a650b5fd4b8a8b79925c08e1e51b-5.10.8-200.1.enarx.sgx.41.fc33.x86_64.conf\0"
+- EventNum: 72
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "72121422c9be8163bf14a21fd0e2b266ac9198ab"
+  - AlgorithmId: sha256
+    Digest: "efd276fcf0d03d2aa6b9e9492aa54606e502847646bbed55f5a813d5e9eccbb6"
+  EventSize: 94
+  Event:
+    String: |-
+      "(hd0,gpt2)/loader/entries//b929a650b5fd4b8a8b79925c08e1e51b-5.12.0-0.rc1.162.fc35.x86_64.conf\0"
+- EventNum: 73
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "908eda5f9495ce61ed99a7fd5c7a622f11ea05ac"
+  - AlgorithmId: sha256
+    Digest: "29b7ae3acc4da64c4380feaea03c4a761c88bfbb74b3a79ac68a4e2822bbff2f"
+  EventSize: 27
+  Event:
+    String: |-
+      "grub_cmd: insmod increment\0"
+- EventNum: 74
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "b05a1ab261d4eb3c63c24acd07a00b9cda1d00df"
+  - AlgorithmId: sha256
+    Digest: "fb7b159286710cb0c3d36e7b886f21ebfb3e4120ca03e3af8fdb17a50f56825f"
+  EventSize: 29
+  Event:
+    String: |-
+      "grub_cmd: [ 1 = 1 -o 0 = 1 ]\0"
+- EventNum: 75
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "9d8e465cd76ff147d55215d040426d5411cf54ac"
+  - AlgorithmId: sha256
+    Digest: "6cbee0fb89cf1c9c5dd2bd25ced601df0d85128b8baeeb2cb3240ee8a99a672f"
+  EventSize: 29
+  Event:
+    String: |-
+      "grub_cmd: set menu_hide_ok=1\0"
+- EventNum: 76
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "aa0c1b41d0046552dea2a47b1f8e592716137f4a"
+  - AlgorithmId: sha256
+    Digest: "5935716bf513717f6b6931f3f8e40962606850cfc43d25ff2ca4754dcc13dceb"
+  EventSize: 20
+  Event:
+    String: |-
+      "grub_cmd: [ 1 = 1 ]\0"
+- EventNum: 77
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "b690be05d51e0710ff960ab61e7816b56f5fb5d1"
+  - AlgorithmId: sha256
+    Digest: "d724f37f3502c30063d71a4afe101fdcb1db0fb710ebc519cbb92515938163f0"
+  EventSize: 35
+  Event:
+    String: |-
+      "grub_cmd: set boot_indeterminate=0\0"
+- EventNum: 78
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "acea5708aa04fdb8ee5fa6c9f10f786b42cdc754"
+  - AlgorithmId: sha256
+    Digest: "d4468e9ea1b6827517d1f626f8c34b364007a3611c2a17fbf51bc7e7eaa49138"
+  EventSize: 29
+  Event:
+    String: |-
+      "grub_cmd: set boot_success=0\0"
+- EventNum: 79
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "2e4990eea0090acd57e887d26990bf383660b617"
+  - AlgorithmId: sha256
+    Digest: "11ad30ffc650e4c3b13a3e434111a5bc12fb00699138c06e80d132124b61a86b"
+  EventSize: 51
+  Event:
+    String: |-
+      "grub_cmd: save_env boot_success boot_indeterminate\0"
+- EventNum: 80
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
+  - AlgorithmId: sha256
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
+- EventNum: 81
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "710cbf237c9abd071ca91c4104324800bec7b0fb"
+  - AlgorithmId: sha256
+    Digest: "ce8124bc1b0fbc0cb5cd47338ca0c7d5f5446d79936e443a201d96b192a7bd65"
+  EventSize: 15
+  Event:
+    String: |-
+      "grub_cmd: [  ]\0"
+- EventNum: 82
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "d001f2f0b18ceeefd0a8d22f69c6f2ec3134d508"
+  - AlgorithmId: sha256
+    Digest: "0ac9c2f1ce2aec4c459d29e4ee8fd5733da667bda5fa71900b0aeee79874843c"
+  EventSize: 25
+  Event:
+    String: |-
+      "grub_cmd: [ 1 -a 1 = 1 ]\0"
+- EventNum: 83
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "46435cf317b1e921220fac14782e1db373f5e0fb"
+  - AlgorithmId: sha256
+    Digest: "1a25bc4da456acce43975d4fe291a07554313831a57823e433f3aa33ef5459f3"
+  EventSize: 38
+  Event:
+    String: |-
+      "grub_cmd: set orig_timeout_style=menu\0"
+- EventNum: 84
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "04e5768017caacbd12920cb9c9ec81c80f2014df"
+  - AlgorithmId: sha256
+    Digest: "106f0287c2d79d921ee109c12d8f1f5514ba35ebe579a524e32027230588dd61"
+  EventSize: 29
+  Event:
+    String: |-
+      "grub_cmd: set orig_timeout=5\0"
+- EventNum: 85
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "05ba452bf00b7f880528b35d02e9077f89c08538"
+  - AlgorithmId: sha256
+    Digest: "82a4a14e43a4f76118ae63285d0af05af139f260fae57b2c20737a1c1df3382b"
+  EventSize: 19
+  Event:
+    String: |-
+      "grub_cmd: [  = 1 ]\0"
+- EventNum: 86
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "58795e8592d9ff3b6b39add68ddba958eff547a2"
+  - AlgorithmId: sha256
+    Digest: "61caa54fc24ba8b3e79be63f375a08f374244e4ede8e0d6080060aa3fa5f7fbb"
+  EventSize: 35
+  Event:
+    String: |-
+      "grub_cmd: set timeout_style=hidden\0"
+- EventNum: 87
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "18d40d42287080e4aeb1ab3f6431fa919d5fa6c1"
+  - AlgorithmId: sha256
+    Digest: "fd11e62aa088d6215506792058ebcd489a79ae453a5513a60b5a0a3f350c3d03"
+  EventSize: 24
+  Event:
+    String: |-
+      "grub_cmd: set timeout=1\0"
+- EventNum: 88
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "5c0a96ef049cefa84b2b0a910b36842400afdc7d"
+  - AlgorithmId: sha256
+    Digest: "dd4f092d0514e2bfa282fd78882e6012f9ea5c56d4b35d5e555b3016534b9db9"
+  EventSize: 65
+  Event:
+    String: |-
+      "grub_cmd: menuentry System setup --id uefi-firmware {"
+      "\tfwsetup"
+      "}\0"
+- EventNum: 89
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "570b5f736664b5e7ed8670e8952e8d12abc0253f"
+  - AlgorithmId: sha256
+    Digest: "f944fbdef23bcc3baffff7fb902a5cba2c0034d97ce5a97bece15465a821034c"
+  EventSize: 50
+  Event:
+    String: |-
+      "grub_cmd: [ -f (hd0,gpt1)/EFI/fedora/custom.cfg ]\0"
+- EventNum: 90
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "32893ff5a584512bb9a25a10ed0515fd4d17e52f"
+  - AlgorithmId: sha256
+    Digest: "fb357ef33690018a31584a790b0ff1d714448feebb12ce7a5a266f204ddd4202"
+  EventSize: 78
+  Event:
+    String: |-
+      "grub_cmd: [ -z (hd0,gpt1)/EFI/fedora -a -f (hd0,gpt1)/EFI/fedora/custom.cfg ]\0"
+- EventNum: 91
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "8fe59e66d6ec198420477f24f791e929f153e144"
+  - AlgorithmId: sha256
+    Digest: "7626abd8be7442c2e575364a3e95cb3a3b533c58afbba402d2bdabdff85d29c7"
+  EventSize: 21
+  Event:
+    String: |-
+      "grub_cmd: load_video\0"
+- EventNum: 92
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "f5b067e59c163f67b19b836fbee9e8a487a19cdd"
+  - AlgorithmId: sha256
+    Digest: "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: [ xy = xy ]\0"
+- EventNum: 93
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "59ced343b060b7df54fa7ba251ef877940601ee4"
+  - AlgorithmId: sha256
+    Digest: "d71353f5368eb2c1280590928128979bd96ea8db1e8c81493f7878383b76ab3b"
+  EventSize: 27
+  Event:
+    String: |-
+      "grub_cmd: insmod all_video\0"
+- EventNum: 94
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "2e1c676ddd9b16f0d720cd5c66d85732de7b77b6"
+  - AlgorithmId: sha256
+    Digest: "15a5018b0177cf9c49c0b97911df67e7f2c193d3613e3fc4c9eb98a2b5d06fcc"
+  EventSize: 30
+  Event:
+    String: |-
+      "grub_cmd: set gfxpayload=keep\0"
+- EventNum: 95
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "ba509ca38210f0683c477c9dc40e4c4f653e1dfb"
+  - AlgorithmId: sha256
+    Digest: "6c4674d4c652ee67b98a6206d7541ccbf2d5dc0a18dae31ad66e82c794c49784"
+  EventSize: 22
+  Event:
+    String: |-
+      "grub_cmd: insmod gzio\0"
+- EventNum: 96
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "c7596df21456c1ed798a88d02f6da3aeb5d9a499"
+  - AlgorithmId: sha256
+    Digest: "1a8459160c8dc7d98e0bd9bd332d353759fab0e28dc71dfd156962c161a3c093"
+  EventSize: 334
+  Event:
+    String: |-
+      "grub_cmd: linux (hd0,gpt2)/vmlinuz-5.12.0-0.rc1.162.fc35.x86_64 root=/dev/mapper/fedora_localhost--live-root ro resume=/dev/mapper/fedora_localhost--live-swap rd.lvm.lv=fedora_localhost-live/root rd.luks.uuid=luks-fb53079c-4b5e-491a-9d54-4a9f13ce028a rd.lvm.lv=fedora_localhost-live/swap rhgb quiet systemd.unified_cgroup_hierarchy=0\0"
+- EventNum: 97
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "b09783cbf8306833efb8bbcc29756a4a1f7da804"
+  - AlgorithmId: sha256
+    Digest: "87846c3a0b585d86cc14767cf29630ff98eac0abcf5a4f82937bb8f2208f85e8"
+  EventSize: 48
+  Event:
+    String: |-
+      "(hd0,gpt2)/vmlinuz-5.12.0-0.rc1.162.fc35.x86_64\0"
+- EventNum: 98
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "6d5647667d7bf08e5bad6d232b80d0827cc49d01"
+  - AlgorithmId: sha256
+    Digest: "f8ba839670c75336b2e884865c6f668a49396fcddd0093e6c8c2f1ff35e74907"
+  EventSize: 334
+  Event:
+    String: |-
+      "kernel_cmdline: (hd0,gpt2)/vmlinuz-5.12.0-0.rc1.162.fc35.x86_64 root=/dev/mapper/fedora_localhost--live-root ro resume=/dev/mapper/fedora_localhost--live-swap rd.lvm.lv=fedora_localhost-live/root rd.luks.uuid=luks-fb53079c-4b5e-491a-9d54-4a9f13ce028a rd.lvm.lv=fedora_localhost-live/swap rhgb quiet systemd.unified_cgroup_hierarchy=0\0"
+- EventNum: 99
+  PCRIndex: 8
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "14ef588e8a51c1caf3ac5f9f58e6a6a6b91e6a12"
+  - AlgorithmId: sha256
+    Digest: "129011410a454dd5809aa565bfd8ded4d5d6b5f072e6cebb72ca793f08aad0d9"
+  EventSize: 71
+  Event:
+    String: |-
+      "grub_cmd: initrd (hd0,gpt2)/initramfs-5.12.0-0.rc1.162.fc35.x86_64.img\0"
+- EventNum: 100
+  PCRIndex: 9
+  EventType: EV_IPL
+  DigestCount: 2
+  Digests:
+  - AlgorithmId: sha1
+    Digest: "258dfa45640f716f73e4c9fbe3c505fefb7b0f38"
+  - AlgorithmId: sha256
+    Digest: "66aed682a6af40fca21afa1e2792f76a726b5c4161143662282626a79575f138"
+  EventSize: 54
+  Event:
+    String: |-
+      "(hd0,gpt2)/initramfs-5.12.0-0.rc1.162.fc35.x86_64.img\0"
+pcrs:
+  sha1:
+    0  : 0xf080580492b92735ca943d0f58da3bae4dccdd23
+    1  : 0x0319c44d0ba23140f64e1fcf5cab2136eec45dc8
+    2  : 0xb2a83b0ebf2f8374299a5b2bdfc31ea955ad7236
+    3  : 0xb2a83b0ebf2f8374299a5b2bdfc31ea955ad7236
+    4  : 0x6938a4aa133b3f2ceaed34c5d69957a77cb615e8
+    5  : 0x6e3958c581b8999ed37c6a7d4ee9b0ced4e1ff0e
+    6  : 0xb2a83b0ebf2f8374299a5b2bdfc31ea955ad7236
+    7  : 0x6d7206871c9c6f38ad3997baceebee95dadec04d
+    8  : 0x8c882017b021990d5d1eb3f71d9020c21605439b
+    9  : 0x80bb2af0dfd10fece3afb74a8be8db590a95322d
+  sha256:
+    0  : 0xde5bae1801b1055914582f526fea0aa68e7dfacb4a5ad6ce55f8b2b6287c475c
+    1  : 0x3d086aee80eff0b9d930ce43ec0d3ecbe73ea2f188e545fecc8d97e9acf9f61f
+    2  : 0x3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969
+    3  : 0x3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969
+    4  : 0xe79ebf94d2013d91808b2b250fcfb08260f73e6fd636704c0783edb641baecdd
+    5  : 0x405f63fb377a6992ce75213c5d4e847bdfdbf2523df3774573de4e07c656a143
+    6  : 0x3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969
+    7  : 0x730777cfa2b4c2cf67a54ce7c80d7d15cebd0a443d1bc320e43fe338812ea67b
+    8  : 0x4788238034043585fd5254cd186d90eca91d9911e2d7b1bdde9eee81704306db
+    9  : 0x6e22c7993f14c2313665a86edc9998ead5361d95c841dacccef6a52bdb4bf935
