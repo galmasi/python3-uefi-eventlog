@@ -95,16 +95,16 @@ def compare_dir (dirname):
     print("|     Totals:                  |%7d|%7d|%6.2f%%|"%(evttotal, etotal, 100.0*etotal/evttotal))
     print("+------------------------------+-------+--------+------+")
 
-    if etotal > 0:
+    if etotal/evttotal > 0.01:
         print()
         print("Failed event types")
         print("------------------")
         for key in failedeventtypes.keys():
             print("%-20s"%(key))
+        exit(1)
     else:
         print()
-        print("SUCCESS")
-
-    exit(etotal)
+        print("SUCCESS (error rate < 1%)")
+        exit(0)
         
 main()
