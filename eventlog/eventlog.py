@@ -6,7 +6,7 @@ import hashlib
 import enum
 import re
 from typing import Tuple
-from .efivar import efiDevicePath, efiInitialize
+#from .efivar import efiDevicePath, efiInitialize
 
 # ########################################
 # convert byte buffers with null terminated C strings to python strings
@@ -332,7 +332,7 @@ class EfiVarEvent (GenericEvent):
                      'UnicodeNameLength': self.namelen,
                      'VariableDataLength': self.datalen,
                      'VariableName': str(self.guid),
-                     'VariableData': self.data.hex() 
+                     'VariableData': self.data.hex()
                  }}
 
 # ########################################
@@ -378,9 +378,6 @@ class EfiVarBooleanEvent(EfiVarEvent):
 # ########################################
 
 class EfiVarStringEvent(EfiVarEvent):
-    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
-        super().__init__(eventheader, buffer, idx)
-
     def toJson (self) -> dict:
         j = super().toJson()
         j['Event']['VariableData'] = { 'String' : self.data.decode('utf-8') }
@@ -391,9 +388,6 @@ class EfiVarStringEvent(EfiVarEvent):
 # ########################################
 
 class EfiVarHexEvent(EfiVarEvent):
-    def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
-        super().__init__(eventheader, buffer, idx)
-
     def toJson (self) -> dict:
         j = super().toJson()
         j['Event']['VariableData'] = self.data.hex()
