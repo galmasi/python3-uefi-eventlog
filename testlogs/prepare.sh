@@ -7,7 +7,7 @@ export parsedir=parsed-tpm2-tools-5.5
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
-for file in rhel/*.bin
+for file in rhcos/*.bin
 do
     fname=$(basename ${file})
     yamlname=${fname/.bin/.yml}
