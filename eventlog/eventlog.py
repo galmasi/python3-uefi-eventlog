@@ -702,6 +702,7 @@ class EventLog(list):
     def validate (self):
         for evt in self:
             vacuous, passed,why = evt.validate()
-            if vacuous: continue
+            if vacuous:
+                continue
             if not passed:
                 print(f'Event {evt.evidx} failed, evtype={str(Event(evt.evtype))}, class={type(evt)}, why={why}')
