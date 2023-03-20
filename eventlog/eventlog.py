@@ -319,7 +319,7 @@ class EfiVarEvent (GenericEvent):
             digest = self.digests[algid]
             myhash = EfiEventDigest.hashalgmap[algid](self.evbuf)
             if digest.digest != myhash.digest():
-                return False,False,self.name
+                return False,False,str(self.name)
         return False,True,''
 
     def toJson (self) -> dict:
