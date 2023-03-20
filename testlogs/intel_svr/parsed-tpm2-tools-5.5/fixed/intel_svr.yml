@@ -189,7 +189,8 @@ events:
     UnicodeNameLength: 9
     VariableDataLength: 1
     UnicodeName: AuditMode
-    VariableData: "00"
+    VariableData:
+      Enabled: "No"
 - EventNum: 11
   PCRIndex: 7
   EventType: EV_EFI_VARIABLE_DRIVER_CONFIG
@@ -205,7 +206,8 @@ events:
     UnicodeNameLength: 12
     VariableDataLength: 1
     UnicodeName: DeployedMode
-    VariableData: "00"
+    VariableData:
+      Enabled: "No"
 - EventNum: 12
   PCRIndex: 7
   EventType: EV_SEPARATOR

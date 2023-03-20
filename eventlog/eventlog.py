@@ -157,6 +157,7 @@ class GenericEvent:
         self.digests = eventheader[2]
         self.evsize  = eventheader[3]
         self.evidx   = eventheader[4]
+        assert len(buffer) >= idx + self.evsize, f'Event log truncated, GenericEvent, evt.idx = {self.evidx}'
         self.evbuf   = buffer[idx:idx+self.evsize]
 
         try:
@@ -169,8 +170,8 @@ class GenericEvent:
         return cls(eventheader, buffer, idx)
 
     # pylint: disable=no-self-use
-    def validate (self) -> bool:
-        return True
+    def validate (self) -> Tuple[bool,bool,str]:
+        return True,True,''
 
     def toJson (self):
         return {
@@ -234,8 +235,6 @@ class FirmwareBlobEvent (GenericEvent):
 # and this puts correct processing into doubt.
 # tpm2_eventlog is known to mess up and generate
 # non-UTF-8 YAML in certain cases, which yq then chokes on.
-#
-# !!!! TODO fix this in a consistent (yet compatible) way.
 # ########################################
 
 class EfiIPLEvent (GenericEvent):
@@ -250,8 +249,6 @@ class EfiIPLEvent (GenericEvent):
 # ########################################
 # This is the first event in the log, and gets a lot of
 # special processing.
-#
-# !!!TODO!!! fix
 # ########################################
 
 class SpecIdEvent (GenericEvent):
@@ -309,21 +306,21 @@ class EfiVarEvent (GenericEvent):
 
     @classmethod
     def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
-        (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
+        (namelen,datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
+        if datalen == 1:
+            return EfiVarBooleanEvent(eventheader, buffer, idx)
         if name in [ 'PK', 'KEK', 'db', 'dbx' ]:
             return EfiSignatureListEvent(eventheader, buffer, idx)
-        if name == 'SecureBoot':
-            return EfiVarBooleanEvent(eventheader, buffer, idx)
         return EfiVarEvent(eventheader, buffer, idx)
 
-    def validate(self) -> bool:
+    def validate(self) -> Tuple[bool,bool,str]:
         for algid in self.digests.keys():
             digest = self.digests[algid]
             myhash = EfiEventDigest.hashalgmap[algid](self.evbuf)
             if digest.digest != myhash.digest():
-                return False
-        return True
+                return False,False,self.name
+        return False,True,''
 
     def toJson (self) -> dict:
         return { ** super().toJson(),
@@ -346,8 +343,10 @@ class EfiVarAuthEvent(EfiVarEvent):
 
     @classmethod
     def Parse(cls, eventheader: Tuple, buffer: bytes, idx: int):
-        (namelen,) = struct.unpack('<Q', buffer[idx+16:idx+24])
+        (namelen,datalen) = struct.unpack('<QQ', buffer[idx+16:idx+32])
         name = buffer[idx+32:idx+32+2*namelen].decode('utf-16')
+        if datalen == 1:
+            return EfiVarBooleanEvent(eventheader, buffer, idx)
         if name == 'MokList':
             return EfiVarHexEvent(eventheader, buffer, idx)
         if name == 'SbatLevel':
@@ -504,6 +503,7 @@ class EfiSignatureList:
 
 class EfiSignatureData:
     def __init__ (self, buffer: bytes, sigsize, idx):
+        assert len(buffer) >= 16, f'EFI signature truncated, expected 16, found {len(buffer)} bytes'
         self.owner   = uuid.UUID(bytes_le=buffer[idx:idx+16])
         self.sigdata = buffer[idx+16:idx+sigsize]
 
@@ -530,8 +530,8 @@ class EfiActionEvent (GenericEvent):
 # ########################################
 
 class EfiGPTEvent (GenericEvent):
-    # GPT Partition header, UEFI Spec version 2.88 Errata B Section 5.3.2 Table 21
-    class GPTHeader:
+    # Embedded class: GPT Partition header, UEFI Spec version 2.88 Errata B Section 5.3.2 Table 21
+    class GPTPartHeader:
         def __init__ (self, buffer, idx):
             (self.signature, self.revision, self.headerSize,
              self.headerCRC32, _, self.MyLBA, self.alternateLBA,
@@ -557,8 +557,8 @@ class EfiGPTEvent (GenericEvent):
                 'PartitionEntryArrayCRC32': self.partitionEntryArrayCRC
             }
 
-    # Partition entry, UEFI Spec version 2.88 Errata B Section 5.3.3 Table 22
-    class GPTPartitionEntry:
+    # Embedded class: GPT Partition entry, UEFI Spec version 2.88 Errata B Section 5.3.3 Table 22
+    class GPTPartEntry:
         def __init__(self, buffer, idx):
             self.partitionTypeGUID =  uuid.UUID(bytes_le=buffer[idx:idx+16])
             self.uniquePartitionGUID =  uuid.UUID(bytes_le=buffer[idx+16:idx+32])
@@ -577,13 +577,13 @@ class EfiGPTEvent (GenericEvent):
 
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
-        self.gptheader = self.GPTHeader(buffer, idx)
+        self.gptheader = self.GPTPartHeader(buffer, idx)
         idx += self.gptheader.headerSize
         (self.numparts,) = struct.unpack('<Q', buffer[idx:idx+8])
         idx += 8
         self.partitions = []
         for _ in range(0, self.numparts):
-            self.partitions.append(self.GPTPartitionEntry(buffer, idx))
+            self.partitions.append(self.GPTPartEntry(buffer, idx))
             idx += self.gptheader.sizeOfPartitionEntry
 
     def toJson (self) -> dict:
@@ -699,9 +699,9 @@ class EventLog(list):
             pcrs[pcridx] = newpcr
         return pcrs
 
-    def validate (self) -> Tuple[bool, str]:
-#        errlist = []
+    def validate (self):
         for evt in self:
-            if not evt.validate():
-                return False, ''
-        return True, ''
+            vacuous, passed,why = evt.validate()
+            if vacuous: continue
+            if not passed:
+                print(f'Event {evt.evidx} failed, evtype={str(Event(evt.evtype))}, class={type(evt)}, why={why}')
