@@ -17,7 +17,7 @@ jobs:
       - run: sudo apt-get -y install libefivar-dev pylint python3-pip tpm2-tools
       - run: sudo pip3 install pyright yq
 
-      # run pylint. WARNING this cannot fail at the moment.
+      # run pylint. 
       - name: Run pylint
         run: pylint --rcfile pylintrc eventlog/eventlog.py
 
@@ -25,6 +25,11 @@ jobs:
       - name: Run pyright
         run: pyright
 
-      # run the test evaluator
+      # run the event log validation.
+      - name: Run event log validation (check event log consistency)
+        run: env PATH=${PATH}:${PWD}/testing PYTHONPATH=${PWD} test_validate.py -d ${PWD}/testlogs
+
+      # run the comparison tester
       - name: Compare event log JSON with reference
         run: env PATH=${PATH}:${PWD}/testing PYTHONPATH=${PWD} test_compare.py -d ${PWD}/testlogs
+

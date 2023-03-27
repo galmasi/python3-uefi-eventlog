@@ -78,6 +78,7 @@ class Digest (enum.IntEnum):
 
 # ########################################
 # Event digests
+# TCG PC Client platform firmware profile, TPML_DIGEST_VALUES, Section 10.2.2
 # ########################################
 
 class EfiEventDigest:
@@ -183,6 +184,25 @@ class GenericEvent:
             'Digests':     list(map(lambda o: o[1], self.digests.items())),
             'Event':       self.evbuf[:1024].hex()
         }
+
+# ########################################
+# Events that can be validated by CONTENT_MATCHES_DIGEST
+# TCG Guidance on Integrity Measurements and Event Log Processing, V1, Rev 0.118, 12/15/2021, Section 7.2.5.1
+# EV_S_CRTM_VERSION
+# EV_EFI_VARIABLE_DRIVER_CONFIG
+# EV_SEPARATOR
+# EV_EFI_GPT_EVENT
+# EV_EFI_VARIABLE_BOOT
+# ########################################
+
+class ValidatedEvent (GenericEvent):
+    def validate(self) -> Tuple[bool,bool,str]:
+        for algid in self.digests.keys():
+            refdigest = self.digests[algid].digest
+            calchash1 = EfiEventDigest.hashalgmap[algid](self.evbuf).digest()
+            if refdigest != calchash1:
+                return False,False,str(self.evtype.name)
+        return False,True,''
 
 # ########################################
 # POST CODE event -- interpreted as a string
@@ -295,7 +315,7 @@ class SpecIdEvent (GenericEvent):
 # Event type: EFI variable measurement
 # ########################################
 
-class EfiVarEvent (GenericEvent):
+class EfiVarEvent (ValidatedEvent):
     def __init__ (self, eventheader: Tuple, buffer: bytes, idx: int):
         super().__init__(eventheader, buffer, idx)
         self.guid = uuid.UUID(bytes_le=buffer[idx:idx+16])
@@ -314,14 +334,6 @@ class EfiVarEvent (GenericEvent):
             return EfiSignatureListEvent(eventheader, buffer, idx)
         return EfiVarEvent(eventheader, buffer, idx)
 
-    def validate(self) -> Tuple[bool,bool,str]:
-        for algid in self.digests.keys():
-            digest = self.digests[algid]
-            myhash = EfiEventDigest.hashalgmap[algid](self.evbuf)
-            if digest.digest != myhash.digest():
-                return False,False,str(self.name)
-        return False,True,''
-
     def toJson (self) -> dict:
         return { ** super().toJson(),
                  'Event': {
@@ -333,7 +345,10 @@ class EfiVarEvent (GenericEvent):
                  }}
 
 # ########################################
-# EFI variable authority event. contains a single signature.
+# EFI variable authority event (EV_EFI_VARIABLE_AUTHORITY).
+# Contains a single signature, a boolean or a string.
+# Booleans are easy to find (datalen==1)
+# It is unclear what general rule decides between strings and signatures.
 # ########################################
 
 class EfiVarAuthEvent(EfiVarEvent):
@@ -357,6 +372,10 @@ class EfiVarAuthEvent(EfiVarEvent):
         j = super().toJson()
         j['Event']['VariableData'] = [ self.sigdata ]
         return j
+
+    # signature data are not subject to validation.
+    def validate(self) -> Tuple[bool, bool, str]:
+        return True, True, ''
 
 # ########################################
 # Boolean variable readout event
@@ -423,6 +442,16 @@ class EfiVarBootEvent (EfiVarEvent):
             return EfiVarBootEvent (eventheader, buffer, idx)
         return EfiVarEvent(eventheader, buffer, idx)
 
+    # the published digest can match the entire event buffer or just the data portion (without the name).
+    def validate(self) -> Tuple[bool,bool,str]:
+        for algid in self.digests.keys():
+            refdigest = self.digests[algid].digest
+            calchash1 = EfiEventDigest.hashalgmap[algid](self.evbuf).digest()
+            calchash2 = EfiEventDigest.hashalgmap[algid](self.data).digest()
+            if refdigest not in (calchash1, calchash2):
+                return False,False,str(self.name.decode('utf-16'))
+        return False,True,''
+
     def toJson (self) -> dict:
         j = super().toJson()
         j['Event']['VariableData'] = {
@@ -447,6 +476,16 @@ class EfiVarBootOrderEvent(EfiVarEvent):
         j = super().toJson()
         j['Event']['VariableData'] = list(map(lambda a: f'Boot{a:04x}', self.bootorder))
         return j
+
+    # the published digest can match the entire event buffer or just the data portion (without the name).
+    def validate(self) -> Tuple[bool,bool,str]:
+        for algid in self.digests.keys():
+            refdigest = self.digests[algid].digest
+            calchash1 = EfiEventDigest.hashalgmap[algid](self.evbuf).digest()
+            calchash2 = EfiEventDigest.hashalgmap[algid](self.data).digest()
+            if refdigest not in (calchash1, calchash2):
+                return False,False,str(self.name.decode('utf-16'))
+        return False,True,''
 
 # ########################################
 # EFI signature event: an EFI variable event for secure boot variables.
@@ -529,7 +568,7 @@ class EfiActionEvent (GenericEvent):
 # EFI GPT event (a GPT partition table description event)
 # ########################################
 
-class EfiGPTEvent (GenericEvent):
+class EfiGPTEvent (ValidatedEvent):
     # Embedded class: GPT Partition header, UEFI Spec version 2.88 Errata B Section 5.3.2 Table 21
     class GPTPartHeader:
         def __init__ (self, buffer, idx):
@@ -597,6 +636,7 @@ class EfiGPTEvent (GenericEvent):
 
 # ########################################
 # Event type: uefi image load
+# TCG PC Client platform firmware profile, UEFI_IMAGE_LOAD_EVENT, Section 10.2.3
 # ########################################
 
 class UefiImageLoadEvent (GenericEvent):
@@ -645,6 +685,7 @@ class EventLog(list):
             evidx += 1
 
     # parser for 1st event
+    # TCG PC client platform firmware profile spec, structure: TCG_PCClientPCREvent, Section 10.2.1
     @classmethod
     def Parse_1stevent(cls, buffer: bytes, idx: int) -> Tuple[GenericEvent, int]:
         (evpcr, evtype, digestbuf, evsize)=struct.unpack('<II20sI', buffer[idx:idx+32])
@@ -653,6 +694,7 @@ class EventLog(list):
         return (evt, idx + 32 + evsize)
 
     # parser for all other events
+    # TCG PC client platform firmware profile spec, structure: TCG_PCR_EVENT2, Section 10.2.2
     @classmethod
     def Parse_event(cls, evidx: int, buffer: bytes, idx: int) -> Tuple[GenericEvent, int]:
         (evpcr, evtype, digestcount)=struct.unpack('<III', buffer[idx:idx+12])
@@ -666,6 +708,7 @@ class EventLog(list):
     def Handler(cls, evtype: int):
         EventHandlers = {
             Event.EV_POST_CODE                     : PostCodeEvent.Parse,
+            Event.EV_SEPARATOR                     : ValidatedEvent.Parse,
             Event.EV_EFI_ACTION                    : EfiActionEvent.Parse,
             Event.EV_EFI_GPT_EVENT                 : EfiGPTEvent.Parse,
             Event.EV_IPL                           : EfiIPLEvent.Parse,
@@ -677,7 +720,8 @@ class EventLog(list):
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB    : FirmwareBlobEvent.Parse,
             Event.EV_EFI_PLATFORM_FIRMWARE_BLOB2   : FirmwareBlobEvent.Parse,
             Event.EV_EFI_VARIABLE_BOOT2            : EfiVarBootEvent.Parse,
-            Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse
+            Event.EV_EFI_VARIABLE_AUTHORITY        : EfiVarAuthEvent.Parse,
+            Event.EV_S_CRTM_VERSION                : ValidatedEvent.Parse
         }
         try:
             return EventHandlers[Event(evtype)]
@@ -699,10 +743,17 @@ class EventLog(list):
             pcrs[pcridx] = newpcr
         return pcrs
 
-    def validate (self):
+    # run validation on all events
+    def validate (self) -> list[list[Tuple]]:
+        pass_list = []
+        fail_list = []
+        vac_list = []
         for evt in self:
-            vacuous, passed,why = evt.validate()
+            vacuous, passed, why = evt.validate()
             if vacuous:
-                continue
-            if not passed:
-                print(f'Event {evt.evidx} failed, evtype={str(Event(evt.evtype))}, class={type(evt)}, why={why}')
+                vac_list.append((evt.evidx, evt.evtype.name, type(evt)))
+            elif passed:
+                pass_list.append((evt.evidx, evt.evtype.name, type(evt)))
+            else:
+                fail_list.append((evt.evidx, evt.evtype.name, type(evt), why))
+        return [vac_list, pass_list, fail_list]
